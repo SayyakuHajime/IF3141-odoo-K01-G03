@@ -78,8 +78,19 @@ $spacing-lg:  24px;
 $spacing-xl:  32px;
 
 // ── Layout ──
-$border-radius:       4px;  // Universal — all portals
-$mobile-width:        402px;
-$desktop-width:       1440px;
+$border-radius:       4px;   // Universal — all portals
 $admin-sidebar-width: 200px;
 $admin-topbar-height: 44px;
+
+// ── Responsive Breakpoints ──
+$bp-tablet:  768px;   // tablet / landscape phone
+$bp-desktop: 1024px;  // laptop / desktop / wide tablet
+
+// ── Suppress Odoo website editor UI ──
+// The frontend-to-backend nav is position:fixed and overlaps our portal UI.
+// Our portals are never edited via Odoo's website editor, so hide it globally.
+.o_frontend_to_backend_nav,
+.o_website_editbar,
+#oe_website_topbar {
+    display: none !important;
+}

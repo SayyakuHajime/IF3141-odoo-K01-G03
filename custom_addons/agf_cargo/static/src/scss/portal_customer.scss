@@ -1,13 +1,29 @@
-@import '_variables';
-
 // ── Customer Portal — AGF Cargo ──
-// Platform: Mobile web 402px | No login | Public access
+// Mobile-first. Breakpoints: tablet 768px+, desktop 1024px+
 // Color theme: Forest Green / Mint / Leaf Green CTA
 
+// Lucide icon defaults (shared across portals)
+.agf-icon {
+    display: inline-block;
+    vertical-align: middle;
+    stroke: currentColor;
+    stroke-width: 1.75;
+    fill: none;
+    flex-shrink: 0;
+}
+
 .agf-customer {
+    width: 100%;
     font-family: $font-family-base;
     background: $customer-bg-page;
     color: #1A1A1A;
-    max-width: $mobile-width;
-    margin: 0 auto;
+
+    @media (min-width: $bp-tablet) {
+        max-width: 720px;
+        margin: 0 auto;
+    }
+
+    @media (min-width: $bp-desktop) {
+        max-width: 960px;
+    }
 }

@@ -1,14 +1,17 @@
-@import '_variables';
-
 // ── Admin Dashboard — Internal Staff ──
-// Platform: Desktop 1440px | Internal login
-// Sidebar: $admin-sidebar (#1D2226) | Accent: Cyan $admin-accent — decorative only
+// Responsive: mobile sidebar collapses, full desktop layout at 1024px+
 // Cyan as text on white: use $admin-accent-dark (#007A8A), NOT $admin-accent (#00ACC1)
 
 .agf-admin {
     font-family: $font-family-base;
     background: $admin-content-bg;
     color: #333333;
+    min-height: 100vh;
+}
+
+.agf-admin-layout {
+    display: flex;
+    min-height: 100vh;
 }
 
 .agf-admin-sidebar {
@@ -16,4 +19,19 @@
     width: $admin-sidebar-width;
     min-height: 100vh;
     color: #FFFFFF;
+    flex-shrink: 0;
+
+    // Hidden on mobile, visible on desktop
+    display: none;
+    @media (min-width: $bp-desktop) { display: flex; flex-direction: column; }
+}
+
+.agf-admin-main {
+    flex: 1;
+    min-width: 0;
+    padding: 0;
+
+    @media (min-width: $bp-desktop) {
+        padding: 24px;
+    }
 }

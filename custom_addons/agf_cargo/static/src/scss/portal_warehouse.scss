@@ -1,13 +1,552 @@
-@import '_variables';
+// ─────────────────────────────────────────────
+// WAREHOUSE WEB APP — Responsive SCSS
+// Mobile-first. Breakpoints: tablet 768px+, desktop 1024px+
+// ─────────────────────────────────────────────
+*, *::before, *::after { box-sizing: border-box; }
 
-// ── Warehouse Web App — AGF Cargo ──
-// Platform: Mobile web 402px | Staff login | Green + Amber CTA
-// CTA: $warehouse-cta (#E8820C) — text MUST be $warehouse-cta-text (#1A1A1A), NOT white
+// ── Lucide icon defaults ──
+.agf-icon {
+    display: inline-block;
+    vertical-align: middle;
+    stroke: currentColor;
+    stroke-width: 1.75;
+    fill: none;
+    flex-shrink: 0;
 
-.agf-warehouse {
-    font-family: $font-family-base;
+    &--sm  { width: 16px; height: 16px; }
+    &--md  { width: 20px; height: 20px; }  // default
+    &--lg  { width: 24px; height: 24px; }
+    &--xl  { width: 32px; height: 32px; }
+}
+
+// ─────────────────────────────────────────────
+// BASE PAGE WRAPPER
+// Mobile-first: full width. Centered on larger screens.
+// ─────────────────────────────────────────────
+.agf-wh {
+    width: 100%;
+    min-height: 100vh;
     background: $warehouse-bg-page;
+    font-family: $font-family-base;
     color: #1A1A1A;
-    max-width: $mobile-width;
-    margin: 0 auto;
+    font-size: 13px;
+
+    @media (min-width: $bp-tablet) {
+        max-width: 900px;
+        margin: 0 auto;
+        box-shadow: 0 0 0 1px #E8E8E8;
+    }
+
+    @media (min-width: $bp-desktop) {
+        max-width: 1200px;
+    }
+}
+
+// ─────────────────────────────────────────────
+// LANDING PAGE
+// ─────────────────────────────────────────────
+.agf-wh-landing {
+    min-height: 100vh;
+    background: $warehouse-primary;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 24px;
+    color: #FFFFFF;
+    text-align: center;
+
+    &__icon {
+        width: 80px; height: 80px;
+        background: rgba(255,255,255,.12);
+        border-radius: 20px;
+        display: flex; align-items: center; justify-content: center;
+        margin-bottom: 20px;
+        color: rgba(255,255,255,.9);
+    }
+    &__title { font-size: 24px; font-weight: 500; margin-bottom: 4px; }
+    &__sub   { font-size: 14px; color: rgba(255,255,255,.65); margin-bottom: 48px; }
+    &__btn {
+        display: inline-flex; align-items: center; gap: 8px;
+        padding: 14px 32px;
+        background: $warehouse-cta;
+        color: $warehouse-cta-text;
+        border-radius: $border-radius;
+        font-size: 15px; font-weight: 500;
+        text-decoration: none;
+    }
+}
+
+// ─────────────────────────────────────────────
+// NAV BAR
+// ─────────────────────────────────────────────
+.agf-wh-nav {
+    background: $warehouse-primary;
+    color: #FFFFFF;
+    height: 56px;
+    display: flex; align-items: center;
+    padding: 0 $spacing-md;
+    position: sticky; top: 0; z-index: 100;
+    gap: 8px;
+
+    &__back {
+        color: #FFF; text-decoration: none;
+        display: flex; align-items: center;
+        padding: 4px;
+    }
+    &__title { font-size: 15px; font-weight: 500; flex: 1; }
+    &__logout {
+        display: flex; align-items: center; gap: 4px;
+        font-size: 12px; color: rgba(255,255,255,.75);
+        text-decoration: none;
+        &:hover { color: #FFF; }
+    }
+}
+
+// ─────────────────────────────────────────────
+// TAB BAR
+// ─────────────────────────────────────────────
+.agf-wh-tabs {
+    display: flex;
+    background: $warehouse-primary;
+    border-top: 1px solid rgba(255,255,255,.12);
+
+    &__item {
+        flex: 1; padding: 10px 8px;
+        display: flex; align-items: center; justify-content: center; gap: 6px;
+        color: rgba(255,255,255,.55);
+        font-size: 13px; font-weight: 500;
+        text-decoration: none;
+        border-bottom: 2px solid transparent;
+
+        &--active {
+            color: #FFFFFF;
+            border-bottom-color: $warehouse-accent;
+        }
+    }
+}
+
+// ─────────────────────────────────────────────
+// BATCH INFO BANNER
+// ─────────────────────────────────────────────
+.agf-wh-batch-banner {
+    background: $warehouse-bg;
+    border-bottom: 0.5px solid #C8E8E2;
+    padding: 10px $spacing-md;
+    display: flex; justify-content: space-between; align-items: center;
+
+    &__label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: #777; }
+    &__val   { font-size: 12px; font-weight: 500; color: $warehouse-primary; margin-top: 2px;
+                display: flex; align-items: center; gap: 5px; }
+}
+
+// ─────────────────────────────────────────────
+// SEARCH
+// ─────────────────────────────────────────────
+.agf-wh-search {
+    padding: 10px $spacing-md;
+    background: #FFF;
+    border-bottom: 0.5px solid #ECECEC;
+
+    &__inner {
+        position: relative;
+        display: flex; align-items: center;
+    }
+    &__icon {
+        position: absolute; left: 10px;
+        color: #AAA; pointer-events: none;
+    }
+    &__clear {
+        position: absolute; right: 10px;
+        color: #AAA; display: flex; align-items: center;
+        text-decoration: none;
+        &:hover { color: $color-danger; }
+    }
+    input {
+        width: 100%;
+        padding: 8px 32px 8px 36px;  // room for clear button on right
+        border: 1px solid #E0E0E0;
+        border-radius: $border-radius;
+        font-size: 13px; outline: none;
+        font-family: $font-family-base;
+        &:focus { border-color: $warehouse-primary; }
+    }
+
+    // Parsed token pills (shown when >1 token)
+    &__tokens {
+        display: flex; align-items: center; gap: 6px;
+        flex-wrap: wrap; margin-top: 6px;
+    }
+    &__token {
+        display: inline-flex; align-items: center; gap: 3px;
+        font-size: 11px; font-weight: 500;
+        background: $warehouse-bg;
+        color: $warehouse-primary;
+        border: 1px solid #C8E8E2;
+        padding: 2px 8px; border-radius: 100px;
+    }
+}
+
+// ─────────────────────────────────────────────
+// STATUS FILTER PILLS
+// ─────────────────────────────────────────────
+.agf-wh-filter {
+    display: flex; gap: $spacing-sm;
+    padding: 10px $spacing-md;
+    overflow-x: auto; scrollbar-width: none;
+    background: #FFF;
+    border-bottom: 0.5px solid #ECECEC;
+    &::-webkit-scrollbar { display: none; }
+
+    &__pill {
+        flex-shrink: 0;
+        font-size: 11px; font-weight: 500;
+        padding: 4px 12px; border-radius: 100px;
+        background: #F0F0F0; color: #555;
+        text-decoration: none; white-space: nowrap;
+        &--active { background: $warehouse-primary; color: #FFF; }
+    }
+}
+
+// ─────────────────────────────────────────────
+// ORDER CARD LIST
+// Mobile: 1 col | Tablet: 2 col | Desktop: 3 col
+// ─────────────────────────────────────────────
+.agf-wh-card-list {
+    padding: $spacing-sm $spacing-md 0;
+
+    @media (min-width: $bp-tablet) {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: $spacing-sm;
+    }
+    @media (min-width: $bp-desktop) {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+}
+
+.agf-wh-card {
+    display: block;
+    background: #FFF;
+    border: 0.5px solid #E8E8E8;
+    border-radius: $border-radius;
+    padding: 14px;
+    margin-bottom: $spacing-sm;
+    text-decoration: none; color: #1A1A1A;
+
+    @media (min-width: $bp-tablet) { margin-bottom: 0; }
+
+    &__head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+    &__nomor { font-size: 11px; font-weight: 600; color: $warehouse-primary; }
+    &__nama  { font-size: 13px; font-weight: 500; margin-top: 3px; }
+    &__sub   { font-size: 11px; color: #888; margin-top: 2px; display: flex; align-items: center; gap: 4px; }
+    &__foot  {
+        display: flex; justify-content: space-between; align-items: center;
+        margin-top: 10px; padding-top: 8px;
+        border-top: 0.5px solid #F0F0F0;
+        font-size: 11px; color: #888;
+    }
+    &__foot-item { display: flex; align-items: center; gap: 4px; }
+}
+
+// ─────────────────────────────────────────────
+// STATUS PILLS
+// ─────────────────────────────────────────────
+.agf-wh-pill {
+    font-size: 10px; font-weight: 600;
+    padding: 3px 10px; border-radius: 100px; white-space: nowrap;
+    &--hold       { background: $pill-hold-bg;       color: $pill-hold-text; }
+    &--arrival    { background: $pill-arrival-bg;    color: $pill-arrival-text; }
+    &--processing { background: $pill-processing-bg; color: $pill-processing-text; }
+    &--shipped    { background: $pill-shipped-bg;    color: $pill-shipped-text; }
+    &--done       { background: $pill-done-bg;       color: $pill-done-text; }
+    &--sehat      { background: $pill-sehat-bg;      color: $pill-sehat-text; }
+    &--kurang_sehat { background: $pill-kurang-bg;   color: $pill-kurang-text; }
+    &--bermasalah { background: $pill-masalah-bg;    color: $pill-masalah-text; }
+    &--belum_dicek { background: $pill-unchecked-bg; color: $pill-unchecked-text; }
+}
+
+// ─────────────────────────────────────────────
+// EMPTY STATE
+// ─────────────────────────────────────────────
+.agf-wh-empty {
+    text-align: center; padding: 56px 24px; color: #BBBBBB;
+    &__icon { margin-bottom: 12px; }
+    &__text { font-size: 13px; }
+}
+
+// ─────────────────────────────────────────────
+// QR SCANNER
+// Mobile: stacked | Desktop: side by side
+// ─────────────────────────────────────────────
+.agf-wh-scan {
+    padding: $spacing-md;
+
+    @media (min-width: $bp-desktop) {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: $spacing-lg;
+        align-items: start;
+    }
+}
+
+.agf-wh-scan__header {
+    @media (min-width: $bp-desktop) {
+        grid-column: 1 / -1;  // span full width
+    }
+}
+
+.agf-wh-scan__heading {
+    font-size: 14px; font-weight: 500; margin-bottom: $spacing-sm;
+    display: flex; align-items: center; gap: 8px;
+}
+
+.agf-wh-scan__box {
+    background: #F5F5F5;
+    border: 2px dashed #DDD;
+    border-radius: $border-radius;
+    overflow: hidden;
+    min-height: 260px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+
+    @media (min-width: $bp-tablet)  { min-height: 360px; }
+    @media (min-width: $bp-desktop) { min-height: 420px; }
+
+    #qr-reader { width: 100% !important; border: none !important; }
+}
+
+.agf-wh-scan__hint {
+    font-size: 11px; color: #888; text-align: center;
+    margin-top: $spacing-sm;
+    display: flex; align-items: center; justify-content: center; gap: 5px;
+}
+
+.agf-wh-scan__result {
+    display: none;
+    margin-top: $spacing-md;
+    background: $warehouse-bg;
+    border: 1px solid #C8E8E2;
+    border-radius: $border-radius;
+    padding: 16px;
+
+    @media (min-width: $bp-desktop) { margin-top: 0; }
+    &--visible { display: block; }
+}
+.agf-wh-scan__result-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: #777; margin-bottom: 8px; }
+.agf-wh-scan__result-nomor { font-size: 15px; font-weight: 600; color: $warehouse-primary; }
+.agf-wh-scan__result-nama  { font-size: 12px; color: #555; margin-top: 4px; display: flex; align-items: center; gap: 5px; }
+.agf-wh-scan__result-btn   {
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-top: 14px; padding: 11px 16px;
+    background: $warehouse-cta; color: $warehouse-cta-text;
+    border-radius: $border-radius;
+    font-size: 13px; font-weight: 500;
+    text-decoration: none; width: 100%; justify-content: center;
+}
+
+// ─────────────────────────────────────────────
+// DETAIL PESANAN — sections
+// ─────────────────────────────────────────────
+.agf-wh-section {
+    background: #FFF;
+    margin-bottom: $spacing-xs;
+    padding: 14px $spacing-md;
+
+    &__label {
+        font-size: 10px; font-weight: 600;
+        text-transform: uppercase; letter-spacing: .08em;
+        color: #999; margin-bottom: 10px;
+        display: flex; align-items: center; gap: 6px;
+    }
+}
+
+// On desktop: show sections in a 2-col grid
+.agf-wh-sections-grid {
+    @media (min-width: $bp-desktop) {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: $spacing-xs;
+        .agf-wh-section { margin-bottom: 0; }
+    }
+}
+
+.agf-wh-dl {
+    display: grid; grid-template-columns: auto 1fr; gap: 6px 16px;
+    font-size: 12px;
+    dt { color: #888; display: flex; align-items: center; gap: 5px; white-space: nowrap; }
+    dd { font-weight: 500; }
+}
+
+.agf-wh-plant-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 9px 0; border-bottom: 0.5px solid #F5F5F5;
+    &:last-child { border-bottom: none; }
+    &__left  { flex: 1; }
+    &__name  { font-size: 12px; font-weight: 500; display: flex; align-items: center; gap: 5px; }
+    &__meta  { font-size: 11px; color: #888; margin-top: 2px; }
+    &__right { text-align: right; flex-shrink: 0; margin-left: 12px; }
+    &__qty   { font-size: 13px; font-weight: 600; color: $warehouse-primary; }
+}
+
+// ─────────────────────────────────────────────
+// TIMELINE
+// ─────────────────────────────────────────────
+.agf-wh-timeline {
+    padding: $spacing-md;
+
+    @media (min-width: $bp-desktop) {
+        max-width: 720px;
+    }
+
+    &__item {
+        display: flex; gap: 12px;
+        padding-bottom: 20px; position: relative;
+        &:not(:last-child)::before {
+            content: ''; position: absolute;
+            left: 7px; top: 16px; bottom: 0;
+            width: 2px; background: #ECECEC;
+        }
+    }
+    &__dot {
+        width: 16px; height: 16px; border-radius: 50%;
+        background: $warehouse-primary; flex-shrink: 0; margin-top: 2px;
+    }
+    &__content { flex: 1; min-width: 0; }
+    &__tahap   { font-size: 13px; font-weight: 500; }
+    &__meta    { font-size: 11px; color: #888; margin-top: 3px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    &__checks  {
+        display: flex; gap: $spacing-sm; margin-top: 6px; flex-wrap: wrap;
+        span {
+            font-size: 10px; font-weight: 500;
+            padding: 2px 8px; border-radius: 100px;
+            background: $pill-sehat-bg; color: $pill-sehat-text;
+            display: flex; align-items: center; gap: 3px;
+        }
+    }
+    &__fotos {
+        display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap;
+        img {
+            width: 72px; height: 72px;
+            object-fit: cover; border-radius: $border-radius;
+            border: 0.5px solid #DDD; cursor: pointer;
+        }
+        @media (min-width: $bp-tablet) {
+            img { width: 96px; height: 96px; }
+        }
+    }
+    &__note { font-size: 11px; color: #888; margin-top: 4px; font-style: italic; }
+}
+
+// ─────────────────────────────────────────────
+// UPDATE STATUS FORM
+// ─────────────────────────────────────────────
+.agf-wh-form {
+    padding: 0 $spacing-md $spacing-md;
+
+    @media (min-width: $bp-desktop) {
+        max-width: 640px;
+    }
+
+    &__section {
+        background: #FFF; border-radius: $border-radius;
+        padding: 14px; margin-bottom: $spacing-sm;
+    }
+    &__section-title {
+        font-size: 11px; font-weight: 600; color: #555;
+        margin-bottom: 12px;
+        display: flex; align-items: center; gap: 6px;
+    }
+    &__label  { font-size: 11px; font-weight: 600; color: #555; display: block; margin-bottom: 6px; }
+    &__input, &__select, &__textarea {
+        width: 100%; padding: 9px 11px;
+        border: 1px solid #E0E0E0; border-radius: $border-radius;
+        font-size: 13px; outline: none; font-family: $font-family-base;
+        &:focus { border-color: $warehouse-primary; }
+    }
+    &__textarea { min-height: 72px; resize: vertical; }
+
+    // 2×2 grid on mobile/tablet → 4 in a row on desktop
+    &__foto-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: $spacing-sm;
+        @media (min-width: $bp-desktop) {
+            grid-template-columns: repeat(4, 1fr);
+        }
+    }
+    &__foto-slot {
+        aspect-ratio: 1;
+        border: 1.5px dashed #CCC; border-radius: $border-radius;
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
+        cursor: pointer; overflow: hidden; position: relative;
+        background: #FAFAFA; gap: 4px;
+
+        &-icon  { color: #CCC; }
+        &-label { font-size: 10px; color: #BBB; }
+        img {
+            position: absolute; inset: 0;
+            width: 100%; height: 100%; object-fit: cover;
+            display: none;
+        }
+        input[type=file] {
+            position: absolute; inset: 0;
+            opacity: 0; cursor: pointer; font-size: 0;
+        }
+        &--filled { border-color: $warehouse-primary; border-style: solid; }
+    }
+
+    &__checklist { display: flex; flex-direction: column; gap: 12px; }
+    &__check-row {
+        display: flex; align-items: center; gap: 10px;
+        label { font-size: 13px; cursor: pointer; flex: 1; display: flex; align-items: center; gap: 8px; }
+        input[type=checkbox] {
+            width: 18px; height: 18px;
+            accent-color: $warehouse-primary; flex-shrink: 0;
+        }
+    }
+}
+
+// ─────────────────────────────────────────────
+// BUTTONS
+// ─────────────────────────────────────────────
+.agf-wh-btn-cta {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%; padding: 14px;
+    background: $warehouse-cta; color: $warehouse-cta-text;
+    border: none; border-radius: $border-radius;
+    font-size: 15px; font-weight: 500;
+    cursor: pointer; font-family: $font-family-base; text-decoration: none;
+}
+
+.agf-wh-btn-outline {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%; padding: 12px;
+    background: transparent; color: $warehouse-primary;
+    border: 1.5px solid $warehouse-primary; border-radius: $border-radius;
+    font-size: 14px; font-weight: 500;
+    cursor: pointer; font-family: $font-family-base; text-decoration: none;
+}
+
+.agf-wh-footer-cta {
+    position: sticky; bottom: 0;
+    background: #FFF; border-top: 0.5px solid #ECECEC;
+    padding: $spacing-sm $spacing-md;
+
+    @media (min-width: $bp-desktop) {
+        padding: $spacing-sm $spacing-md;
+        .agf-wh-btn-cta { max-width: 320px; }
+    }
+}
+
+// ─────────────────────────────────────────────
+// ALERT BANNER
+// ─────────────────────────────────────────────
+.agf-wh-alert {
+    padding: 10px $spacing-md;
+    font-size: 12px;
+    display: flex; align-items: center; gap: 8px;
+    &--warning { background: #FFF6E8; color: #855008; border-bottom: 0.5px solid #FFD590; }
+    &--error   { background: #FFEDED; color: #A83030; border-bottom: 0.5px solid #F5A0A0; }
 }
