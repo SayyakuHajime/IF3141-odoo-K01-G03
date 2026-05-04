@@ -1,0 +1,13 @@
+@import '_variables';
+
+// ── Warehouse Web App — AGF Cargo ──
+// Platform: Mobile web 402px | Staff login | Green + Amber CTA
+// CTA: $warehouse-cta (#E8820C) — text MUST be $warehouse-cta-text (#1A1A1A), NOT white
+
+.agf-warehouse {
+    font-family: $font-family-base;
+    background: $warehouse-bg-page;
+    color: #1A1A1A;
+    max-width: $mobile-width;
+    margin: 0 auto;
+}

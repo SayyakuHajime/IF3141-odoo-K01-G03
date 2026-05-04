@@ -1,0 +1,19 @@
+@import '_variables';
+
+// ── Admin Dashboard — Internal Staff ──
+// Platform: Desktop 1440px | Internal login
+// Sidebar: $admin-sidebar (#1D2226) | Accent: Cyan $admin-accent — decorative only
+// Cyan as text on white: use $admin-accent-dark (#007A8A), NOT $admin-accent (#00ACC1)
+
+.agf-admin {
+    font-family: $font-family-base;
+    background: $admin-content-bg;
+    color: #333333;
+}
+
+.agf-admin-sidebar {
+    background: $admin-sidebar;
+    width: $admin-sidebar-width;
+    min-height: 100vh;
+    color: #FFFFFF;
+}

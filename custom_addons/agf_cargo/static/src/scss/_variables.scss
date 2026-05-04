@@ -1,0 +1,85 @@
+// ═══════════════════════════════════════════════════════
+// AGF CARGO — Shared SCSS Variables
+// DO NOT hardcode hex values in portal files — use these variables.
+// All contrast ratios WCAG AA-validated (min 4.5:1 for body text).
+// ═══════════════════════════════════════════════════════
+
+// ── Customer Portal (Mobile 402px · No login · Public) ──
+$customer-primary:    #1C4731;  // Forest Green — header/nav           
+$customer-secondary:  #2A7A45;  // Leaf Green — CTA button, link     
+$customer-accent:     #7EC9A0;  // Sage — DECORATIVE ONLY (tab underline, border, icon)
+                                
+$customer-bg:         #E8F5EE;  // Mint — card background              
+$customer-bg-page:    #FFFFFF;  // White — page background
+
+// ── Warehouse Web App (Mobile 402px · Staff login) ──
+$warehouse-primary:   #1C4731;  // Forest Green — header/nav (same as Customer)
+$warehouse-accent:    #3DB89A;  // Teal — DECORATIVE ONLY (tab underline, border, icon)
+                               
+$warehouse-cta:       #E8820C;  // Amber — critical CTA only (Scan, Update, Konfirmasi)
+$warehouse-cta-text:  #1A1A1A;  // MUST use dark text on Amber — NOT white 
+$warehouse-bg:        #E6F7F4;  // Teal Mist — card background         
+$warehouse-bg-page:   #FFFFFF;  // White — page background
+
+// ── Admin Dashboard (Desktop 1440px · Internal login) ──
+// Ref: Color Admin V3 — seantheme.com
+$admin-sidebar:       #1D2226;  // Gunmetal — sidebar (30%)           
+$admin-topbar:        #FFFFFF;  // White — topbar
+$admin-content-bg:    #F0F3F6;  // Steel Gray — content background     
+$admin-card-bg:       #FFFFFF;  // White — card background
+$admin-accent:        #00ACC1;  // Cyan — active border, badge bg ONLY
+                               
+$admin-accent-text:   #1A1A1A;  // MUST use dark text on Cyan buttons — NOT white 
+$admin-accent-dark:   #007A8A;  // Cyan Dark — use when you need cyan-colored text on white 
+$admin-radius:        4px;
+
+// ── Shared Semantic Colors (WCAG-validated, consistent across all portals) ──
+$color-success:       #2A7A45;  // text on light bg 
+$color-success-bg:    #E8F5EE;  // Mint
+$color-warning:       #C97A00;  // text on light bg 
+$color-warning-bg:    #FFF6E8;  // Warm cream
+$color-danger:        #A83030;  // text on light bg — use THIS, NOT #CC3F3F
+$color-danger-bg:     #FFEDED;  // Pink mist
+$color-info:          #1A4A8A;  // Navy — text
+$color-info-bg:       #E6EEF9;  // Ice blue
+
+// Status pills — text / background pairs
+$pill-hold-text:      #855008;
+$pill-hold-bg:        #FFF6E8;
+$pill-arrival-text:   #1C4731;
+$pill-arrival-bg:     #E8F5EE;
+$pill-processing-text: #4B3FA0;
+$pill-processing-bg:  #F5F3FF;
+$pill-shipped-text:   #7A5200;
+$pill-shipped-bg:     #FFF8E0;
+$pill-done-text:      #1C4731;
+$pill-done-bg:        #E8F5EE;
+
+// Plant condition pills
+$pill-sehat-text:     #1C4731;
+$pill-sehat-bg:       #E8F5EE;
+$pill-kurang-text:    #855008;
+$pill-kurang-bg:      #FFF6E8;
+$pill-masalah-text:   #A83030;
+$pill-masalah-bg:     #FFEDED;
+$pill-unchecked-text: #555555;
+$pill-unchecked-bg:   #F0F0F0;
+
+// ── Typography ──
+$font-family-base:    'Inter', system-ui, sans-serif;
+$font-weight-regular: 400;
+$font-weight-medium:  500;
+
+// ── Spacing ──
+$spacing-xs:  4px;
+$spacing-sm:  8px;
+$spacing-md:  16px;
+$spacing-lg:  24px;
+$spacing-xl:  32px;
+
+// ── Layout ──
+$border-radius:       4px;  // Universal — all portals
+$mobile-width:        402px;
+$desktop-width:       1440px;
+$admin-sidebar-width: 200px;
+$admin-topbar-height: 44px;

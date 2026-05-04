@@ -1,0 +1,13 @@
+@import '_variables';
+
+// ── Customer Portal — AGF Cargo ──
+// Platform: Mobile web 402px | No login | Public access
+// Color theme: Forest Green / Mint / Leaf Green CTA
+
+.agf-customer {
+    font-family: $font-family-base;
+    background: $customer-bg-page;
+    color: #1A1A1A;
+    max-width: $mobile-width;
+    margin: 0 auto;
+}
