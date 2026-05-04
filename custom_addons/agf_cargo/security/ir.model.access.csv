@@ -1,0 +1,16 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_agf_batch_admin,agf.batch admin,model_agf_batch,agf_cargo.group_agf_admin,1,1,1,1
+access_agf_batch_manajer,agf.batch manajer,model_agf_batch,agf_cargo.group_agf_manajer,1,1,0,0
+access_agf_batch_gudang,agf.batch gudang,model_agf_batch,agf_cargo.group_agf_gudang,1,0,0,0
+access_agf_kargo_admin,agf.kargo admin,model_agf_kargo,agf_cargo.group_agf_admin,1,1,1,1
+access_agf_kargo_manajer,agf.kargo manajer,model_agf_kargo,agf_cargo.group_agf_manajer,1,1,1,0
+access_agf_kargo_gudang,agf.kargo gudang,model_agf_kargo,agf_cargo.group_agf_gudang,1,1,0,0
+access_agf_tanaman_item_admin,agf.tanaman.item admin,model_agf_tanaman_item,agf_cargo.group_agf_admin,1,1,1,1
+access_agf_tanaman_item_manajer,agf.tanaman.item manajer,model_agf_tanaman_item,agf_cargo.group_agf_manajer,1,1,1,0
+access_agf_tanaman_item_gudang,agf.tanaman.item gudang,model_agf_tanaman_item,agf_cargo.group_agf_gudang,1,1,0,0
+access_agf_tahapan_admin,agf.tahapan admin,model_agf_tahapan,agf_cargo.group_agf_admin,1,1,1,1
+access_agf_tahapan_manajer,agf.tahapan manajer,model_agf_tahapan,agf_cargo.group_agf_manajer,1,0,0,0
+access_agf_tahapan_gudang,agf.tahapan gudang,model_agf_tahapan,agf_cargo.group_agf_gudang,1,1,1,0
+access_agf_qr_tag_admin,agf.qr.tag admin,model_agf_qr_tag,agf_cargo.group_agf_admin,1,1,1,1
+access_agf_qr_tag_manajer,agf.qr.tag manajer,model_agf_qr_tag,agf_cargo.group_agf_manajer,1,0,0,0
+access_agf_qr_tag_gudang,agf.qr.tag gudang,model_agf_qr_tag,agf_cargo.group_agf_gudang,1,0,0,0
