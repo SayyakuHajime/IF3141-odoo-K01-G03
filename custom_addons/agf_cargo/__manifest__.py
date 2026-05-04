@@ -1,0 +1,24 @@
+{
+    'name': 'AGF Cargo',
+    'version': '17.0.1.0.0',
+    'summary': 'Sistem Manajemen Kargo Tanaman — PT Berkah Melano Indonesia',
+    'author': 'K01-G03 IF3141',
+    'category': 'Logistics',
+    'depends': ['base', 'web', 'portal', 'website'],
+    'data': [
+        'security/groups.xml',
+        'security/ir.model.access.csv',
+        'data/sequences.xml',
+    ],
+    'assets': {
+        'web.assets_frontend': [
+            'agf_cargo/static/src/scss/_variables.scss',
+            'agf_cargo/static/src/scss/portal_customer.scss',
+            'agf_cargo/static/src/scss/portal_warehouse.scss',
+            'agf_cargo/static/src/scss/portal_admin.scss',
+        ],
+    },
+    'installable': True,
+    'application': True,
+    'license': 'LGPL-3',
+}
