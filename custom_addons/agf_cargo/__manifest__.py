@@ -9,6 +9,11 @@
         'security/groups.xml',
         'security/ir.model.access.csv',
         'data/sequences.xml',
+        # Warehouse views (Hazim)
+        'views/warehouse/wh_landing.xml',
+        'views/warehouse/wh_daftar_pesanan.xml',
+        'views/warehouse/wh_detail_pesanan.xml',
+        'views/warehouse/wh_update_status.xml',
     ],
     'assets': {
         'web.assets_frontend': [

@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="warehouse_update_status" name="Warehouse — Update Status">
+        <t t-call="website.layout">
+            <t t-set="no_header" t-value="1"/>
+            <t t-set="no_footer" t-value="1"/>
+            <t t-set="editable" t-value="0"/>
+            <div class="agf-wh">
+
+                <!-- Nav -->
+                <nav class="agf-wh-nav">
+                    <a t-attf-href="/agf/warehouse/pesanan/#{kargo.id}" class="agf-wh-nav__back">
+                        <i data-lucide="chevron-left" style="width:22px;height:22px"/>
+                    </a>
+                    <span class="agf-wh-nav__title">Update Status</span>
+                </nav>
+
+                <!-- Order summary -->
+                <div class="agf-wh-section" style="margin-top:4px">
+                    <div style="display:flex;justify-content:space-between;align-items:center">
+                        <div>
+                            <div style="font-size:13px;font-weight:500">
+                                <t t-esc="kargo.nomor_penitip"/>
+                            </div>
+                            <div style="font-size:12px;color:#777;margin-top:3px;display:flex;align-items:center;gap:4px">
+                                <i data-lucide="user" style="width:12px;height:12px"/>
+                                <t t-esc="kargo.nama_penitip"/>
+                                <i data-lucide="arrow-right" style="width:12px;height:12px"/>
+                                <t t-esc="kargo.nama_penerima"/>
+                            </div>
+                        </div>
+                        <span t-attf-class="agf-wh-pill agf-wh-pill--#{kargo.status}">
+                            <t t-esc="kargo.status.capitalize()"/>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Form -->
+                <form t-attf-action="/agf/warehouse/update/#{kargo.id}/submit"
+                      method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                    <div class="agf-wh-form" style="margin-top:4px">
+
+                        <!-- Tahapan + Status (side by side on tablet+) -->
+                        <div class="agf-wh-form__section">
+                            <div style="display:grid;grid-template-columns:1fr;gap:12px">
+                                <div>
+                                    <label class="agf-wh-form__label" for="tahap">
+                                        <i data-lucide="list-ordered" style="width:13px;height:13px;vertical-align:middle"/>
+                                        Tahapan *
+                                    </label>
+                                    <select name="tahap" id="tahap" class="agf-wh-form__select" required="required">
+                                        <option value="">— Pilih tahapan —</option>
+                                        <t t-foreach="tahapan_steps" t-as="step">
+                                            <option t-att-value="step[0]"><t t-esc="step[1]"/></option>
+                                        </t>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="agf-wh-form__label" for="status_baru">
+                                        <i data-lucide="refresh-cw" style="width:13px;height:13px;vertical-align:middle"/>
+                                        Ubah Status Pipeline
+                                    </label>
+                                    <select name="status_baru" id="status_baru" class="agf-wh-form__select">
+                                        <option value="">— Tidak ubah status —</option>
+                                        <t t-foreach="status_choices" t-as="sc">
+                                            <option t-att-value="sc[0]"
+                                                    t-att-selected="'selected' if sc[0] == kargo.status else None">
+                                                <t t-esc="sc[1]"/>
+                                            </option>
+                                        </t>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 4 Foto slots -->
+                        <div class="agf-wh-form__section">
+                            <div class="agf-wh-form__section-title">
+                                <i data-lucide="camera" style="width:16px;height:16px"/>
+                                Foto Kondisi (maks. 4)
+                            </div>
+                            <div class="agf-wh-form__foto-grid">
+                                <t t-foreach="[1,2,3,4]" t-as="n">
+                                    <div t-attf-class="agf-wh-form__foto-slot" t-attf-id="slot-#{n}">
+                                        <span class="agf-wh-form__foto-slot-icon">
+                                            <i data-lucide="camera" style="width:22px;height:22px;color:#CCC"/>
+                                        </span>
+                                        <span class="agf-wh-form__foto-slot-label">Foto <t t-esc="n"/></span>
+                                        <img t-attf-id="preview-#{n}" alt="preview"/>
+                                        <input type="file" t-attf-name="foto_#{n}"
+                                               accept="image/*"
+                                               t-attf-onchange="previewFoto(this, #{n})"/>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+
+                        <!-- Checklist kondisi -->
+                        <div class="agf-wh-form__section">
+                            <div class="agf-wh-form__section-title">
+                                <i data-lucide="check-square" style="width:16px;height:16px"/>
+                                Checklist Kondisi
+                            </div>
+                            <div class="agf-wh-form__checklist">
+                                <div class="agf-wh-form__check-row">
+                                    <input type="checkbox" name="cek_daun" id="cek_daun" value="1"/>
+                                    <label for="cek_daun">
+                                        <i data-lucide="leaf" style="width:16px;height:16px;color:#2A7A45"/>
+                                        Daun OK — tidak layu atau sobek
+                                    </label>
+                                </div>
+                                <div class="agf-wh-form__check-row">
+                                    <input type="checkbox" name="cek_akar" id="cek_akar" value="1"/>
+                                    <label for="cek_akar">
+                                        <i data-lucide="sprout" style="width:16px;height:16px;color:#2A7A45"/>
+                                        Akar OK — tidak busuk atau rusak
+                                    </label>
+                                </div>
+                                <div class="agf-wh-form__check-row">
+                                    <input type="checkbox" name="cek_hama" id="cek_hama" value="1"/>
+                                    <label for="cek_hama">
+                                        <i data-lucide="shield-check" style="width:16px;height:16px;color:#2A7A45"/>
+                                        Bebas hama &amp; penyakit
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Lokasi -->
+                        <div class="agf-wh-form__section">
+                            <label class="agf-wh-form__label" for="lokasi">
+                                <i data-lucide="map-pin" style="width:13px;height:13px;vertical-align:middle"/>
+                                Lokasi
+                            </label>
+                            <input type="text" name="lokasi" id="lokasi"
+                                   class="agf-wh-form__input"
+                                   placeholder="Contoh: Gudang Parongpong"/>
+                        </div>
+
+                        <!-- Catatan -->
+                        <div class="agf-wh-form__section">
+                            <label class="agf-wh-form__label" for="catatan">
+                                <i data-lucide="file-text" style="width:13px;height:13px;vertical-align:middle"/>
+                                Catatan
+                            </label>
+                            <textarea name="catatan" id="catatan"
+                                      class="agf-wh-form__textarea"
+                                      placeholder="Keterangan tambahan…"/>
+                        </div>
+
+                        <button type="submit" class="agf-wh-btn-cta">
+                            <i data-lucide="save" style="width:18px;height:18px"/>
+                            Simpan Perubahan
+                        </button>
+
+                    </div>
+                </form>
+
+                <script>
+                    function previewFoto(input, n) {
+                        if (!input.files || !input.files[0]) return;
+                        var reader = new FileReader();
+                        reader.onload = function (e) {
+                            var slot = document.getElementById('slot-' + n);
+                            var img  = document.getElementById('preview-' + n);
+                            img.src  = e.target.result;
+                            img.style.display = 'block';
+                            slot.classList.add('agf-wh-form__foto-slot--filled');
+                        };
+                        reader.readAsDataURL(input.files[0]);
+                    }
+                </script>
+
+            </div>
+
+            <script src="https://cdn.jsdelivr.net/npm/lucide@0.462.0/dist/umd/lucide.min.js"/>
+            <script>lucide.createIcons();</script>
+        </t>
+    </template>
+</odoo>
