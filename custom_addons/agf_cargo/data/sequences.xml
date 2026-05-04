@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Batch sequence -->
+        <record id="seq_agf_batch" model="ir.sequence">
+            <field name="name">AGF Cargo — Batch</field>
+            <field name="code">agf.batch</field>
+            <field name="prefix">BATCH-%(year)s-</field>
+            <field name="padding">3</field>
+            <field name="number_increment">1</field>
+            <field name="number_next">1</field>
+        </record>
+
+        <!-- Nomor penitip (pengirim) — prefix AGF- -->
+        <record id="seq_agf_kargo_penitip" model="ir.sequence">
+            <field name="name">AGF Cargo — Nomor Penitip</field>
+            <field name="code">agf.kargo.penitip</field>
+            <field name="prefix">AGF-%(year)s-</field>
+            <field name="padding">4</field>
+            <field name="number_increment">1</field>
+            <field name="number_next">1</field>
+        </record>
+
+        <!-- Nomor penerima (pembeli) — prefix TRK- -->
+        <record id="seq_agf_kargo_penerima" model="ir.sequence">
+            <field name="name">AGF Cargo — Nomor Penerima</field>
+            <field name="code">agf.kargo.penerima</field>
+            <field name="prefix">TRK-%(year)s-</field>
+            <field name="padding">4</field>
+            <field name="number_increment">1</field>
+            <field name="number_next">1</field>
+        </record>
+
+        <!-- QR Tag sequence -->
+        <record id="seq_agf_qr_tag" model="ir.sequence">
+            <field name="name">AGF Cargo — QR Tag</field>
+            <field name="code">agf.qr.tag</field>
+            <field name="prefix"></field>
+            <field name="padding">4</field>
+            <field name="number_increment">1</field>
+            <field name="number_next">1</field>
+        </record>
+
+    </data>
+</odoo>
