@@ -122,7 +122,6 @@ class AgfKargo(models.Model):
     tahapan_ids = fields.One2many(
         'agf.tahapan', 'kargo_id',
         string='Riwayat Tahapan',
-        order='timestamp desc',
     )
     qr_tag_id = fields.Many2one(
         'agf.qr.tag',
