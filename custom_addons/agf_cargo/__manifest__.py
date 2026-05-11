@@ -12,6 +12,7 @@
         # Customer views 
         'views/customer/customer_landing.xml',
         'views/customer/customer_tracking.xml',
+        'views/customer/customer_form_kargo.xml',
         # Warehouse views (Hazim)
         'views/warehouse/wh_landing.xml',
         'views/warehouse/wh_daftar_pesanan.xml',
