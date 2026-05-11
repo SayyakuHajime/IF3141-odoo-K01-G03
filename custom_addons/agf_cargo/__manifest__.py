@@ -14,6 +14,13 @@
         'views/warehouse/wh_daftar_pesanan.xml',
         'views/warehouse/wh_detail_pesanan.xml',
         'views/warehouse/wh_update_status.xml',
+        # Admin views (Sakti/D)
+        'views/admin/admin_layout.xml',
+        'views/admin/admin_dashboard.xml',
+        'views/admin/admin_riwayat_batch.xml',
+        'views/admin/admin_detail_batch.xml',
+        'views/admin/admin_detail_pesanan_inactive.xml',
+        'views/admin/admin_pengguna.xml',
     ],
     'assets': {
         'web.assets_frontend': [

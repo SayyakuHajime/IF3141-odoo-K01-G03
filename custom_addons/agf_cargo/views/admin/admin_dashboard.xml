@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="admin_dashboard" name="AGF Admin — Dashboard Utama">
+        <t t-call="agf_cargo.admin_layout">
+            <t t-set="current_page" t-value="'dashboard'"/>
+            <t t-set="page_title" t-value="'Dashboard Utama'"/>
+
+            <!-- ══ BARIS 1: STAT CARDS ══ -->
+            <div class="agf-stat-grid">
+
+                <div class="agf-stat-card">
+                    <div class="agf-stat-card__icon" style="background:#E6EEF9">
+                        <i data-lucide="package" style="width:20px;height:20px;color:#1A4A8A"/>
+                    </div>
+                    <div class="agf-stat-card__body">
+                        <div class="agf-stat-card__value"><t t-esc="total_pesanan"/></div>
+                        <div class="agf-stat-card__label">Total Pesanan Aktif</div>
+                    </div>
+                </div>
+
+                <div class="agf-stat-card">
+                    <div class="agf-stat-card__icon" style="background:#E8F5EE">
+                        <i data-lucide="qr-code" style="width:20px;height:20px;color:#2A7A45"/>
+                    </div>
+                    <div class="agf-stat-card__body">
+                        <div class="agf-stat-card__value"><t t-esc="qr_aktif"/></div>
+                        <div class="agf-stat-card__label">QR Tag Aktif</div>
+                    </div>
+                </div>
+
+                <div class="agf-stat-card">
+                    <div class="agf-stat-card__icon" style="background:#F5F3FF">
+                        <i data-lucide="circle-check-big" style="width:20px;height:20px;color:#4B3FA0"/>
+                    </div>
+                    <div class="agf-stat-card__body">
+                        <div class="agf-stat-card__value"><t t-esc="pesanan_selesai"/></div>
+                        <div class="agf-stat-card__label">Pesanan Selesai</div>
+                    </div>
+                </div>
+
+                <div class="agf-stat-card agf-stat-card--accent">
+                    <div class="agf-stat-card__icon" style="background:rgba(0,172,193,0.15)">
+                        <i data-lucide="calendar" style="width:20px;height:20px;color:#007A8A"/>
+                    </div>
+                    <div class="agf-stat-card__body">
+                        <t t-if="batch_aktif">
+                            <div class="agf-stat-card__value agf-stat-card__value--sm">
+                                <t t-esc="batch_aktif.tanggal_keberangkatan"/>
+                            </div>
+                        </t>
+                        <t t-else="">
+                            <div class="agf-stat-card__value agf-stat-card__value--sm" style="color:#9CA3AF">—</div>
+                        </t>
+                        <div class="agf-stat-card__label">Tgl Berangkat Batch</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ══ BARIS 2: CHARTS ══ -->
+            <div class="agf-chart-row">
+
+                <!-- Bar Chart 7 hari -->
+                <div class="agf-card agf-chart-card agf-chart-card--wide">
+                    <div class="agf-card__header">
+                        <div>
+                            <div class="agf-card__title">Volume Pesanan — 7 Hari Terakhir</div>
+                            <div class="agf-card__subtitle">AGF Cargo</div>
+                        </div>
+                    </div>
+                    <div class="agf-chart-wrap" style="height:220px">
+                        <canvas id="barChart"
+                            t-att-data-labels="chart_labels_json"
+                            t-att-data-counts="chart_counts_json"/>
+                    </div>
+                </div>
+
+                <!-- Donut Chart Status -->
+                <div class="agf-card agf-chart-card agf-chart-card--narrow">
+                    <div class="agf-card__header">
+                        <div>
+                            <div class="agf-card__title">Status Pesanan</div>
+                            <div class="agf-card__subtitle">
+                                <t t-esc="total_pesanan"/> pesanan aktif
+                            </div>
+                        </div>
+                    </div>
+                    <div class="agf-donut-wrap">
+                        <canvas id="donutChart" style="max-height:180px"
+                            t-att-data-hold="pesanan_by_status.get('hold', 0)"
+                            t-att-data-arrival="pesanan_by_status.get('arrival', 0)"
+                            t-att-data-processing="pesanan_by_status.get('processing', 0)"
+                            t-att-data-shipped="pesanan_by_status.get('shipped', 0)"
+                            t-att-data-done="pesanan_by_status.get('done', 0)"/>
+                    </div>
+                    <div class="agf-donut-legend">
+                        <div class="agf-donut-legend__item">
+                            <span class="agf-donut-legend__dot" style="background:#855008"/>
+                            Hold <b><t t-esc="pesanan_by_status.get('hold', 0)"/></b>
+                        </div>
+                        <div class="agf-donut-legend__item">
+                            <span class="agf-donut-legend__dot" style="background:#1C4731"/>
+                            Arrival <b><t t-esc="pesanan_by_status.get('arrival', 0)"/></b>
+                        </div>
+                        <div class="agf-donut-legend__item">
+                            <span class="agf-donut-legend__dot" style="background:#4B3FA0"/>
+                            Processing <b><t t-esc="pesanan_by_status.get('processing', 0)"/></b>
+                        </div>
+                        <div class="agf-donut-legend__item">
+                            <span class="agf-donut-legend__dot" style="background:#7A5200"/>
+                            Shipped <b><t t-esc="pesanan_by_status.get('shipped', 0)"/></b>
+                        </div>
+                        <div class="agf-donut-legend__item">
+                            <span class="agf-donut-legend__dot" style="background:#2A7A45"/>
+                            Done <b><t t-esc="pesanan_by_status.get('done', 0)"/></b>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ══ BARIS 3: TIGA KOLOM ══ -->
+            <div class="agf-dashboard-bottom">
+
+                <!-- Kolom 1: Pesanan Terkini -->
+                <div class="agf-card agf-dashboard-bottom__col">
+                    <div class="agf-card__header">
+                        <div class="agf-card__title">Pesanan Terkini</div>
+                    </div>
+                    <t t-if="recent_kargo">
+                        <table class="agf-table">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Pengirim</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="recent_kargo" t-as="k">
+                                    <tr>
+                                        <td>
+                                            <a t-attf-href="/agf/admin/pesanan/#{k.id}"
+                                               class="agf-link">
+                                                <t t-esc="k.nomor_penitip"/>
+                                            </a>
+                                        </td>
+                                        <td><t t-esc="k.nama_penitip"/></td>
+                                        <td>
+                                            <span t-attf-class="agf-badge-status status-#{k.status}">
+                                                <t t-esc="k.status.capitalize()"/>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </t>
+                    <t t-else="">
+                        <div class="agf-empty-state">
+                            <i data-lucide="inbox" style="width:32px;height:32px;color:#D1D5DB"/>
+                            <p>Belum ada pesanan</p>
+                        </div>
+                    </t>
+                </div>
+
+                <!-- Kolom 2: Batch Progress -->
+                <div class="agf-card agf-dashboard-bottom__col">
+                    <div class="agf-card__header">
+                        <div class="agf-card__title">Batch Progress</div>
+                    </div>
+                    <t t-if="recent_batches">
+                        <t t-foreach="recent_batches" t-as="b">
+                            <t t-set="pct" t-value="int(b.pesanan_selesai * 100 / b.total_pesanan) if b.total_pesanan else 0"/>
+                            <div class="agf-batch-progress-item">
+                                <div class="agf-batch-progress-item__head">
+                                    <span class="agf-batch-progress-item__name">
+                                        <t t-esc="b.name"/>
+                                    </span>
+                                    <span class="agf-batch-progress-item__pct">
+                                        <t t-esc="pct"/>%
+                                    </span>
+                                </div>
+                                <div class="agf-progress">
+                                    <div t-attf-class="agf-progress__bar #{' agf-progress__bar--done' if pct == 100 else ''}"
+                                         t-attf-style="width:#{pct}%"/>
+                                </div>
+                                <div class="agf-batch-progress-item__sub">
+                                    <t t-esc="b.pesanan_selesai"/>/<t t-esc="b.total_pesanan"/> selesai
+                                </div>
+                            </div>
+                        </t>
+                    </t>
+                    <t t-else="">
+                        <div class="agf-empty-state">
+                            <i data-lucide="inbox" style="width:32px;height:32px;color:#D1D5DB"/>
+                            <p>Belum ada batch</p>
+                        </div>
+                    </t>
+                </div>
+
+                <!-- Kolom 3: Notifikasi Sistem -->
+                <div class="agf-card agf-dashboard-bottom__col">
+                    <div class="agf-card__header">
+                        <div class="agf-card__title">Notifikasi Sistem</div>
+                    </div>
+
+                    <t t-if="not alerts_hold_lama and not alerts_qr_rusak">
+                        <div class="agf-alert agf-alert--success">
+                            <i data-lucide="check-circle" style="width:14px;height:14px"/>
+                            Tidak ada masalah yang perlu ditindaklanjuti.
+                        </div>
+                    </t>
+
+                    <t t-foreach="alerts_hold_lama" t-as="k">
+                        <div class="agf-alert agf-alert--warning">
+                            <i data-lucide="clock" style="width:14px;height:14px"/>
+                            <span>
+                                <b><t t-esc="k.nomor_penitip"/></b> —
+                                <t t-esc="k.nama_penitip"/> hold &gt; 3 hari
+                            </span>
+                        </div>
+                    </t>
+
+                    <t t-foreach="alerts_qr_rusak" t-as="q">
+                        <div class="agf-alert agf-alert--danger">
+                            <i data-lucide="alert-triangle" style="width:14px;height:14px"/>
+                            <span>QR <b><t t-esc="q.tag_id"/></b> dilaporkan rusak</span>
+                        </div>
+                    </t>
+                </div>
+
+            </div>
+
+        <!-- Chart.js -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"/>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Bar Chart
+                var barEl = document.getElementById('barChart');
+                if (barEl) {
+                    var labels = JSON.parse(barEl.dataset.labels || '[]');
+                    var counts = JSON.parse(barEl.dataset.counts || '[]');
+                    new Chart(barEl, {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Pesanan Masuk',
+                                data: counts,
+                                backgroundColor: '#00ACC1',
+                                borderRadius: 4,
+                                borderSkipped: false,
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: { legend: { display: false } },
+                            scales: {
+                                y: { beginAtZero: true, ticks: { stepSize: 1 }, grid: { color: '#F0F3F6' } },
+                                x: { grid: { display: false } }
+                            }
+                        }
+                    });
+                }
+
+                // Donut Chart
+                var donutEl = document.getElementById('donutChart');
+                if (donutEl) {
+                    var d = donutEl.dataset;
+                    var values = [
+                        parseInt(d.hold || 0),
+                        parseInt(d.arrival || 0),
+                        parseInt(d.processing || 0),
+                        parseInt(d.shipped || 0),
+                        parseInt(d.done || 0),
+                    ];
+                    new Chart(donutEl, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Hold', 'Arrival', 'Processing', 'Shipped', 'Done'],
+                            datasets: [{
+                                data: values,
+                                backgroundColor: ['#855008', '#1C4731', '#4B3FA0', '#7A5200', '#2A7A45'],
+                                borderWidth: 2,
+                                borderColor: '#FFFFFF',
+                            }]
+                        },
+                        options: {
+                            cutout: '65%',
+                            plugins: { legend: { display: false }, tooltip: { callbacks: {
+                                label: function(ctx) { return ctx.label + ': ' + ctx.parsed; }
+                            }}},
+                        }
+                    });
+                }
+            });
+        </script>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="admin_detail_pesanan_inactive" name="AGF Admin — Detail Pesanan (Inactive)">
+        <t t-call="agf_cargo.admin_layout">
+            <t t-set="current_page" t-value="'batch'"/>
+            <t t-set="page_title" t-value="'Detail Pesanan'"/>
+
+            <!-- Tahapan labels dict -->
+            <t t-set="tahapan_labels" t-value="{
+                '01_registrasi':     'Pendaftaran Kargo',
+                '02_penjemputan':    'Penjemputan',
+                '03_gudang_asal':    'Penerimaan di Gudang Asal',
+                '04_cek_dokumen':    'Pemeriksaan Dokumen',
+                '05_terminal_asal':  'Terminal Kargo Asal',
+                '06_transit':        'Dalam Perjalanan',
+                '07_terminal_tujuan':'Terminal Kargo Tujuan',
+                '08_bea_cukai':      'Pemeriksaan Bea Cukai',
+                '09_gudang_tujuan':  'Gudang Tujuan',
+                '10_pengiriman':     'Dalam Pengiriman',
+                '11_tiba':           'Tiba di Alamat',
+                '12_selesai':        'Selesai',
+            }"/>
+
+            <!-- Breadcrumb -->
+            <nav class="agf-breadcrumb">
+                <a href="/agf/admin/dashboard">Home</a>
+                <span class="agf-breadcrumb__sep">/</span>
+                <a href="/agf/admin/batch">Riwayat Batch</a>
+                <span class="agf-breadcrumb__sep">/</span>
+                <t t-if="kargo.batch_id">
+                    <a t-attf-href="/agf/admin/batch/#{kargo.batch_id.id}">
+                        Batch <t t-esc="kargo.batch_id.name"/>
+                    </a>
+                    <span class="agf-breadcrumb__sep">/</span>
+                </t>
+                <span class="agf-breadcrumb__active">
+                    Pesanan <t t-esc="kargo.nomor_penitip"/>
+                </span>
+            </nav>
+
+            <!-- Header -->
+            <div class="agf-page-header">
+                <div>
+                    <h1 class="agf-page-header__title">Detail Pesanan</h1>
+                    <p class="agf-page-header__sub">
+                        <t t-esc="kargo.nomor_penitip"/> — <t t-esc="kargo.nomor_penerima"/>
+                    </p>
+                </div>
+                <t t-if="kargo.batch_id">
+                    <a t-attf-href="/agf/admin/batch/#{kargo.batch_id.id}" class="agf-btn-secondary">
+                        <i data-lucide="arrow-left" style="width:15px;height:15px"/>
+                        Kembali ke Batch
+                    </a>
+                </t>
+                <t t-else="">
+                    <a href="/agf/admin/batch" class="agf-btn-secondary">
+                        <i data-lucide="arrow-left" style="width:15px;height:15px"/>
+                        Kembali
+                    </a>
+                </t>
+            </div>
+
+            <!-- Read-only notice -->
+            <div class="agf-alert agf-alert--info" style="margin-bottom:16px">
+                <i data-lucide="info" style="width:15px;height:15px"/>
+                Pesanan ini berada dalam batch yang sudah selesai — tampilan read-only.
+            </div>
+
+            <!-- Info Pesanan + Batch -->
+            <div class="agf-detail-grid">
+
+                <!-- Informasi Pengirim -->
+                <div class="agf-card">
+                    <div class="agf-card__header">
+                        <div class="agf-card__title">
+                            <i data-lucide="send" style="width:15px;height:15px"/>
+                            Informasi Pengirim
+                        </div>
+                    </div>
+                    <div class="agf-info-rows">
+                        <div class="agf-info-row">
+                            <span class="agf-info-row__label">Nomor Penitip</span>
+                            <span class="agf-info-row__value agf-info-row__value--mono">
+                                <t t-esc="kargo.nomor_penitip"/>
+                            </span>
+                        </div>
+                        <div class="agf-info-row">
+                            <span class="agf-info-row__label">Nama</span>
+                            <span class="agf-info-row__value"><t t-esc="kargo.nama_penitip"/></span>
+                        </div>
+                        <div class="agf-info-row">
+                            <span class="agf-info-row__label">No. HP</span>
+                            <span class="agf-info-row__value"><t t-esc="kargo.hp_penitip"/></span>
+                        </div>
+                        <div class="agf-info-row">
+                            <span class="agf-info-row__label">Email</span>
+                            <span class="agf-info-row__value"><t t-esc="kargo.email_penitip"/></span>
+                        </div>
+                        <div class="agf-info-row">
+                            <span class="agf-info-row__label">Alamat</span>
+                            <span class="agf-info-row__value"><t t-esc="kargo.alamat_penitip"/></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Informasi Penerima -->
+                <div class="agf-card">
+                    <div class="agf-card__header">
+                        <div class="agf-card__title">
+                            <i data-lucide="map-pin" style="width:15px;height:15px"/>
+                            Informasi Penerima
+                        </div>
+                    </div>
+                    <div class="agf-info-rows">
+                        <div class="agf-info-row">
+                            <span class="agf-info-row__label">Nomor Penerima</span>
+                            <span class="agf-info-row__value agf-info-row__value--mono">
+                                <t t-esc="kargo.nomor_penerima"/>
+                            </span>
+                        </div>
+                        <div class="agf-info-row">
+                            <span class="agf-info-row__label">Nama</span>
+                            <span class="agf-info-row__value"><t t-esc="kargo.nama_penerima"/></span>
+                        </div>
+                        <div class="agf-info-row">
+                            <span class="agf-info-row__label">No. HP</span>
+                            <span class="agf-info-row__value"><t t-esc="kargo.hp_penerima"/></span>
+                        </div>
+                        <div class="agf-info-row">
+                            <span class="agf-info-row__label">Alamat</span>
+                            <span class="agf-info-row__value"><t t-esc="kargo.alamat_penerima"/></span>
+                        </div>
+                        <t t-if="kargo.kota_tujuan">
+                            <div class="agf-info-row">
+                                <span class="agf-info-row__label">Kota / Negara</span>
+                                <span class="agf-info-row__value">
+                                    <t t-esc="kargo.kota_tujuan"/>
+                                    <t t-if="kargo.negara_tujuan">, <t t-esc="kargo.negara_tujuan"/></t>
+                                </span>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+
+                <!-- Informasi Batch & Pengiriman -->
+                <div class="agf-card">
+                    <div class="agf-card__header">
+                        <div class="agf-card__title">
+                            <i data-lucide="info" style="width:15px;height:15px"/>
+                            Info Pengiriman
+                        </div>
+                    </div>
+                    <div class="agf-info-rows">
+                        <div class="agf-info-row">
+                            <span class="agf-info-row__label">Status</span>
+                            <span class="agf-info-row__value">
+                                <span t-attf-class="agf-badge-status status-#{kargo.status}">
+                                    <t t-esc="kargo.status.capitalize()"/>
+                                </span>
+                            </span>
+                        </div>
+                        <t t-if="kargo.batch_id">
+                            <div class="agf-info-row">
+                                <span class="agf-info-row__label">Batch</span>
+                                <span class="agf-info-row__value">
+                                    <a t-attf-href="/agf/admin/batch/#{kargo.batch_id.id}" class="agf-link">
+                                        <t t-esc="kargo.batch_id.name"/>
+                                    </a>
+                                </span>
+                            </div>
+                            <div class="agf-info-row">
+                                <span class="agf-info-row__label">Tgl Keberangkatan</span>
+                                <span class="agf-info-row__value">
+                                    <t t-esc="kargo.batch_id.tanggal_keberangkatan"/>
+                                </span>
+                            </div>
+                        </t>
+                        <div class="agf-info-row">
+                            <span class="agf-info-row__label">Layanan Lokal</span>
+                            <span class="agf-info-row__value">
+                                <t t-esc="dict(
+                                    reguler='Reguler 3–5 Hari',
+                                    next_day='Next Day 1–2 Hari',
+                                    southwest='SouthWest Cargo'
+                                ).get(kargo.layanan_lokal, kargo.layanan_lokal)"/>
+                            </span>
+                        </div>
+                        <div class="agf-info-row">
+                            <span class="agf-info-row__label">Tgl Daftar</span>
+                            <span class="agf-info-row__value"><t t-esc="kargo.tanggal_daftar"/></span>
+                        </div>
+                        <t t-if="kargo.catatan">
+                            <div class="agf-info-row">
+                                <span class="agf-info-row__label">Catatan</span>
+                                <span class="agf-info-row__value"><t t-esc="kargo.catatan"/></span>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Data Tanaman -->
+            <div class="agf-card">
+                <div class="agf-card__header">
+                    <div class="agf-card__title">
+                        <i data-lucide="leaf" style="width:15px;height:15px"/>
+                        Data Tanaman (<t t-esc="kargo.total_tanaman"/> tanaman)
+                    </div>
+                </div>
+                <t t-if="kargo.tanaman_ids">
+                    <div class="agf-table-wrap">
+                        <table class="agf-table">
+                            <thead>
+                                <tr>
+                                    <th>Nama / Genus</th>
+                                    <th>Jumlah</th>
+                                    <th>Ukuran</th>
+                                    <th>Kondisi</th>
+                                    <th>Catatan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="kargo.tanaman_ids" t-as="tanaman">
+                                    <tr>
+                                        <td><t t-esc="tanaman.nama_tanaman"/></td>
+                                        <td><t t-esc="tanaman.jumlah"/></td>
+                                        <td>
+                                            <t t-esc="dict(kecil='Kecil', sedang='Sedang', besar='Besar').get(tanaman.ukuran, tanaman.ukuran)"/>
+                                        </td>
+                                        <td>
+                                            <span t-attf-class="agf-badge-kondisi kondisi-#{tanaman.kondisi}">
+                                                <t t-esc="dict(
+                                                    sehat='Sehat',
+                                                    kurang_sehat='Kurang Sehat',
+                                                    bermasalah='Bermasalah',
+                                                    belum_dicek='Belum Dicek'
+                                                ).get(tanaman.kondisi, tanaman.kondisi)"/>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <t t-if="tanaman.catatan_kondisi">
+                                                <t t-esc="tanaman.catatan_kondisi"/>
+                                            </t>
+                                            <t t-else="">—</t>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+                <t t-else="">
+                    <div class="agf-empty-state">
+                        <p>Belum ada data tanaman.</p>
+                    </div>
+                </t>
+            </div>
+
+            <!-- Riwayat Tahapan (Timeline) -->
+            <div class="agf-card">
+                <div class="agf-card__header">
+                    <div class="agf-card__title">
+                        <i data-lucide="clock" style="width:15px;height:15px"/>
+                        Riwayat Tahapan
+                    </div>
+                </div>
+                <t t-if="kargo.tahapan_ids">
+                    <div class="agf-timeline">
+                        <t t-foreach="kargo.tahapan_ids" t-as="tahapan">
+                            <div class="agf-timeline__item">
+                                <div class="agf-timeline__dot"/>
+                                <div class="agf-timeline__body">
+                                    <div class="agf-timeline__head">
+                                        <span class="agf-timeline__tahap">
+                                            <t t-esc="tahapan_labels.get(tahapan.tahap, tahapan.tahap)"/>
+                                        </span>
+                                        <t t-if="tahapan.status_baru">
+                                            <span t-attf-class="agf-badge-status status-#{tahapan.status_baru}">
+                                                <t t-esc="tahapan.status_baru.capitalize()"/>
+                                            </span>
+                                        </t>
+                                    </div>
+                                    <div class="agf-timeline__meta">
+                                        <span>
+                                            <i data-lucide="clock" style="width:12px;height:12px"/>
+                                            <t t-esc="tahapan.timestamp"/>
+                                        </span>
+                                        <t t-if="tahapan.petugas_id">
+                                            <span>
+                                                <i data-lucide="user" style="width:12px;height:12px"/>
+                                                <t t-esc="tahapan.petugas_id.name"/>
+                                            </span>
+                                        </t>
+                                        <t t-if="tahapan.lokasi">
+                                            <span>
+                                                <i data-lucide="map-pin" style="width:12px;height:12px"/>
+                                                <t t-esc="tahapan.lokasi"/>
+                                            </span>
+                                        </t>
+                                    </div>
+                                    <t t-if="tahapan.catatan">
+                                        <div class="agf-timeline__catatan">
+                                            <t t-esc="tahapan.catatan"/>
+                                        </div>
+                                    </t>
+                                    <!-- Kondisi checks -->
+                                    <t t-if="tahapan.cek_daun or tahapan.cek_akar or tahapan.cek_hama">
+                                        <div class="agf-timeline__checks">
+                                            <t t-if="tahapan.cek_daun">
+                                                <span class="agf-check agf-check--ok">
+                                                    <i data-lucide="check" style="width:11px;height:11px"/>
+                                                    Daun OK
+                                                </span>
+                                            </t>
+                                            <t t-if="tahapan.cek_akar">
+                                                <span class="agf-check agf-check--ok">
+                                                    <i data-lucide="check" style="width:11px;height:11px"/>
+                                                    Akar OK
+                                                </span>
+                                            </t>
+                                            <t t-if="tahapan.cek_hama">
+                                                <span class="agf-check agf-check--ok">
+                                                    <i data-lucide="check" style="width:11px;height:11px"/>
+                                                    Bebas Hama
+                                                </span>
+                                            </t>
+                                        </div>
+                                    </t>
+                                    <!-- Foto -->
+                                    <t t-if="tahapan.foto_ids">
+                                        <div class="agf-timeline__fotos">
+                                            <t t-foreach="tahapan.foto_ids" t-as="foto">
+                                                <a t-attf-href="/web/content/#{foto.id}" target="_blank">
+                                                    <img t-attf-src="/web/image/#{foto.id}"
+                                                         class="agf-timeline__foto"
+                                                         t-att-alt="foto.name"/>
+                                                </a>
+                                            </t>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+                <t t-else="">
+                    <div class="agf-empty-state">
+                        <p>Belum ada riwayat tahapan.</p>
+                    </div>
+                </t>
+            </div>
+
+        </t>
+    </template>
+</odoo>
