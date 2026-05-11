@@ -9,6 +9,8 @@
         'security/groups.xml',
         'security/ir.model.access.csv',
         'data/sequences.xml',
+        # Customer views 
+        'views/customer/customer_landing.xml',
         # Warehouse views (Hazim)
         'views/warehouse/wh_landing.xml',
         'views/warehouse/wh_daftar_pesanan.xml',

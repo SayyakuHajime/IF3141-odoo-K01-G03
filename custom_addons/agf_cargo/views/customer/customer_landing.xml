@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="customer_landing" name="AGF Cargo — Landing Page">
+<t t-call="web.layout">
+    <t t-set="head_custom">
+        <title>Portal Pelanggan — AGF Cargo</title>
+    </t>
+    <t t-set="body_classname" t-value="'agf-landing-page'"/>
+
+    <div class="agf-landing">
+
+        <!-- HERO SECTION -->
+        <div class="agf-landing__hero">
+            <div class="agf-landing__logo-wrap">
+                <img
+                    src="/agf_cargo/static/src/img/agf_logo.png"
+                    alt="AGF Cargo Logo"
+                    class="agf-landing__logo"
+                    onerror="this.style.display='none'"
+                />
+            </div>
+
+            <div class="agf-landing__content">
+                <p class="agf-landing__label">AGF Cargo</p>
+                <h1 class="agf-landing__title">Portal Pelanggan AGF Cargo</h1>
+                <p class="agf-landing__subtitle">
+                    Lakukan pemesanan layanan kargo tanaman hias Anda dan
+                    pantau proses pengiriman secara real-time!
+                </p>
+            </div>
+        </div>
+
+        <!-- STATS SECTION -->
+        <div class="agf-landing__stats">
+            <div class="agf-landing__stat-item">
+                <span class="agf-landing__stat-number">40+</span>
+                <span class="agf-landing__stat-label">Mitra petani</span>
+            </div>
+            <div class="agf-landing__stat-item">
+                <span class="agf-landing__stat-number">US</span>
+                <span class="agf-landing__stat-label">Pasar ekspor</span>
+            </div>
+            <div class="agf-landing__stat-item">
+                <span class="agf-landing__stat-number">AGF</span>
+                <span class="agf-landing__stat-label">Kargo terpadu</span>
+            </div>
+        </div>
+
+        <!-- CTA BUTTON -->
+        <div class="agf-landing__cta">
+            <a href="/agf/customer/tracking" class="agf-landing__btn-start">
+                Get Started
+            </a>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="agf-landing__footer">
+            <p>PT Berkah Melano Indonesia — Bandung Barat, Jawa Barat</p>
+        </div>
+
+    </div>
+</t>
+</template>
+</odoo>
