@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="customer_tracking" name="AGF Cargo — Tracking Pengiriman">
+<t t-call="web.layout">
+    <t t-set="head_custom">
+        <title>Tracking Pengiriman — AGF Cargo</title>
+    </t>
+
+    <div class="agf-portal">
+
+        <!-- TOP NAV TABS -->
+        <div class="agf-portal__tabs">
+            <a href="/agf/customer/tracking"
+                class="agf-portal__tab agf-portal__tab--active">
+                Tracking Pengiriman
+            </a>
+            <a href="/agf/customer/daftar"
+                class="agf-portal__tab">
+                Pendaftaran Kargo
+            </a>
+        </div>
+
+        <!-- HEADER -->
+        <div class="agf-portal__header">
+            <h2 class="agf-portal__title">Selamat datang kembali!</h2>
+            <p class="agf-portal__subtitle">
+                Masukkan nomor registrasi pengiriman anda untuk melihat
+                progress pengiriman tanaman hias anda
+            </p>
+        </div>
+
+        <!-- SEARCH FORM -->
+        <form action="/agf/customer/tracking" method="GET" class="agf-tracking__form">
+            <input
+                type="text"
+                name="nomor"
+                class="agf-tracking__input"
+                placeholder="Masukkan Nomor Registrasi Anda ..."
+                t-att-value="nomor or ''"
+                autocomplete="off"
+            />
+        </form>
+
+        <!-- ERROR -->
+        <t t-if="error">
+            <div class="agf-tracking__error">
+                <span t-esc="error"/>
+            </div>
+        </t>
+
+        <!-- HASIL TRACKING -->
+        <t t-if="kargo">
+
+            <!-- Tentukan apakah view penitip atau penerima -->
+            <t t-set="is_penitip" t-value="nomor and nomor.upper().startswith('AGF-')"/>
+
+            <div class="agf-tracking__result">
+
+                <!-- BADGE NOMOR -->
+                <div class="agf-tracking__badge-row">
+                    <span class="agf-tracking__badge">
+                        <t t-esc="nomor"/>
+                    </span>
+                    <span class="agf-tracking__badge agf-tracking__badge--ups">
+                        UPS Tracking
+                    </span>
+                    <t t-if="is_penitip">
+                        <a href="https://wa.me/6281234567890"
+                            target="_blank"
+                            class="agf-tracking__wa-btn">
+                            💬 Hubungi Admin
+                        </a>
+                    </t>
+                </div>
+
+                <!-- TIMELINE -->
+                <div class="agf-tracking__timeline">
+
+                    <t t-set="tahapan_selesai"
+                        t-value="kargo.tahapan_ids.mapped('tahap')"/>
+
+                    <!-- Definisi semua tahapan -->
+                    <t t-set="all_steps" t-value="[
+                        ('01_registrasi',   'Pendaftaran Kargo'),
+                        ('02_penjemputan',  'Penjemputan'),
+                        ('03_gudang_asal',  'Penerimaan di Gudang Asal'),
+                        ('04_cek_dokumen',  'Pemeriksaan Dokumen'),
+                        ('05_terminal_asal','Terminal Kargo Asal'),
+                        ('06_transit',      'Dalam Perjalanan'),
+                        ('07_terminal_tujuan','Terminal Kargo Tujuan'),
+                        ('08_bea_cukai',    'Pemeriksaan Bea Cukai'),
+                        ('09_gudang_tujuan','Gudang Tujuan'),
+                        ('10_pengiriman',   'Dalam Pengiriman'),
+                        ('11_tiba',         'Tiba di Alamat'),
+                        ('12_selesai',      'Selesai'),
+                    ]"/>
+
+                    <t t-foreach="all_steps" t-as="step">
+                        <t t-set="step_key"   t-value="step[0]"/>
+                        <t t-set="step_label" t-value="step[1]"/>
+
+                        <!-- Cari log tahapan untuk step ini -->
+                        <t t-set="log" t-value="kargo.tahapan_ids.filtered(lambda t: t.tahap == step_key)[:1]"/>
+                        <t t-set="is_done"    t-value="bool(log)"/>
+
+                        <!-- Cek apakah ini tahap yang sedang aktif (tahap terakhir yang ada lognya) -->
+                        <t t-set="is_active"
+                           t-value="log and log == kargo.tahapan_ids[:1]"/>
+
+                        <div t-attf-class="agf-timeline__item
+                            {{ 'agf-timeline__item--done' if is_done else '' }}
+                            {{ 'agf-timeline__item--active' if is_active else '' }}
+                            {{ 'agf-timeline__item--pending' if not is_done else '' }}">
+
+                            <!-- DOT -->
+                            <div class="agf-timeline__dot"/>
+
+                            <!-- CONTENT -->
+                            <div class="agf-timeline__content">
+                                <p class="agf-timeline__step-name">
+                                    <t t-esc="step_label"/>
+                                </p>
+
+                                <!-- Detail hanya tampil kalau ada log -->
+                                <t t-if="log">
+                                    <p class="agf-timeline__meta">
+                                        <t t-if="log.lokasi">
+                                            <span t-esc="log.lokasi"/> ·
+                                        </t>
+                                        <span t-esc="log.timestamp"
+                                                t-options='{
+                                                    "widget": "datetime",
+                                                    "format": "dd MMM, HH:mm"
+                                                }'/>
+                                    </p>
+
+                                    <!-- Foto kondisi -->
+                                    <t t-if="log.foto_ids">
+                                        <div class="agf-timeline__photos">
+                                            <t t-foreach="log.foto_ids" t-as="foto">
+                                                <img
+                                                    t-attf-src="/web/image/ir.attachment/#{foto.id}/datas"
+                                                    class="agf-timeline__photo"
+                                                    alt="Foto kondisi tanaman"
+                                                />
+                                            </t>
+                                        </div>
+                                    </t>
+
+                                    <!-- Status tanaman terakhir -->
+                                    <t t-if="log.status_baru">
+                                        <div t-attf-class="agf-timeline__status-badge agf-timeline__status-badge--#{log.status_baru}">
+                                            <t t-if="log.cek_daun and log.cek_akar and log.cek_hama">
+                                                Healthy
+                                            </t>
+                                            <t t-else="">
+                                                Kurang Sehat
+                                            </t>
+                                        </div>
+                                    </t>
+
+                                    <!-- Aksi khusus — hanya untuk penitip -->
+                                    <t t-if="is_penitip">
+
+                                        <!-- Upload bukti pembayaran (muncul di tahap 01_registrasi kalau belum ada bukti) -->
+                                        <t t-if="step_key == '01_registrasi' and not kargo.bukti_pembayaran">
+                                            <div class="agf-timeline__action">
+                                                <p class="agf-timeline__action-label">
+                                                    Lakukan pembayaran
+                                                </p>
+                                                <p class="agf-timeline__action-price">
+                                                    Total: Rp —
+                                                </p>
+                                                <form
+                                                    t-attf-action="/agf/customer/upload_bukti/#{kargo.id}"
+                                                    method="POST"
+                                                    enctype="multipart/form-data">
+                                                    <input type="hidden"
+                                                            name="csrf_token"
+                                                            t-att-value="request.csrf_token()"/>
+                                                    <input type="hidden"
+                                                            name="nomor"
+                                                            t-att-value="nomor"/>
+                                                    <input
+                                                        type="file"
+                                                        name="bukti_file"
+                                                        accept="image/*,application/pdf"
+                                                        class="agf-timeline__file-input"
+                                                        id="bukti_file"
+                                                    />
+                                                    <label for="bukti_file"
+                                                            class="agf-timeline__upload-btn">
+                                                        Upload Bukti Pembayaran
+                                                    </label>
+                                                    <button type="submit"
+                                                            class="agf-timeline__submit-btn"
+                                                            id="submit_bukti"
+                                                            style="display:none">
+                                                        Kirim
+                                                    </button>
+                                                </form>
+                                                <script>
+                                                    document.getElementById('bukti_file')
+                                                        .addEventListener('change', function() {
+                                                            document.getElementById('submit_bukti')
+                                                                .click();
+                                                        });
+                                                </script>
+                                            </div>
+                                        </t>
+
+                                        <!-- Konfirmasi tanaman diambil (muncul di tahap 02_penjemputan kalau statusnya active) -->
+                                        <t t-if="step_key == '02_penjemputan'
+                                                    and is_active
+                                                    and not kargo.konfirmasi_penjemputan">
+                                            <form
+                                                t-attf-action="/agf/customer/konfirmasi_jemput/#{kargo.id}"
+                                                method="POST">
+                                                <input type="hidden"
+                                                        name="csrf_token"
+                                                        t-att-value="request.csrf_token()"/>
+                                                <input type="hidden"
+                                                        name="nomor"
+                                                        t-att-value="nomor"/>
+                                                <button type="submit"
+                                                        class="agf-timeline__confirm-btn">
+                                                    Konfirmasi Tanaman Telah Diambil
+                                                </button>
+                                            </form>
+                                        </t>
+
+                                    </t>
+                                    <!-- END aksi khusus penitip -->
+
+                                </t>
+                                <!-- END t-if log -->
+
+                            </div>
+                            <!-- END content -->
+
+                        </div>
+                        <!-- END timeline item -->
+
+                    </t>
+                    <!-- END t-foreach steps -->
+
+                </div>
+                <!-- END timeline -->
+
+            </div>
+            <!-- END result -->
+
+        </t>
+        <!-- END t-if kargo -->
+
+    </div>
+    <!-- END agf-portal -->
+
+</t>
+</template>
+</odoo>

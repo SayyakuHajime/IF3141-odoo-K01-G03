@@ -112,6 +112,15 @@ class AgfKargo(models.Model):
     )
 
     catatan = fields.Text(string='Catatan')
+    bukti_pembayaran = fields.Many2one(
+        'ir.attachment',
+        string='Bukti Pembayaran',
+        ondelete='set null',
+    )
+    konfirmasi_penjemputan = fields.Boolean(
+        string='Tanaman Sudah Diambil',
+        default=False,
+    )
     tanggal_daftar = fields.Datetime(
         string='Tanggal Pendaftaran',
         default=fields.Datetime.now,

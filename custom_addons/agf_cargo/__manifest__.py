@@ -11,6 +11,7 @@
         'data/sequences.xml',
         # Customer views 
         'views/customer/customer_landing.xml',
+        'views/customer/customer_tracking.xml',
         # Warehouse views (Hazim)
         'views/warehouse/wh_landing.xml',
         'views/warehouse/wh_daftar_pesanan.xml',
