@@ -168,4 +168,25 @@ class AgfKargo(models.Model):
                 )
             if vals.get('name', 'New') == 'New':
                 vals['name'] = vals.get('nomor_penitip', 'New')
-        return super().create(vals_list)
+        
+        records = super().create(vals_list)
+        
+        # Auto-assign QR tag idle ke setiap kargo baru
+        for kargo in records:
+            qr_idle = self.env['agf.qr.tag'].search(
+                [('status', '=', 'idle')], limit=1
+            )
+            if qr_idle:
+                qr_idle.action_assign(kargo.id)
+                kargo.qr_tag_id = qr_idle.id
+        
+        return records
+    
+    def write(self, vals):
+        result = super().write(vals)
+        if vals.get('status') == 'done':
+            for kargo in self:
+                if kargo.qr_tag_id:
+                    kargo.qr_tag_id.action_release()
+                    kargo.qr_tag_id = False
+        return result

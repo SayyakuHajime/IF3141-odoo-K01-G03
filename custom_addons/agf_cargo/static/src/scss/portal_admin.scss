@@ -14,24 +14,542 @@
     min-height: 100vh;
 }
 
+// ── Sidebar ──
 .agf-admin-sidebar {
     background: $admin-sidebar;
     width: $admin-sidebar-width;
     min-height: 100vh;
     color: #FFFFFF;
     flex-shrink: 0;
-
-    // Hidden on mobile, visible on desktop
     display: none;
     @media (min-width: $bp-desktop) { display: flex; flex-direction: column; }
 }
 
+.agf-admin-sidebar-brand {
+    padding: $spacing-md;
+    font-size: 14px;
+    font-weight: $font-weight-medium;
+    color: #FFFFFF;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    letter-spacing: 0.3px;
+
+    span { color: $admin-accent; }
+}
+
+.agf-admin-sidebar-section {
+    padding: $spacing-md $spacing-md $spacing-xs;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: rgba(255,255,255,0.35);
+    font-weight: $font-weight-medium;
+}
+
+.agf-admin-sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    padding: 9px $spacing-md;
+    color: rgba(255,255,255,0.55);
+    text-decoration: none;
+    font-size: 13px;
+    transition: background 0.15s, color 0.15s;
+    border-left: 3px solid transparent;
+
+    i { width: 16px; text-align: center; font-size: 13px; }
+
+    &:hover {
+        background: rgba(255,255,255,0.06);
+        color: #FFFFFF;
+        text-decoration: none;
+    }
+
+    &.active {
+        background: rgba(0,172,193,0.12);
+        color: $admin-accent;
+        border-left-color: $admin-accent;
+    }
+}
+
+// ── Main Wrapper ──
 .agf-admin-main {
     flex: 1;
     min-width: 0;
     padding: 0;
+    @media (min-width: $bp-desktop) { padding: 0; }
+}
 
-    @media (min-width: $bp-desktop) {
-        padding: 24px;
+// ── Topbar ──
+.agf-admin-topbar {
+    background: $admin-topbar;
+    border-bottom: 1px solid #E0E0E0;
+    height: $admin-topbar-height;
+    padding: 0 $spacing-lg;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 99;
+}
+
+.agf-admin-topbar-search {
+    input {
+        border: 1px solid #DDD;
+        border-radius: $admin-radius;
+        padding: 5px $spacing-md;
+        font-size: 13px;
+        width: 220px;
+        outline: none;
+        font-family: $font-family-base;
+
+        &:focus { border-color: $admin-accent; }
+    }
+}
+
+.agf-admin-topbar-user {
+    width: 30px;
+    height: 30px;
+    background: $admin-accent;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $admin-accent-text;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+// ── Page Content ──
+.agf-admin-content {
+    padding: $spacing-lg;
+}
+
+.agf-admin-breadcrumb {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: $spacing-md;
+
+    a {
+        color: $admin-accent-dark;
+        text-decoration: none;
+        &:hover { text-decoration: underline; }
+    }
+    span { margin: 0 $spacing-xs; color: #BBB; }
+}
+
+.agf-admin-page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: $spacing-lg;
+
+    h1 {
+        font-size: 20px;
+        font-weight: $font-weight-medium;
+        color: #222;
+    }
+}
+
+// ── Cards ──
+.agf-admin-card {
+    background: $admin-card-bg;
+    border-radius: $admin-radius;
+    border: 1px solid #E8E8E8;
+    padding: $spacing-lg;
+    margin-bottom: $spacing-md;
+}
+
+.agf-admin-card-title {
+    font-size: 13px;
+    font-weight: $font-weight-medium;
+    color: #555;
+    margin-bottom: $spacing-md;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+// ── Stat Cards (Dashboard) ──
+.agf-admin-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: $spacing-md;
+    margin-bottom: $spacing-lg;
+}
+
+.agf-admin-stat-card {
+    background: $admin-card-bg;
+    border-radius: $admin-radius;
+    border: 1px solid #E8E8E8;
+    padding: $spacing-md $spacing-lg;
+
+    .stat-label {
+        font-size: 11px;
+        color: #888;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: $spacing-xs;
+    }
+    .stat-value {
+        font-size: 24px;
+        font-weight: 600;
+        color: #222;
+    }
+    .stat-sub {
+        font-size: 11px;
+        color: #AAA;
+        margin-top: 2px;
+    }
+}
+
+// ── Table ──
+.agf-admin-table-wrapper {
+    background: $admin-card-bg;
+    border-radius: $admin-radius;
+    border: 1px solid #E8E8E8;
+    overflow: hidden;
+}
+
+.agf-admin-table-toolbar {
+    padding: $spacing-md $spacing-lg;
+    border-bottom: 1px solid #F0F0F0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $spacing-md;
+}
+
+.agf-admin-filter-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid #E8E8E8;
+    padding: 0 $spacing-lg;
+    background: $admin-card-bg;
+
+    a {
+        padding: $spacing-sm $spacing-md;
+        font-size: 13px;
+        color: #888;
+        text-decoration: none;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -1px;
+        transition: color 0.15s, border-color 0.15s;
+        white-space: nowrap;
+
+        &:hover { color: $admin-accent-dark; }
+        &.active {
+            color: $admin-accent-dark;
+            border-bottom-color: $admin-accent;
+            font-weight: $font-weight-medium;
+        }
+    }
+}
+
+.agf-admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+
+    thead tr {
+        background: #FAFAFA;
+        border-bottom: 1px solid #ECECEC;
+    }
+
+    th {
+        padding: $spacing-sm $spacing-md;
+        text-align: left;
+        font-weight: $font-weight-medium;
+        color: #666;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        white-space: nowrap;
+    }
+
+    td {
+        padding: $spacing-sm $spacing-md;
+        border-bottom: 1px solid #F5F5F5;
+        color: #333;
+        vertical-align: middle;
+    }
+
+    tbody tr {
+        transition: background 0.1s;
+        &:hover { background: #FAFBFC; }
+        &:last-child td { border-bottom: none; }
+    }
+}
+
+.agf-admin-table-footer {
+    padding: $spacing-sm $spacing-lg;
+    font-size: 12px;
+    color: #AAA;
+    border-top: 1px solid #F0F0F0;
+}
+
+// ── Status Pills ──
+.agf-pill {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: $font-weight-medium;
+    white-space: nowrap;
+
+    &.hold        { color: $pill-hold-text;       background: $pill-hold-bg; }
+    &.arrival     { color: $pill-arrival-text;    background: $pill-arrival-bg; }
+    &.processing  { color: $pill-processing-text; background: $pill-processing-bg; }
+    &.shipped     { color: $pill-shipped-text;    background: $pill-shipped-bg; }
+    &.done        { color: $pill-done-text;       background: $pill-done-bg; }
+
+    // QR status
+    &.aktif  { color: $pill-arrival-text;    background: $pill-arrival-bg; }
+    &.idle   { color: $pill-unchecked-text;  background: $pill-unchecked-bg; }
+    &.rusak  { color: $pill-masalah-text;    background: $pill-masalah-bg; }
+    &.selesai { color: $pill-shipped-text;   background: $pill-shipped-bg; }
+}
+
+// ── Buttons ──
+.agf-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-xs;
+    padding: 6px $spacing-md;
+    border-radius: $admin-radius;
+    font-size: 13px;
+    font-weight: $font-weight-medium;
+    cursor: pointer;
+    text-decoration: none;
+    border: none;
+    transition: opacity 0.15s;
+    font-family: $font-family-base;
+
+    &:hover { opacity: 0.85; text-decoration: none; }
+
+    &-primary {
+        background: $admin-accent;
+        color: $admin-accent-text;
+    }
+    &-outline {
+        background: transparent;
+        border: 1px solid #DDD;
+        color: #555;
+        &:hover { border-color: $admin-accent; color: $admin-accent-dark; }
+    }
+    &-danger {
+        background: $color-danger-bg;
+        color: $color-danger;
+        border: 1px solid lighten($color-danger, 30%);
+    }
+    &-sm {
+        padding: 4px $spacing-sm;
+        font-size: 12px;
+    }
+}
+
+// ── Forms ──
+.agf-admin-form-section {
+    margin-bottom: $spacing-lg;
+
+    h3 {
+        font-size: 13px;
+        font-weight: $font-weight-medium;
+        color: #555;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: $spacing-md;
+        padding-bottom: $spacing-xs;
+        border-bottom: 1px solid #ECECEC;
+    }
+}
+
+.agf-admin-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $spacing-md;
+
+    @media (max-width: $bp-tablet) { grid-template-columns: 1fr; }
+}
+
+.agf-admin-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+
+    label {
+        font-size: 12px;
+        font-weight: $font-weight-medium;
+        color: #555;
+    }
+
+    input, select, textarea {
+        border: 1px solid #DDD;
+        border-radius: $admin-radius;
+        padding: 7px $spacing-sm;
+        font-size: 13px;
+        font-family: $font-family-base;
+        outline: none;
+        color: #333;
+        background: #FFF;
+        transition: border-color 0.15s;
+
+        &:focus { border-color: $admin-accent; }
+        &:disabled { background: #F5F5F5; color: #AAA; }
+    }
+
+    textarea { resize: vertical; min-height: 80px; }
+
+    .field-hint {
+        font-size: 11px;
+        color: #AAA;
+    }
+}
+
+.agf-admin-form-group-full {
+    grid-column: 1 / -1;
+}
+
+// ── Timeline (Riwayat Status) ──
+.agf-admin-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.agf-admin-timeline-item {
+    display: flex;
+    gap: $spacing-md;
+    position: relative;
+
+    &:not(:last-child)::before {
+        content: '';
+        position: absolute;
+        left: 7px;
+        top: 20px;
+        bottom: -4px;
+        width: 2px;
+        background: #E8E8E8;
+    }
+}
+
+.agf-admin-timeline-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: $admin-accent;
+    flex-shrink: 0;
+    margin-top: 3px;
+    border: 2px solid #FFF;
+    box-shadow: 0 0 0 2px $admin-accent;
+
+    &.pending {
+        background: #DDD;
+        box-shadow: 0 0 0 2px #DDD;
+    }
+}
+
+.agf-admin-timeline-body {
+    padding-bottom: $spacing-md;
+    flex: 1;
+
+    .timeline-label {
+        font-size: 13px;
+        font-weight: $font-weight-medium;
+        color: #333;
+    }
+    .timeline-time {
+        font-size: 11px;
+        color: #AAA;
+        margin-top: 2px;
+    }
+}
+
+// ── Detail Page Two-Column ──
+.agf-admin-detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: $spacing-lg;
+    align-items: start;
+
+    @media (max-width: $bp-desktop) { grid-template-columns: 1fr; }
+}
+
+// ── Dokumen Chip ──
+.agf-doc-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-xs;
+    padding: 3px $spacing-sm;
+    border-radius: 20px;
+    font-size: 12px;
+    border: 1px solid #DDD;
+    color: #555;
+    text-decoration: none;
+    background: #FAFAFA;
+
+    &:hover { border-color: $admin-accent; color: $admin-accent-dark; }
+    &.uploaded { border-color: $color-success; color: $color-success; background: $color-success-bg; }
+    &.missing { border-color: $color-danger; color: $color-danger; background: $color-danger-bg; }
+}
+
+// ── Tanaman Table inline cek status ──
+.agf-cek-pill {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 20px;
+
+    &.belum  { color: $pill-unchecked-text; background: $pill-unchecked-bg; }
+    &.sedang { color: $pill-processing-text; background: $pill-processing-bg; }
+    &.selesai { color: $pill-arrival-text; background: $pill-arrival-bg; }
+}
+
+// ── Aksi Admin Panel (sidebar kanan di detail) ──
+.agf-admin-action-panel {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+}
+
+.agf-admin-action-btn {
+    display: block;
+    padding: $spacing-sm $spacing-md;
+    border-radius: $admin-radius;
+    font-size: 13px;
+    color: $admin-accent-dark;
+    text-decoration: none;
+    background: #FAFAFA;
+    border: 1px solid #EBEBEB;
+    cursor: pointer;
+    font-family: $font-family-base;
+    text-align: left;
+    transition: background 0.15s;
+
+    &:hover { background: #F0F8FA; border-color: $admin-accent; }
+    &.danger { color: $color-danger; &:hover { background: $color-danger-bg; border-color: $color-danger; } }
+}
+
+// ── QR Stats Grid ──
+.agf-admin-qr-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: $spacing-md;
+    margin-bottom: $spacing-lg;
+
+    @media (max-width: $bp-tablet) { grid-template-columns: repeat(2, 1fr); }
+}
+
+// ── Batch Progress Bar ──
+.agf-progress {
+    height: 6px;
+    background: #ECECEC;
+    border-radius: 3px;
+    overflow: hidden;
+
+    .agf-progress-bar {
+        height: 100%;
+        background: $admin-accent;
+        border-radius: 3px;
+        transition: width 0.3s;
     }
 }

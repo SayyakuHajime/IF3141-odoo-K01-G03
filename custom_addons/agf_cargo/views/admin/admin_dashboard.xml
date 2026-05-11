@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="admin_dashboard" name="AGF Admin Dashboard">
+        <t t-call="agf_cargo.admin_base_layout">
+            <div class="agf-admin-breadcrumb">
+                Home
+            </div>
+            <div class="agf-admin-page-header">
+                <h1>Dashboard</h1>
+            </div>
+            <p style="color:#AAA; font-size:13px;">Dashboard sedang dalam pengembangan.</p>
+        </t>
+    </template>
+</odoo>

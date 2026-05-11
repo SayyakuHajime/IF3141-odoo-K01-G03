@@ -9,13 +9,13 @@
         'security/groups.xml',
         'security/ir.model.access.csv',
         'data/sequences.xml',
+        'views/assets.xml',  
+        'views/admin/base_layout.xml',
+        'views/admin/admin_dashboard.xml',
     ],
     'assets': {
         'web.assets_frontend': [
-            'agf_cargo/static/src/scss/_variables.scss',
-            'agf_cargo/static/src/scss/portal_customer.scss',
-            'agf_cargo/static/src/scss/portal_warehouse.scss',
-            'agf_cargo/static/src/scss/portal_admin.scss',
+            ...
         ],
     },
     'installable': True,
