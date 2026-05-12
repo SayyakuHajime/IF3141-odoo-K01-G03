@@ -26,7 +26,7 @@
         <record id="seq_agf_kargo_penerima" model="ir.sequence">
             <field name="name">AGF Cargo — Nomor Penerima</field>
             <field name="code">agf.kargo.penerima</field>
-            <field name="prefix">TRK-%(year)s-</field>
+            <field name="prefix">RCV-%(year)s-</field>
             <field name="padding">4</field>
             <field name="number_increment">1</field>
             <field name="number_next">1</field>
