@@ -9,8 +9,20 @@
 .agf-admin {
     font-family: $font-family-base;
     background: $admin-content-bg;
+    overflow-y: auto;
     color: #333333;
     min-height: 100vh;
+
+    h1, h2, h3, h4, h5, h6 { margin: 0; padding: 0; font-weight: 600; line-height: 1.25; color: #111827; }
+    h1 { font-size: 18px; }
+    h2 { font-size: 16px; }
+    h3 { font-size: 14px; }
+    p  { margin: 0; }
+}
+
+body.website_page {
+    overflow-y: auto !important;
+    height: auto !important;
 }
 
 .agf-admin-layout {
@@ -18,10 +30,8 @@
     min-height: 100vh;
 }
 
-// ══════════════════════════════════════════
-// SIDEBAR
-// ══════════════════════════════════════════
 
+// ── Sidebar ──
 .agf-admin-sidebar {
     background: $admin-sidebar;
     width: $admin-sidebar-width;
@@ -137,6 +147,53 @@
 // MAIN AREA
 // ══════════════════════════════════════════
 
+.agf-admin-sidebar-brand {
+    padding: $spacing-md;
+    font-size: 14px;
+    font-weight: $font-weight-medium;
+    color: #FFFFFF;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    letter-spacing: 0.3px;
+
+    span { color: $admin-accent; }
+}
+
+.agf-admin-sidebar-section {
+    padding: $spacing-md $spacing-md $spacing-xs;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: rgba(255,255,255,0.35);
+    font-weight: $font-weight-medium;
+}
+
+.agf-admin-sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    padding: 9px $spacing-md;
+    color: rgba(255,255,255,0.55);
+    text-decoration: none;
+    font-size: 13px;
+    transition: background 0.15s, color 0.15s;
+    border-left: 3px solid transparent;
+
+    i { width: 16px; text-align: center; font-size: 13px; }
+
+    &:hover {
+        background: rgba(255,255,255,0.06);
+        color: #FFFFFF;
+        text-decoration: none;
+    }
+
+    &.active {
+        background: rgba(0,172,193,0.12);
+        color: $admin-accent;
+        border-left-color: $admin-accent;
+    }
+}
+
+// ── Main Wrapper ──
 .agf-admin-main {
     flex: 1;
     min-width: 0;
@@ -1117,3 +1174,189 @@
 
     &--lg { padding: $spacing-xl * 2 $spacing-lg; }
 }
+
+// ══════════════════════════════════════════
+// AGF-BTN — base class + variants
+// ══════════════════════════════════════════
+
+.agf-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    border-radius: $admin-radius; padding: 8px 16px; cursor: pointer;
+    font-size: 13.5px; font-weight: $font-weight-medium;
+    text-decoration: none; white-space: nowrap; border: none;
+    transition: background 0.15s, color 0.15s;
+
+    &-primary {
+        background: $admin-accent; color: $admin-accent-text;
+        &:hover { background: $admin-accent-dark; color: #FFFFFF; text-decoration: none; }
+    }
+    &-secondary {
+        background: #FFFFFF; color: #374151; border: 1px solid #D1D5DB;
+        &:hover { background: #F3F4F6; color: #111827; text-decoration: none; }
+    }
+    &-danger {
+        background: $color-danger-bg; color: $color-danger; border: 1px solid rgba($color-danger, 0.3);
+        &:hover { background: $color-danger; color: #FFFFFF; text-decoration: none; }
+    }
+    &-outline {
+        background: transparent; color: $admin-accent-dark; border: 1px solid $admin-accent;
+        &:hover { background: $admin-accent; color: $admin-accent-text; text-decoration: none; }
+    }
+    &-sm { padding: 4px 10px; font-size: 12px; }
+}
+
+// ══════════════════════════════════════════
+// AGF-PILL — status pills
+// ══════════════════════════════════════════
+
+.agf-pill {
+    display: inline-flex; align-items: center; padding: 2px 10px;
+    border-radius: 99px; font-size: 11.5px; font-weight: 600; white-space: nowrap;
+
+    &.hold       { background: $pill-hold-bg;       color: $pill-hold-text; }
+    &.arrival    { background: $pill-arrival-bg;    color: $pill-arrival-text; }
+    &.processing { background: $pill-processing-bg; color: $pill-processing-text; }
+    &.shipped    { background: $pill-shipped-bg;    color: $pill-shipped-text; }
+    &.done       { background: $pill-done-bg;       color: $pill-done-text; }
+    &.aktif      { background: rgba($admin-accent, 0.15); color: $admin-accent-dark; }
+    &.idle       { background: $pill-unchecked-bg;  color: $pill-unchecked-text; }
+    &.rusak      { background: $color-danger-bg;    color: $color-danger; }
+}
+
+// ══════════════════════════════════════════
+// NOM-VIEW COMPAT — agf-admin-* class aliases
+// ══════════════════════════════════════════
+
+.agf-admin-breadcrumb {
+    display: flex; align-items: center; flex-wrap: wrap; gap: 4px;
+    font-size: 12px; color: #9CA3AF; margin: 0 0 $spacing-sm;
+    a { color: $admin-accent-dark; text-decoration: none; &:hover { text-decoration: underline; } }
+    span { color: #D1D5DB; }
+    span:last-child { color: #6B7280; }
+}
+
+.agf-admin-page-header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: $spacing-md; flex-wrap: wrap; margin: 0 0 $spacing-lg;
+    h1 { font-size: 18px; font-weight: 700; color: #111827; margin: 0 0 2px; line-height: 1.3; }
+    span { font-size: 12.5px; color: #6B7280; }
+}
+
+.agf-admin-card {
+    background: $admin-card-bg; border-radius: $admin-radius;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07); overflow: hidden;
+    margin-bottom: $spacing-md; border: 0.5px solid #E8E8E8;
+    padding: $spacing-md; // table cards override with style="padding:0"
+}
+
+.agf-admin-card-title {
+    font-size: 14px; font-weight: 600; color: #111827;
+    padding: $spacing-sm $spacing-md; border-bottom: 1px solid #F3F4F6; margin: 0;
+}
+
+.agf-admsin-card { @extend .agf-admin-card; } // typo alias in XML
+
+.agf-admin-table-wrapper {
+    overflow-x: auto; border-radius: $admin-radius;
+
+    > .agf-admin-filter-tabs {
+        padding: $spacing-sm $spacing-md 0; margin-bottom: 0;
+        border-bottom: 1px solid #E5E7EB; background: #FAFAFA;
+    }
+}
+
+.agf-admin-table {
+    width: 100%; border-collapse: collapse; font-size: 13px;
+
+    th {
+        text-align: left; padding: 10px $spacing-md; background: #F9FAFB;
+        color: #6B7280; font-size: 11px; font-weight: 600; text-transform: uppercase;
+        letter-spacing: 0.04em; white-space: nowrap; border-bottom: 1px solid #E5E7EB;
+    }
+    td { padding: 12px $spacing-md; border-bottom: 1px solid #F3F4F6; color: #374151; vertical-align: middle; }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: #F9FAFB; }
+}
+
+.agf-admin-table-footer {
+    padding: $spacing-sm $spacing-md; background: #F9FAFB;
+    border-top: 1px solid #E5E7EB; font-size: 12px; color: #9CA3AF;
+    display: flex; align-items: center; gap: $spacing-sm;
+}
+
+.agf-admin-filter-tabs {
+    display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: $spacing-md;
+
+    a, button {
+        padding: 6px 14px; border-radius: $admin-radius; font-size: 13px;
+        font-weight: $font-weight-medium; color: #6B7280; text-decoration: none;
+        background: transparent; border: 1px solid #E5E7EB; cursor: pointer;
+        transition: background 0.15s, color 0.15s;
+        &:hover { background: #F3F4F6; color: #111827; text-decoration: none; }
+        &.active { background: $admin-accent; color: $admin-accent-text; border-color: $admin-accent; }
+    }
+}
+
+.agf-admin-form-grid {
+    display: grid; grid-template-columns: 1fr; gap: $spacing-md;
+    @media (min-width: $bp-desktop) { grid-template-columns: repeat(2, 1fr); }
+}
+
+.agf-admin-form-group {
+    display: flex; flex-direction: column; gap: 6px;
+
+    label { font-size: 13px; font-weight: $font-weight-medium; color: #374151; }
+
+    input, select, textarea {
+        border: 1px solid #D1D5DB; border-radius: $admin-radius;
+        padding: 8px 12px; font-size: 13.5px; color: #111827;
+        font-family: $font-family-base; width: 100%; background: #FFFFFF;
+        transition: border-color 0.15s, box-shadow 0.15s;
+        &:focus { outline: none; border-color: $admin-accent; box-shadow: 0 0 0 3px rgba($admin-accent, 0.15); }
+    }
+}
+
+.agf-admin-detail-grid {
+    display: grid; grid-template-columns: 1fr; gap: $spacing-md;
+    @media (min-width: $bp-desktop) { grid-template-columns: repeat(3, 1fr); }
+}
+
+.agf-admin-timeline {
+    position: relative; padding: $spacing-md; padding-left: calc(#{$spacing-md} + 24px);
+    &::before {
+        content: ''; position: absolute; left: calc(#{$spacing-md} + 7px);
+        top: $spacing-lg; bottom: $spacing-lg; width: 2px; background: #E5E7EB;
+    }
+}
+
+.agf-admin-timeline-item { position: relative; margin-bottom: $spacing-lg; &:last-child { margin-bottom: 0; } }
+
+.agf-admin-timeline-dot {
+    position: absolute; left: -20px; top: 3px; width: 12px; height: 12px;
+    border-radius: 50%; background: $admin-accent; border: 2px solid #FFFFFF;
+    box-shadow: 0 0 0 2px #E5E7EB;
+    &.pending { background: #9CA3AF; }
+}
+
+.agf-admin-timeline-body {
+    background: #FAFAFA; border: 1px solid #F3F4F6;
+    border-radius: $admin-radius; padding: $spacing-sm $spacing-md;
+}
+
+.agf-admin-action-panel {
+    display: flex; gap: $spacing-sm; flex-wrap: wrap;
+    padding: $spacing-md; background: #F9FAFB;
+    border-top: 1px solid #F3F4F6; border-radius: 0 0 $admin-radius $admin-radius;
+}
+
+.agf-admin-action-btn {
+    display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px;
+    border-radius: $admin-radius; font-size: 13px; font-weight: $font-weight-medium;
+    cursor: pointer; text-decoration: none; border: 1px solid #D1D5DB;
+    background: #FFFFFF; color: #374151; transition: background 0.15s;
+    &:hover { background: #F3F4F6; text-decoration: none; }
+}
+
+.field-hint   { font-size: 12px; color: #9CA3AF; margin-top: 3px; }
+.timeline-label { font-size: 13px; font-weight: 600; color: #111827; }
+.timeline-time  { font-size: 11.5px; color: #9CA3AF; }

@@ -9,7 +9,7 @@
         'security/groups.xml',
         'security/ir.model.access.csv',
         'data/sequences.xml',
-        # Customer views 
+        # Customer views
         'views/customer/customer_landing.xml',
         'views/customer/customer_tracking.xml',
         'views/customer/customer_form_kargo.xml',
@@ -18,9 +18,15 @@
         'views/warehouse/wh_daftar_pesanan.xml',
         'views/warehouse/wh_detail_pesanan.xml',
         'views/warehouse/wh_update_status.xml',
-        # Admin views (Sakti/D)
+        
+        # Admin Layout Base
         'views/admin/admin_layout.xml',
+        
+        # Admin views 
         'views/admin/admin_dashboard.xml',
+        'views/admin/batch.xml', 
+        'views/admin/pesanan.xml', 
+        'views/admin/qr.xml',
         'views/admin/admin_riwayat_batch.xml',
         'views/admin/admin_detail_batch.xml',
         'views/admin/admin_detail_pesanan_inactive.xml',

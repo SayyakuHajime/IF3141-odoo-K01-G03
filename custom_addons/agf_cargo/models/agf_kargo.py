@@ -121,6 +121,11 @@ class AgfKargo(models.Model):
         string='Tanaman Sudah Diambil',
         default=False,
     )
+    bukti_transaksi = fields.Binary(
+        string='Bukti Transaksi',
+        attachment=True,
+    )
+    bukti_transaksi_nama = fields.Char(string='Nama File Bukti Transaksi')
     tanggal_daftar = fields.Datetime(
         string='Tanggal Pendaftaran',
         default=fields.Datetime.now,
@@ -147,6 +152,12 @@ class AgfKargo(models.Model):
         'agf.tahapan',
         string='Tahapan Terakhir',
         compute='_compute_tahapan_terakhir',
+    )
+    
+    log_ids = fields.One2many(
+        'agf.kargo.log',
+        'kargo_id',
+        string='Log Aktivitas',
     )
 
     @api.depends('batch_id', 'batch_id.tanggal_keberangkatan')
@@ -177,4 +188,25 @@ class AgfKargo(models.Model):
                 )
             if vals.get('name', 'New') == 'New':
                 vals['name'] = vals.get('nomor_penitip', 'New')
-        return super().create(vals_list)
+        
+        records = super().create(vals_list)
+        
+        # Auto-assign QR tag idle ke setiap kargo baru
+        for kargo in records:
+            qr_idle = self.env['agf.qr.tag'].search(
+                [('status', '=', 'idle')], limit=1
+            )
+            if qr_idle:
+                qr_idle.action_assign(kargo.id)
+                kargo.qr_tag_id = qr_idle.id
+        
+        return records
+    
+    def write(self, vals):
+        result = super().write(vals)
+        if vals.get('status') == 'done':
+            for kargo in self:
+                if kargo.qr_tag_id:
+                    kargo.qr_tag_id.action_release()
+                    kargo.qr_tag_id = False
+        return result

@@ -25,12 +25,12 @@
                             </a>
 
                             <div class="agf-nav-section-label">Operasional</div>
-                            <a href="/agf/admin/pesanan"
+                            <a href="/agf/admin/batch-aktif"
                                t-att-class="'agf-nav-item' + (' agf-nav-item--active' if current_page == 'pesanan' else '')">
                                 <i data-lucide="package-check" style="width:15px;height:15px"/>
                                 Batch Aktif
                             </a>
-                            <a href="/agf/admin/batch"
+                            <a href="/agf/admin/riwayat-batch"
                                t-att-class="'agf-nav-item' + (' agf-nav-item--active' if current_page == 'batch' else '')">
                                 <i data-lucide="history" style="width:15px;height:15px"/>
                                 Riwayat Batch
@@ -87,6 +87,7 @@
             <!-- Mobile overlay -->
             <div class="agf-sidebar-overlay" id="sidebarOverlay"/>
 
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
             <script src="https://cdn.jsdelivr.net/npm/lucide@0.462.0/dist/umd/lucide.min.js"/>
             <script>
                 document.addEventListener('DOMContentLoaded', function () {
