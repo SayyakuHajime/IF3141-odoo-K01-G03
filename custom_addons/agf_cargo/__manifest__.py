@@ -13,6 +13,7 @@
         'views/admin/base_layout.xml',
         'views/admin/admin_dashboard.xml',
         'views/admin/batch.xml', 
+        'views/admin/pesanan.xml', 
     ],
     'installable': True,
     'application': True,

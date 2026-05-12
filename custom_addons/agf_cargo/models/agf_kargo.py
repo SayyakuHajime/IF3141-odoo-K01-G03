@@ -112,6 +112,11 @@ class AgfKargo(models.Model):
     )
 
     catatan = fields.Text(string='Catatan')
+    bukti_transaksi = fields.Binary(
+        string='Bukti Transaksi',
+        attachment=True,
+    )
+    bukti_transaksi_nama = fields.Char(string='Nama File Bukti Transaksi')
     tanggal_daftar = fields.Datetime(
         string='Tanggal Pendaftaran',
         default=fields.Datetime.now,

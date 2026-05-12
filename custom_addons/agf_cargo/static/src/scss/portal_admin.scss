@@ -606,3 +606,31 @@
     border-bottom-color: var(--agf-cyan);
   }
 }
+
+.agf-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.agf-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--agf-border, #2d3748);
+  gap: 16px;
+  
+  &:last-child { border-bottom: none; }
+}
+
+.agf-info-label {
+  font-size: 12px;
+  color: var(--agf-text-muted);
+  min-width: 140px;
+  flex-shrink: 0;
+}

@@ -48,17 +48,218 @@ class AdminPortal(http.Controller):
             'user_initials': self._get_user_initials(),
         })
 
+    @http.route('/agf/admin/pesanan/baru', type='http', auth='user', website=True)
+    def form_pesanan_baru(self, **kwargs):
+        batch_aktif = request.env['agf.batch'].search([('status', '=', 'aktif')], limit=1)
+        if not batch_aktif:
+            return request.redirect('/agf/admin/batch-aktif')
+        return request.render('agf_cargo.admin_form_pesanan_baru', {
+            'batch': batch_aktif,
+            'user_initials': self._get_user_initials(),
+        })
+
+    @http.route('/agf/admin/pesanan/baru/submit', type='http', auth='user', methods=['POST'], website=True, csrf=True)
+    def form_pesanan_baru_submit(self, **post):
+        import logging
+        _logger = logging.getLogger(__name__)
+        
+        batch_aktif = request.env['agf.batch'].search([('status', '=', 'aktif')], limit=1)
+        if not batch_aktif:
+            return request.redirect('/agf/admin/batch-aktif')
+
+        errors = []
+        if not post.get('nama_penitip'):
+            errors.append('Nama pengirim wajib diisi.')
+        if not post.get('hp_penitip'):
+            errors.append('No. HP pengirim wajib diisi.')
+        if not post.get('email_penitip'):
+            errors.append('Email pengirim wajib diisi.')
+        if not post.get('alamat_penitip'):
+            errors.append('Alamat pengirim wajib diisi.')
+        if not post.get('nama_penerima'):
+            errors.append('Nama penerima wajib diisi.')
+        if not post.get('alamat_penerima'):
+            errors.append('Alamat penerima wajib diisi.')
+
+        # Parse tanaman
+        tanaman_list = []
+        idx = 0
+        while post.get(f'tanaman_nama_{idx}'):
+            nama = post.get(f'tanaman_nama_{idx}', '').strip()
+            jumlah_raw = post.get(f'tanaman_jumlah_{idx}', '1')
+            ukuran = post.get(f'tanaman_ukuran_{idx}', 'sedang')
+            kondisi = post.get(f'tanaman_kondisi_{idx}', 'belum_dicek')
+            if nama:
+                try:
+                    jumlah = int(jumlah_raw)
+                except ValueError:
+                    jumlah = 1
+                tanaman_list.append({
+                    'nama_tanaman': nama,
+                    'jumlah': jumlah,
+                    'ukuran': ukuran,
+                    'kondisi': kondisi,
+                })
+            idx += 1
+
+        if not tanaman_list:
+            errors.append('Minimal satu tanaman harus diisi.')
+
+        if errors:
+            return request.render('agf_cargo.admin_form_pesanan_baru', {
+                'batch': batch_aktif,
+                'errors': errors,
+                'post': post,
+                'user_initials': self._get_user_initials(),
+            })
+
+        try:
+            kargo = request.env['agf.kargo'].create({
+                'nama_penitip': post.get('nama_penitip'),
+                'hp_penitip': post.get('hp_penitip'),
+                'email_penitip': post.get('email_penitip'),
+                'alamat_penitip': post.get('alamat_penitip'),
+                'nama_penerima': post.get('nama_penerima'),
+                'hp_penerima': post.get('hp_penerima', ''),
+                'email_penerima': post.get('email_penerima', ''),
+                'alamat_penerima': post.get('alamat_penerima'),
+                'negara_tujuan': post.get('negara_tujuan', ''),
+                'layanan_lokal': post.get('layanan_lokal', 'reguler'),
+                'additional_packaging': post.get('additional_packaging', 'none'),
+                'winter_packaging': post.get('winter_packaging', 'none'),
+                'catatan': post.get('catatan', ''),
+                'batch_id': batch_aktif.id,
+                'status': 'hold',
+            })
+
+            # Create tanaman items
+            for t in tanaman_list:
+                t['kargo_id'] = kargo.id
+                request.env['agf.tanaman.item'].create(t)
+
+            # Handle bukti transaksi upload
+            bukti = request.httprequest.files.get('bukti_transaksi')
+            if bukti and bukti.filename:
+                import base64
+                kargo.write({
+                    'bukti_transaksi': base64.b64encode(bukti.read()),
+                    'bukti_transaksi_nama': bukti.filename,
+                })
+
+            return request.redirect(f'/agf/admin/pesanan/{kargo.id}')
+        except Exception as e:
+            _logger.error(f"CREATE PESANAN ERROR: {e}")
+            return request.render('agf_cargo.admin_form_pesanan_baru', {
+                'batch': batch_aktif,
+                'errors': [str(e)],
+                'post': post,
+                'user_initials': self._get_user_initials(),
+            })
+
     @http.route('/agf/admin/pesanan/<int:kargo_id>', type='http', auth='user', website=True)
     def detail_pesanan(self, kargo_id, **kwargs):
         kargo = request.env['agf.kargo'].browse(kargo_id)
         if not kargo.exists():
             return request.not_found()
-        return request.render('agf_cargo.admin_detail_pesanan_aktif', {'kargo': kargo, 'user_initials': self._get_user_initials(),})
+        return request.render('agf_cargo.admin_detail_pesanan', {
+            'kargo': kargo,
+            'user_initials': self._get_user_initials(),
+        })
 
-    @http.route('/agf/admin/pesanan/baru', type='http', auth='user', website=True)
-    def form_pesanan(self, **kwargs):
-        batch_aktif = request.env['agf.batch'].search([('status', '=', 'aktif')], limit=1)
-        return request.render('agf_cargo.admin_form_pesanan', {'batch_aktif': batch_aktif, 'user_initials': self._get_user_initials(),})
+    @http.route('/agf/admin/pesanan/<int:kargo_id>/edit', type='http', auth='user', website=True)
+    def form_pesanan_edit(self, kargo_id, **kwargs):
+        kargo = request.env['agf.kargo'].browse(kargo_id)
+        if not kargo.exists():
+            return request.not_found()
+        return request.render('agf_cargo.admin_form_pesanan_edit', {
+            'kargo': kargo,
+            'user_initials': self._get_user_initials(),
+        })
+
+    @http.route('/agf/admin/pesanan/<int:kargo_id>/edit/submit', type='http', auth='user', methods=['POST'], website=True, csrf=True)
+    def form_pesanan_edit_submit(self, kargo_id, **post):
+        import logging
+        _logger = logging.getLogger(__name__)
+        kargo = request.env['agf.kargo'].browse(kargo_id)
+        if not kargo.exists():
+            return request.not_found()
+
+        try:
+            kargo.write({
+                'nama_penitip': post.get('nama_penitip', kargo.nama_penitip),
+                'hp_penitip': post.get('hp_penitip', kargo.hp_penitip),
+                'email_penitip': post.get('email_penitip', kargo.email_penitip),
+                'alamat_penitip': post.get('alamat_penitip', kargo.alamat_penitip),
+                'nama_penerima': post.get('nama_penerima', kargo.nama_penerima),
+                'hp_penerima': post.get('hp_penerima', kargo.hp_penerima),
+                'email_penerima': post.get('email_penerima', kargo.email_penerima),
+                'alamat_penerima': post.get('alamat_penerima', kargo.alamat_penerima),
+                'negara_tujuan': post.get('negara_tujuan', kargo.negara_tujuan),
+                'layanan_lokal': post.get('layanan_lokal', kargo.layanan_lokal),
+                'additional_packaging': post.get('additional_packaging', kargo.additional_packaging),
+                'winter_packaging': post.get('winter_packaging', kargo.winter_packaging),
+                'catatan': post.get('catatan', ''),
+                'status': post.get('status', kargo.status),
+            })
+
+            # Update tanaman — hapus semua lalu buat ulang
+            kargo.tanaman_ids.unlink()
+            idx = 0
+            while post.get(f'tanaman_nama_{idx}'):
+                nama = post.get(f'tanaman_nama_{idx}', '').strip()
+                if nama:
+                    try:
+                        jumlah = int(post.get(f'tanaman_jumlah_{idx}', '1'))
+                    except ValueError:
+                        jumlah = 1
+                    request.env['agf.tanaman.item'].create({
+                        'kargo_id': kargo.id,
+                        'nama_tanaman': nama,
+                        'jumlah': jumlah,
+                        'ukuran': post.get(f'tanaman_ukuran_{idx}', 'sedang'),
+                        'kondisi': post.get(f'tanaman_kondisi_{idx}', 'belum_dicek'),
+                    })
+                idx += 1
+
+            # Handle bukti transaksi upload
+            bukti = request.httprequest.files.get('bukti_transaksi')
+            if bukti and bukti.filename:
+                import base64
+                kargo.write({
+                    'bukti_transaksi': base64.b64encode(bukti.read()),
+                    'bukti_transaksi_nama': bukti.filename,
+                })
+
+            return request.redirect(f'/agf/admin/pesanan/{kargo_id}')
+        except Exception as e:
+            _logger.error(f"EDIT PESANAN ERROR: {e}")
+            return request.render('agf_cargo.admin_form_pesanan_edit', {
+                'kargo': kargo,
+                'errors': [str(e)],
+                'user_initials': self._get_user_initials(),
+            })
+
+    @http.route('/agf/admin/pesanan/<int:kargo_id>/hapus', type='http', auth='user', methods=['POST'], website=True, csrf=True)
+    def hapus_pesanan(self, kargo_id, **kwargs):
+        kargo = request.env['agf.kargo'].browse(kargo_id)
+        if not kargo.exists():
+            return request.not_found()
+        kargo.unlink()
+        return request.redirect('/agf/admin/batch-aktif')
+
+    @http.route('/agf/admin/pesanan/<int:kargo_id>/bukti', type='http', auth='user', website=True)
+    def lihat_bukti(self, kargo_id, **kwargs):
+        kargo = request.env['agf.kargo'].browse(kargo_id)
+        if not kargo.exists() or not kargo.bukti_transaksi:
+            return request.not_found()
+        import base64
+        data = base64.b64decode(kargo.bukti_transaksi)
+        filename = kargo.bukti_transaksi_nama or 'bukti_transaksi'
+        mime = 'application/pdf' if filename.endswith('.pdf') else 'image/jpeg'
+        return request.make_response(data, headers=[
+            ('Content-Type', mime),
+            ('Content-Disposition', f'inline; filename="{filename}"'),
+        ])
 
     @http.route('/agf/admin/qr', type='http', auth='user', website=True)
     def qr_management(self, **kwargs):
