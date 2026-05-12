@@ -1,41 +1,96 @@
-// ── Customer Portal — AGF Cargo ──
+// ── Customer Portal - AGF Cargo ──
 // Mobile-first. Breakpoints: tablet 768px+, desktop 1024px+
 // Color theme: Forest Green / Mint / Leaf Green CTA
 
-// Lucide icon defaults (shared across portals)
-.agf-icon {
-    display: inline-block;
-    vertical-align: middle;
-    stroke: currentColor;
-    stroke-width: 1.75;
-    fill: none;
-    flex-shrink: 0;
+// AGF Customer Portal - Styles
+
+// ------------------------ Variables ------------------------
+$green-dark:    #1B4332;
+$green-mid:     #2A7A45;
+$green-light:   #D1FAE5;
+$yellow:        #F59E0B;
+$yellow-light:  #FEF3C7;
+$red:           #EF4444;
+$red-light:     #FEE2E2;
+$grey-border:   #E5E7EB;
+$grey-text:     #6B7280;
+$grey-bg:       #F9FAFB;
+$white:         #FFFFFF;
+
+// ------------------------ LAYOUT - shared wrapper ------------------------
+
+.agf-portal {
+    min-height: 100vh;
+    background: $white;
+    font-family: 'Inter', sans-serif;
+    max-width: 480px;
+    margin: 0 auto;
+    padding-bottom: 40px;
 }
 
-.agf-customer {
-    width: 100%;
-    font-family: $font-family-base;
-    background: $customer-bg-page;
-    color: #1A1A1A;
+// ------------------------ TABS ------------------------
 
-    @media (min-width: $bp-tablet) {
-        max-width: 720px;
-        margin: 0 auto;
+.agf-portal__tabs {
+    display: flex;
+    border-bottom: 2px solid $grey-border;
+    background: $white;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.agf-portal__tab {
+    flex: 1;
+    text-align: center;
+    padding: 14px 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: $grey-text;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 0.2s, border-color 0.2s;
+
+    &:hover {
+        color: $green-mid;
+        text-decoration: none;
     }
 
-    @media (min-width: $bp-desktop) {
-        max-width: 960px;
+    &--active {
+        color: $green-mid;
+        border-bottom-color: $green-mid;
+        font-weight: 600;
     }
 }
 
-// AGF Customer Portal - Base Styles
+// ------------------------ HEADER ------------------------
+
+.agf-portal__header {
+    padding: 24px 20px 16px;
+}
+
+.agf-portal__title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 6px;
+}
+
+.agf-portal__subtitle {
+    font-size: 13px;
+    color: $grey-text;
+    line-height: 1.6;
+    margin: 0;
+}
+
+// ------------------------ LANDING PAGE ------------------------
 
 .agf-landing {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    background-color: #1B4332;
-    color: #ffffff;
+    background: $green-dark;
+    color: $white;
     font-family: 'Inter', sans-serif;
 
     &__hero {
@@ -48,9 +103,7 @@
         text-align: center;
     }
 
-    &__logo-wrap {
-        margin-bottom: 32px;
-    }
+    &__logo-wrap { margin-bottom: 32px; }
 
     &__logo {
         width: 160px;
@@ -86,8 +139,8 @@
         display: flex;
         justify-content: space-around;
         padding: 24px;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        border-top: 1px solid rgba(255,255,255,0.1);
+        border-bottom: 1px solid rgba(255,255,255,0.1);
     }
 
     &__stat-item {
@@ -119,8 +172,8 @@
         width: 100%;
         max-width: 360px;
         padding: 16px;
-        background-color: #ffffff;
-        color: #1B4332;
+        background: $white;
+        color: $green-dark;
         text-align: center;
         font-weight: 700;
         font-size: 16px;
@@ -128,8 +181,8 @@
         text-decoration: none;
 
         &:hover {
-            background-color: #f0f0f0;
-            color: #1B4332;
+            background: #f0f0f0;
+            color: $green-dark;
             text-decoration: none;
         }
     }
@@ -140,5 +193,548 @@
         font-size: 12px;
         opacity: 0.6;
         margin-top: auto;
+    }
+}
+
+// ------------------------ TRACKING - search form ------------------------
+
+.agf-tracking__form {
+    padding: 0 20px 16px;
+}
+
+.agf-tracking__input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid $grey-border;
+    border-radius: 10px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+
+    &:focus {
+        border-color: $green-mid;
+    }
+}
+
+.agf-tracking__error {
+    margin: 0 20px 16px;
+    padding: 12px 16px;
+    background: $red-light;
+    border-radius: 10px;
+    color: $red;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+// ------------------------ TRACKING - result ------------------------
+
+.agf-tracking__result {
+    padding: 0 20px;
+}
+
+.agf-tracking__badge-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.agf-tracking__badge {
+    padding: 4px 12px;
+    background: $green-light;
+    color: $green-mid;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+
+    &--ups {
+        background: #EDE9FE;
+        color: #7C3AED;
+    }
+}
+
+.agf-tracking__wa-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: #25D366;
+    color: $white;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    margin-left: auto;
+
+    &:hover {
+        background: #1ebe5d;
+        color: $white;
+        text-decoration: none;
+    }
+}
+
+// ------------------------ TIMELINE ------------------------
+
+.agf-tracking__timeline {
+    position: relative;
+    padding-left: 28px;
+
+    &::before {
+        content: '';
+        position: absolute;
+        left: 7px;
+        top: 8px;
+        bottom: 8px;
+        width: 2px;
+        background: $grey-border;
+    }
+}
+
+.agf-timeline__item {
+    position: relative;
+    padding-bottom: 24px;
+
+    &--pending {
+        .agf-timeline__dot {
+            background: $grey-border;
+            border-color: $grey-border;
+        }
+        .agf-timeline__step-name {
+            color: #9CA3AF;
+        }
+    }
+
+    &--done {
+        .agf-timeline__dot {
+            background: $green-mid;
+            border-color: $green-mid;
+        }
+    }
+
+    &--active {
+        .agf-timeline__dot {
+            background: $yellow;
+            border-color: $yellow;
+            box-shadow: 0 0 0 4px $yellow-light;
+        }
+        .agf-timeline__step-name {
+            color: #92400E;
+            font-weight: 600;
+        }
+    }
+}
+
+.agf-timeline__dot {
+    position: absolute;
+    left: -24px;
+    top: 4px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid $grey-border;
+    background: $white;
+}
+
+.agf-timeline__content {
+    padding-left: 4px;
+}
+
+.agf-timeline__step-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #111827;
+    margin: 0 0 4px;
+}
+
+.agf-timeline__meta {
+    font-size: 12px;
+    color: $grey-text;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin: 0 0 8px;
+    flex-wrap: wrap;
+}
+
+.agf-timeline__photos {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+}
+
+.agf-timeline__photo {
+    width: 72px;
+    height: 72px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid $grey-border;
+}
+
+.agf-timeline__status-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-bottom: 8px;
+
+    &--green {
+        background: $green-light;
+        color: $green-mid;
+    }
+
+    &--yellow {
+        background: $yellow-light;
+        color: #92400E;
+    }
+
+    &--red {
+        background: $red-light;
+        color: $red;
+    }
+}
+
+.agf-timeline__note {
+    font-size: 12px;
+    color: $grey-text;
+    font-style: italic;
+    margin: 4px 0 8px;
+}
+
+.agf-timeline__action {
+    margin-top: 8px;
+    padding: 12px;
+    background: $grey-bg;
+    border-radius: 10px;
+    border: 1px solid $grey-border;
+
+    &--done {
+        background: $green-light;
+        border-color: #A7F3D0;
+        color: $green-mid;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 13px;
+        font-weight: 500;
+    }
+}
+
+.agf-timeline__action-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #111827;
+    margin: 0 0 4px;
+}
+
+.agf-timeline__action-price {
+    font-size: 13px;
+    color: $grey-text;
+    margin: 0 0 8px;
+}
+
+.agf-timeline__file-input {
+    display: none;
+}
+
+.agf-timeline__upload-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: $green-mid;
+    color: $white;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover { background: darken($green-mid, 8%); }
+}
+
+.agf-timeline__confirm-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 20px;
+    background: $green-mid;
+    color: $white;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 4px;
+
+    &:hover { background: darken($green-mid, 8%); }
+}
+
+// ------------------------ FORM PENDAFTARAN ------------------------
+
+.agf-form__section {
+    margin: 0 20px 16px;
+    border: 1px solid $grey-border;
+    border-radius: 12px;
+    overflow: hidden;
+
+    &--info {
+        border-color: #BFDBFE;
+        background: #EFF6FF;
+    }
+}
+
+.agf-form__section-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 16px;
+    background: $grey-bg;
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+    border-bottom: 1px solid $grey-border;
+
+    .agf-form__section--info & {
+        background: #DBEAFE;
+        border-bottom-color: #BFDBFE;
+        color: #1E40AF;
+    }
+}
+
+.agf-form__tnc {
+    padding: 12px 16px;
+
+    p {
+        font-size: 12px;
+        color: #1E40AF;
+        margin: 0 0 6px;
+        line-height: 1.5;
+
+        &:last-child { margin-bottom: 0; }
+    }
+}
+
+.agf-form__fields {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.agf-form__field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.agf-form__label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #374151;
+}
+
+.agf-form__required {
+    color: $red;
+    margin-left: 2px;
+}
+
+.agf-form__input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid $grey-border;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    background: $white;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+    font-family: inherit;
+
+    &:focus {
+        border-color: $green-mid;
+    }
+
+    &--textarea {
+        resize: vertical;
+        min-height: 80px;
+    }
+
+    &--sm {
+        width: auto;
+        flex: 1;
+    }
+}
+
+// ------------------------ Tanaman rows ------------------------
+.agf-form__tanaman-row {
+    padding: 12px 16px;
+    border-bottom: 1px solid $grey-border;
+
+    &:last-child { border-bottom: none; }
+}
+
+.agf-form__tanaman-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.agf-form__tanaman-meta {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+}
+
+.agf-form__btn-add {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 12px 16px 16px;
+    padding: 8px 16px;
+    background: $white;
+    border: 1.5px dashed $green-mid;
+    border-radius: 8px;
+    color: $green-mid;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover { background: $green-light; }
+}
+
+.agf-form__btn-remove {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    background: $white;
+    border: 1px solid $red;
+    border-radius: 8px;
+    color: $red;
+    font-size: 12px;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background 0.2s;
+
+    &:hover { background: $red-light; }
+}
+
+// ------------------------ Submit button ------------------------
+.agf-form__submit-wrap {
+    padding: 8px 20px 24px;
+}
+
+.agf-form__btn-submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 14px;
+    background: $green-dark;
+    color: $white;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover { background: darken($green-dark, 5%); }
+}
+
+// ------------------------ Sukses state ------------------------
+.agf-form__success {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px 24px;
+    text-align: center;
+}
+
+.agf-form__success-icon {
+    margin-bottom: 20px;
+}
+
+.agf-form__success-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 10px;
+}
+
+.agf-form__success-sub {
+    font-size: 14px;
+    color: $grey-text;
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+.agf-form__nomor-card {
+    width: 100%;
+    border: 1.5px solid $green-light;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.agf-form__nomor-item {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    text-align: left;
+}
+
+.agf-form__nomor-divider {
+    height: 1px;
+    background: $green-light;
+}
+
+.agf-form__nomor-label {
+    font-size: 12px;
+    color: $grey-text;
+}
+
+.agf-form__nomor-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: $green-mid;
+    letter-spacing: 1px;
+}
+
+.agf-form__success-hint {
+    font-size: 13px;
+    color: $grey-text;
+    margin-bottom: 24px;
+
+    a {
+        color: $green-mid;
+        font-weight: 500;
+    }
+}
+
+.agf-form__btn-new {
+    display: inline-block;
+    padding: 12px 32px;
+    background: $green-dark;
+    color: $white;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+        background: darken($green-dark, 5%);
+        color: $white;
+        text-decoration: none;
     }
 }
