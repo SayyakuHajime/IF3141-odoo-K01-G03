@@ -9,12 +9,27 @@
         'security/groups.xml',
         'security/ir.model.access.csv',
         'data/sequences.xml',
+        
         'views/assets.xml',  
-        'views/admin/base_layout.xml',
+        
+        # Warehouse views (Hazim)
+        'views/warehouse/wh_landing.xml',
+        'views/warehouse/wh_daftar_pesanan.xml',
+        'views/warehouse/wh_detail_pesanan.xml',
+        'views/warehouse/wh_update_status.xml',
+        
+        # Admin Layout Base
+        'views/admin/admin_layout.xml',
+        
+        # Admin views 
         'views/admin/admin_dashboard.xml',
         'views/admin/batch.xml', 
         'views/admin/pesanan.xml', 
         'views/admin/qr.xml',
+        'views/admin/admin_riwayat_batch.xml',
+        'views/admin/admin_detail_batch.xml',
+        'views/admin/admin_detail_pesanan_inactive.xml',
+        'views/admin/admin_pengguna.xml',
     ],
     'installable': True,
     'application': True,

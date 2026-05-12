@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="warehouse_detail_pesanan" name="Warehouse — Detail Pesanan">
+        <t t-call="website.layout">
+            <t t-set="no_header" t-value="1"/>
+            <t t-set="no_footer" t-value="1"/>
+            <t t-set="editable" t-value="0"/>
+            <div class="agf-wh">
+
+                <!-- Nav -->
+                <nav class="agf-wh-nav">
+                    <a href="/agf/warehouse/pesanan" class="agf-wh-nav__back">
+                        <i data-lucide="chevron-left" style="width:22px;height:22px"/>
+                    </a>
+                    <span class="agf-wh-nav__title">
+                        <t t-esc="kargo.nomor_penitip"/>
+                    </span>
+                    <span t-attf-class="agf-wh-pill agf-wh-pill--#{kargo.status}">
+                        <t t-esc="kargo.status.capitalize()"/>
+                    </span>
+                </nav>
+
+                <div class="agf-wh-sections-grid">
+
+                    <!-- Info Pengiriman -->
+                    <div class="agf-wh-section" style="margin-top:4px">
+                        <div class="agf-wh-section__label">
+                            <i data-lucide="send" style="width:13px;height:13px"/>
+                            Info Pengiriman
+                        </div>
+                        <dl class="agf-wh-dl">
+                            <dt><i data-lucide="user"     style="width:13px;height:13px"/> Pengirim</dt>
+                            <dd><t t-esc="kargo.nama_penitip"/></dd>
+
+                            <dt><i data-lucide="phone"    style="width:13px;height:13px"/> HP</dt>
+                            <dd><t t-esc="kargo.hp_penitip"/></dd>
+
+                            <dt><i data-lucide="user-check" style="width:13px;height:13px"/> Penerima</dt>
+                            <dd><t t-esc="kargo.nama_penerima"/></dd>
+
+                            <dt><i data-lucide="phone"    style="width:13px;height:13px"/> HP</dt>
+                            <dd><t t-esc="kargo.hp_penerima"/></dd>
+
+                            <dt><i data-lucide="map-pin"  style="width:13px;height:13px"/> Tujuan</dt>
+                            <dd><t t-esc="kargo.kota_tujuan or '—'"/></dd>
+
+                            <dt><i data-lucide="calendar" style="width:13px;height:13px"/> Berangkat</dt>
+                            <dd><t t-esc="kargo.tanggal_keberangkatan or '—'"/></dd>
+
+                            <dt><i data-lucide="truck"    style="width:13px;height:13px"/> Layanan</dt>
+                            <dd>
+                                <t t-if="kargo.layanan_lokal == 'reguler'">Reguler 3–5 hari</t>
+                                <t t-elif="kargo.layanan_lokal == 'next_day'">Next Day</t>
+                                <t t-elif="kargo.layanan_lokal == 'southwest'">SouthWest Cargo</t>
+                                <t t-else="">—</t>
+                            </dd>
+                        </dl>
+                    </div>
+
+                    <!-- Daftar tanaman -->
+                    <div class="agf-wh-section">
+                        <div class="agf-wh-section__label">
+                            <i data-lucide="leaf" style="width:13px;height:13px"/>
+                            Tanaman (<t t-esc="kargo.total_tanaman"/> pcs)
+                        </div>
+                        <t t-if="kargo.tanaman_ids">
+                            <t t-foreach="kargo.tanaman_ids" t-as="item">
+                                <div class="agf-wh-plant-row">
+                                    <div class="agf-wh-plant-row__left">
+                                        <div class="agf-wh-plant-row__name">
+                                            <i data-lucide="sprout" style="width:13px;height:13px;color:#2A7A45"/>
+                                            <t t-esc="item.nama_tanaman"/>
+                                        </div>
+                                        <div class="agf-wh-plant-row__meta">
+                                            <t t-esc="item.ukuran.capitalize() if item.ukuran else '—'"/>
+                                        </div>
+                                    </div>
+                                    <div class="agf-wh-plant-row__right">
+                                        <div class="agf-wh-plant-row__qty">×<t t-esc="item.jumlah"/></div>
+                                        <span t-attf-class="agf-wh-pill agf-wh-pill--#{item.kondisi}">
+                                            <t t-if="item.kondisi == 'sehat'">Sehat</t>
+                                            <t t-elif="item.kondisi == 'kurang_sehat'">Kurang Sehat</t>
+                                            <t t-elif="item.kondisi == 'bermasalah'">Bermasalah</t>
+                                            <t t-else="">Belum Dicek</t>
+                                        </span>
+                                    </div>
+                                </div>
+                            </t>
+                        </t>
+                        <t t-else="">
+                            <div style="font-size:12px;color:#AAA;text-align:center;padding:16px 0">
+                                Belum ada data tanaman
+                            </div>
+                        </t>
+                    </div>
+
+                </div><!-- /.agf-wh-sections-grid -->
+
+                <!-- Riwayat tahapan -->
+                <div class="agf-wh-section" style="margin-bottom:0">
+                    <div class="agf-wh-section__label">
+                        <i data-lucide="clock" style="width:13px;height:13px"/>
+                        Riwayat Tahapan
+                    </div>
+                </div>
+                <div class="agf-wh-timeline">
+                    <t t-if="kargo.tahapan_ids">
+                        <t t-foreach="kargo.tahapan_ids" t-as="tahap">
+                            <div class="agf-wh-timeline__item">
+                                <div class="agf-wh-timeline__dot"/>
+                                <div class="agf-wh-timeline__content">
+                                    <div class="agf-wh-timeline__tahap">
+                                        <t t-esc="dict(tahap._fields['tahap'].selection).get(tahap.tahap, tahap.tahap)"/>
+                                    </div>
+                                    <div class="agf-wh-timeline__meta">
+                                        <i data-lucide="clock"   style="width:11px;height:11px"/>
+                                        <t t-esc="tahap.timestamp"/>
+                                        <t t-if="tahap.lokasi">
+                                            <i data-lucide="map-pin" style="width:11px;height:11px"/>
+                                            <t t-esc="tahap.lokasi"/>
+                                        </t>
+                                        <t t-if="tahap.petugas_id">
+                                            <i data-lucide="user" style="width:11px;height:11px"/>
+                                            <t t-esc="tahap.petugas_id.name"/>
+                                        </t>
+                                    </div>
+                                    <t t-if="tahap.cek_daun or tahap.cek_akar or tahap.cek_hama">
+                                        <div class="agf-wh-timeline__checks">
+                                            <t t-if="tahap.cek_daun">
+                                                <span><i data-lucide="leaf"  style="width:10px;height:10px"/> Daun ✓</span>
+                                            </t>
+                                            <t t-if="tahap.cek_akar">
+                                                <span><i data-lucide="sprout" style="width:10px;height:10px"/> Akar ✓</span>
+                                            </t>
+                                            <t t-if="tahap.cek_hama">
+                                                <span><i data-lucide="shield-check" style="width:10px;height:10px"/> Bebas Hama</span>
+                                            </t>
+                                        </div>
+                                    </t>
+                                    <t t-if="tahap.catatan">
+                                        <div class="agf-wh-timeline__note">"<t t-esc="tahap.catatan"/>"</div>
+                                    </t>
+                                    <t t-if="tahap.foto_ids">
+                                        <div class="agf-wh-timeline__fotos">
+                                            <t t-foreach="tahap.foto_ids" t-as="foto">
+                                                <img t-attf-src="/web/image/ir.attachment/#{foto.id}/datas"
+                                                     t-att-alt="foto.name"/>
+                                            </t>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                        </t>
+                    </t>
+                    <t t-else="">
+                        <div class="agf-wh-empty">
+                            <div class="agf-wh-empty__icon">
+                                <i data-lucide="clipboard" style="width:40px;height:40px;color:#CCC"/>
+                            </div>
+                            <div class="agf-wh-empty__text">Belum ada riwayat tahapan</div>
+                        </div>
+                    </t>
+                </div>
+
+                <!-- Sticky CTA -->
+                <t t-if="kargo.status != 'done'">
+                    <div class="agf-wh-footer-cta">
+                        <a t-attf-href="/agf/warehouse/update/#{kargo.id}" class="agf-wh-btn-cta">
+                            <i data-lucide="clipboard-edit" style="width:18px;height:18px"/>
+                            Update Status
+                        </a>
+                    </div>
+                </t>
+
+            </div>
+
+            <script src="https://cdn.jsdelivr.net/npm/lucide@0.462.0/dist/umd/lucide.min.js"/>
+            <script>lucide.createIcons();</script>
+        </t>
+    </template>
+</odoo>

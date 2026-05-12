@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="admin_layout" name="AGF Admin — Layout Shared">
+        <t t-call="website.layout">
+            <t t-set="no_header" t-value="1"/>
+            <t t-set="no_footer" t-value="1"/>
+            <t t-set="editable" t-value="0"/>
+
+            <div class="agf-admin">
+                <div class="agf-admin-layout">
+
+                    <!-- ══ SIDEBAR ══ -->
+                    <aside class="agf-admin-sidebar" id="adminSidebar">
+                        <div class="agf-admin-sidebar__logo">
+                            <i data-lucide="package" style="width:20px;height:20px"/>
+                            <span>AGF Cargo</span>
+                        </div>
+
+                        <nav class="agf-admin-nav">
+                            <div class="agf-nav-section-label">Overview</div>
+                            <a href="/agf/admin/dashboard"
+                               t-att-class="'agf-nav-item' + (' agf-nav-item--active' if current_page == 'dashboard' else '')">
+                                <i data-lucide="layout-dashboard" style="width:15px;height:15px"/>
+                                Dashboard
+                            </a>
+
+                            <div class="agf-nav-section-label">Operasional</div>
+                            <a href="/agf/admin/pesanan"
+                               t-att-class="'agf-nav-item' + (' agf-nav-item--active' if current_page == 'pesanan' else '')">
+                                <i data-lucide="package-check" style="width:15px;height:15px"/>
+                                Batch Aktif
+                            </a>
+                            <a href="/agf/admin/batch"
+                               t-att-class="'agf-nav-item' + (' agf-nav-item--active' if current_page == 'batch' else '')">
+                                <i data-lucide="history" style="width:15px;height:15px"/>
+                                Riwayat Batch
+                            </a>
+                            <a href="/agf/admin/qr"
+                               t-att-class="'agf-nav-item' + (' agf-nav-item--active' if current_page == 'qr' else '')">
+                                <i data-lucide="qr-code" style="width:15px;height:15px"/>
+                                QR Code
+                            </a>
+
+                            <div class="agf-nav-section-label">Admin</div>
+                            <a href="/agf/admin/pengguna"
+                               t-att-class="'agf-nav-item' + (' agf-nav-item--active' if current_page == 'pengguna' else '')">
+                                <i data-lucide="users" style="width:15px;height:15px"/>
+                                Pengguna
+                            </a>
+                        </nav>
+                    </aside>
+
+                    <!-- ══ MAIN AREA ══ -->
+                    <div class="agf-admin-main">
+
+                        <!-- Topbar -->
+                        <header class="agf-admin-topbar">
+                            <div class="agf-admin-topbar__left">
+                                <button class="agf-sidebar-toggle" id="sidebarToggle" type="button">
+                                    <i data-lucide="menu" style="width:20px;height:20px"/>
+                                </button>
+                                <span class="agf-admin-topbar__title">
+                                    <t t-esc="page_title or 'Admin'"/>
+                                </span>
+                            </div>
+                            <div class="agf-admin-topbar__right">
+                                <span class="agf-admin-topbar__user">
+                                    <i data-lucide="circle-user" style="width:16px;height:16px"/>
+                                    <t t-esc="user.name"/>
+                                </span>
+                                <a href="/web/session/logout" class="agf-admin-topbar__logout">
+                                    <i data-lucide="log-out" style="width:15px;height:15px"/>
+                                    Keluar
+                                </a>
+                            </div>
+                        </header>
+
+                        <!-- Page Content -->
+                        <main class="agf-admin-content">
+                            <t t-out="0"/>
+                        </main>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile overlay -->
+            <div class="agf-sidebar-overlay" id="sidebarOverlay"/>
+
+            <script src="https://cdn.jsdelivr.net/npm/lucide@0.462.0/dist/umd/lucide.min.js"/>
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    lucide.createIcons();
+
+                    var toggle = document.getElementById('sidebarToggle');
+                    var sidebar = document.getElementById('adminSidebar');
+                    var overlay = document.getElementById('sidebarOverlay');
+
+                    function openSidebar() {
+                        sidebar.classList.add('agf-admin-sidebar--open');
+                        overlay.classList.add('agf-sidebar-overlay--show');
+                    }
+                    function closeSidebar() {
+                        sidebar.classList.remove('agf-admin-sidebar--open');
+                        overlay.classList.remove('agf-sidebar-overlay--show');
+                    }
+
+                    if (toggle) toggle.addEventListener('click', function () {
+                        sidebar.classList.contains('agf-admin-sidebar--open') ? closeSidebar() : openSidebar();
+                    });
+                    if (overlay) overlay.addEventListener('click', closeSidebar);
+                });
+            </script>
+        </t>
+    </template>
+</odoo>

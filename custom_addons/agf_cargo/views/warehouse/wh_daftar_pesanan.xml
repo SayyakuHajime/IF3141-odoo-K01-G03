@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="warehouse_daftar_pesanan" name="Warehouse — Daftar Pesanan &amp; Scan QR">
+        <t t-call="website.layout">
+            <t t-set="no_header" t-value="1"/>
+            <t t-set="no_footer" t-value="1"/>
+            <t t-set="editable" t-value="0"/>
+            <div class="agf-wh">
+
+                <!-- Nav bar -->
+                <nav class="agf-wh-nav">
+                    <span class="agf-wh-nav__title">
+                        <t t-if="batch"><t t-esc="batch.name"/></t>
+                        <t t-else="">Tidak Ada Batch Aktif</t>
+                    </span>
+                    <a href="/web/session/logout" class="agf-wh-nav__logout">
+                        <i data-lucide="log-out" style="width:16px;height:16px"/>
+                        Keluar
+                    </a>
+                </nav>
+
+                <!-- Tab bar -->
+                <div class="agf-wh-tabs">
+                    <a t-attf-href="/agf/warehouse/pesanan?status=#{current_status or ''}"
+                       t-attf-class="agf-wh-tabs__item #{'' if active_tab == 'scan' else 'agf-wh-tabs__item--active'}">
+                        <i data-lucide="package" style="width:16px;height:16px"/>
+                        Daftar Pesanan
+                    </a>
+                    <a href="/agf/warehouse/pesanan?tab=scan"
+                       t-attf-class="agf-wh-tabs__item #{'agf-wh-tabs__item--active' if active_tab == 'scan' else ''}">
+                        <i data-lucide="scan-line" style="width:16px;height:16px"/>
+                        Update Status
+                    </a>
+                </div>
+
+                <!-- ═══ TAB 1: DAFTAR PESANAN ═══ -->
+                <t t-if="active_tab != 'scan'">
+
+                    <t t-if="batch">
+                        <div class="agf-wh-batch-banner">
+                            <div>
+                                <div class="agf-wh-batch-banner__label">Batch Aktif</div>
+                                <div class="agf-wh-batch-banner__val">
+                                    <i data-lucide="calendar" style="width:13px;height:13px"/>
+                                    <t t-esc="batch.name"/> — Berangkat <t t-esc="batch.tanggal_keberangkatan"/>
+                                </div>
+                            </div>
+                            <div style="text-align:right">
+                                <div class="agf-wh-batch-banner__label">Pesanan</div>
+                                <div class="agf-wh-batch-banner__val" style="justify-content:flex-end">
+                                    <i data-lucide="package" style="width:13px;height:13px"/>
+                                    <t t-esc="batch.total_pesanan"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <div class="agf-wh-alert agf-wh-alert--warning">
+                            <i data-lucide="alert-triangle" style="width:16px;height:16px"/>
+                            Tidak ada batch aktif saat ini.
+                        </div>
+                    </t>
+
+                    <!-- Search (multi-word AND) -->
+                    <form class="agf-wh-search" method="get" action="/agf/warehouse/pesanan">
+                        <input type="hidden" name="tab" value="pesanan"/>
+                        <input type="hidden" name="status" t-att-value="current_status or ''"/>
+                        <div class="agf-wh-search__inner">
+                            <span class="agf-wh-search__icon">
+                                <i data-lucide="search" style="width:16px;height:16px"/>
+                            </span>
+                            <input type="text" name="search"
+                                   placeholder="Cari nama, nomor… (spasi = AND)"
+                                   t-att-value="search or ''"/>
+                            <t t-if="search">
+                                <a href="/agf/warehouse/pesanan" class="agf-wh-search__clear"
+                                   title="Hapus pencarian">
+                                    <i data-lucide="x" style="width:16px;height:16px"/>
+                                </a>
+                            </t>
+                        </div>
+                        <!-- Token pills — show how query was parsed -->
+                        <t t-if="search_tokens and len(search_tokens) > 1">
+                            <div class="agf-wh-search__tokens">
+                                <t t-foreach="search_tokens" t-as="tok">
+                                    <span class="agf-wh-search__token">
+                                        <i data-lucide="search" style="width:10px;height:10px"/>
+                                        <t t-esc="tok"/>
+                                    </span>
+                                </t>
+                                <span style="font-size:10px;color:#AAA">semua harus cocok</span>
+                            </div>
+                        </t>
+                    </form>
+
+                    <!-- Status filter -->
+                    <div class="agf-wh-filter">
+                        <a t-attf-href="/agf/warehouse/pesanan?search=#{search or ''}"
+                           t-attf-class="agf-wh-filter__pill #{'' if current_status else 'agf-wh-filter__pill--active'}">
+                            Semua
+                        </a>
+                        <t t-foreach="[('hold','Hold'),('arrival','Arrival'),('processing','Processing'),('shipped','Shipped'),('done','Done')]" t-as="s">
+                            <a t-attf-href="/agf/warehouse/pesanan?status=#{s[0]}&amp;search=#{search or ''}"
+                               t-attf-class="agf-wh-filter__pill #{'agf-wh-filter__pill--active' if current_status == s[0] else ''}">
+                                <t t-esc="s[1]"/>
+                            </a>
+                        </t>
+                    </div>
+
+                    <!-- Order list -->
+                    <div class="agf-wh-card-list">
+                        <t t-if="kargo_list">
+                            <t t-foreach="kargo_list" t-as="kargo">
+                                <a t-attf-href="/agf/warehouse/pesanan/#{kargo.id}" class="agf-wh-card">
+                                    <div class="agf-wh-card__head">
+                                        <div>
+                                            <div class="agf-wh-card__nomor">
+                                                <t t-esc="kargo.nomor_penitip"/>
+                                            </div>
+                                            <div class="agf-wh-card__nama">
+                                                <t t-esc="kargo.nama_penitip"/>
+                                            </div>
+                                            <div class="agf-wh-card__sub">
+                                                <i data-lucide="arrow-right" style="width:12px;height:12px"/>
+                                                <t t-esc="kargo.nama_penerima"/>
+                                            </div>
+                                        </div>
+                                        <span t-attf-class="agf-wh-pill agf-wh-pill--#{kargo.status}">
+                                            <t t-esc="kargo.status.capitalize()"/>
+                                        </span>
+                                    </div>
+                                    <div class="agf-wh-card__foot">
+                                        <span class="agf-wh-card__foot-item">
+                                            <i data-lucide="leaf" style="width:12px;height:12px"/>
+                                            <t t-esc="kargo.total_tanaman"/> tanaman
+                                        </span>
+                                        <span class="agf-wh-card__foot-item">
+                                            <i data-lucide="hash" style="width:12px;height:12px"/>
+                                            <t t-esc="kargo.nomor_penerima"/>
+                                        </span>
+                                    </div>
+                                </a>
+                            </t>
+                        </t>
+                        <t t-else="">
+                            <div class="agf-wh-empty">
+                                <div class="agf-wh-empty__icon">
+                                    <i data-lucide="inbox" style="width:40px;height:40px;color:#CCC"/>
+                                </div>
+                                <div class="agf-wh-empty__text">Belum ada pesanan</div>
+                            </div>
+                        </t>
+                    </div>
+
+                </t>
+
+                <!-- ═══ TAB 2: SCAN QR ═══ -->
+                <t t-if="active_tab == 'scan'">
+                    <div class="agf-wh-scan">
+
+                        <div class="agf-wh-scan__heading">
+                            <i data-lucide="scan-line" style="width:20px;height:20px"/>
+                            Arahkan kamera ke QR tag tanaman
+                        </div>
+
+                        <div class="agf-wh-scan__box">
+                            <div id="qr-reader"/>
+                        </div>
+                        <div class="agf-wh-scan__hint">
+                            <i data-lucide="info" style="width:13px;height:13px"/>
+                            Kamera aktif otomatis. Gunakan webcam atau kamera belakang.
+                        </div>
+
+                        <div id="scan-result" class="agf-wh-scan__result">
+                            <div class="agf-wh-scan__result-label">Hasil Scan</div>
+                            <div id="result-nomor" class="agf-wh-scan__result-nomor"/>
+                            <div id="result-nama"  class="agf-wh-scan__result-nama">
+                                <i data-lucide="user" style="width:13px;height:13px"/>
+                                <span id="result-nama-text"/>
+                            </div>
+                            <a id="result-btn" href="#" class="agf-wh-scan__result-btn">
+                                <i data-lucide="clipboard-edit" style="width:16px;height:16px"/>
+                                Lihat Detail &amp; Update Status
+                            </a>
+                        </div>
+
+                    </div>
+
+                    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"/>
+                    <script>
+                        (function () {
+                            var resultBox = document.getElementById('scan-result');
+                            var nomorEl   = document.getElementById('result-nomor');
+                            var namaEl    = document.getElementById('result-nama-text');
+                            var btn       = document.getElementById('result-btn');
+                            var stopped   = false;
+
+                            var scanner = new Html5Qrcode('qr-reader');
+                            // Prefer back camera, fall back to any (desktop webcam)
+                            var config = { fps: 10, qrbox: { width: 260, height: 260 } };
+
+                            scanner.start(
+                                { facingMode: 'environment' },
+                                config,
+                                function (tagId) {
+                                    if (stopped) return;
+                                    stopped = true;
+                                    scanner.stop().catch(function(){});
+
+                                    fetch('/agf/warehouse/scan/result', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({
+                                            jsonrpc: '2.0', method: 'call', id: 1,
+                                            params: { tag_id: tagId }
+                                        })
+                                    })
+                                    .then(function(r){ return r.json(); })
+                                    .then(function(data) {
+                                        var res = data.result;
+                                        if (res &amp;&amp; res.found) {
+                                            nomorEl.textContent = res.kargo_ref || tagId;
+                                            namaEl.textContent  = res.nama_penitip || '—';
+                                            btn.href = '/agf/warehouse/update/' + res.kargo_id;
+                                        } else {
+                                            nomorEl.textContent = 'Tag "' + tagId + '" tidak ditemukan.';
+                                            namaEl.textContent  = '';
+                                        }
+                                        resultBox.classList.add('agf-wh-scan__result--visible');
+                                        if (window.lucide) lucide.createIcons();
+                                    })
+                                    .catch(function() {
+                                        nomorEl.textContent = 'Gagal menghubungi server.';
+                                        resultBox.classList.add('agf-wh-scan__result--visible');
+                                    });
+                                },
+                                function () {}  // per-frame error: ignore
+                            ).catch(function () {
+                                // Camera not accessible — desktop fallback message
+                                document.querySelector('.agf-wh-scan__box').innerHTML =
+                                    '<div style="padding:32px;text-align:center;color:#A83030;font-size:13px">' +
+                                    '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" style="margin-bottom:12px"><path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7 2 2 0 0 1 1.72 2v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07C9.44 17.29 8.76 16.6 8.06 15.9"/><path d="M22 16.92v3a2 2 0 0 1-2.18 2"/><line x1="2" y1="2" x2="22" y2="22"/></svg>' +
+                                    '<div>Kamera tidak dapat diakses.</div>' +
+                                    '<div style="font-size:11px;color:#888;margin-top:6px">Izinkan akses kamera di browser, lalu refresh halaman.</div>' +
+                                    '</div>';
+                            });
+                        })();
+                    </script>
+                </t>
+
+            </div>
+
+            <script src="https://cdn.jsdelivr.net/npm/lucide@0.462.0/dist/umd/lucide.min.js"/>
+            <script>lucide.createIcons();</script>
+        </t>
+    </template>
+</odoo>
