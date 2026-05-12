@@ -5,8 +5,14 @@
 .agf-admin {
     font-family: $font-family-base;
     background: $admin-content-bg;
+    overflow-y: auto;
     color: #333333;
     min-height: 100vh;
+}
+
+body.website_page {
+    overflow-y: auto !important;
+    height: auto !important;
 }
 
 .agf-admin-layout {
@@ -76,6 +82,7 @@
     flex: 1;
     min-width: 0;
     padding: 0;
+    overflow-y: auto;
     @media (min-width: $bp-desktop) { padding: 0; }
 }
 
@@ -622,7 +629,7 @@
   justify-content: space-between;
   align-items: flex-start;
   padding: 10px 0;
-  border-bottom: 1px solid var(--agf-border, #2d3748);
+  border-bottom: 1px solid #F5F5F5;
   gap: 16px;
   
   &:last-child { border-bottom: none; }
@@ -630,7 +637,7 @@
 
 .agf-info-label {
   font-size: 12px;
-  color: var(--agf-text-muted);
+  color: #888;
   min-width: 140px;
   flex-shrink: 0;
 }

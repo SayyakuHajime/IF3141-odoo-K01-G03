@@ -144,6 +144,12 @@ class AgfKargo(models.Model):
         string='Tahapan Terakhir',
         compute='_compute_tahapan_terakhir',
     )
+    
+    log_ids = fields.One2many(
+        'agf.kargo.log',
+        'kargo_id',
+        string='Log Aktivitas',
+    )
 
     @api.depends('batch_id', 'batch_id.tanggal_keberangkatan')
     def _compute_tanggal_keberangkatan(self):

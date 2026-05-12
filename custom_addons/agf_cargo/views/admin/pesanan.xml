@@ -4,178 +4,116 @@
   <!-- ============================================================
        1. DETAIL PESANAN
        ============================================================ -->
-  <template id="admin_detail_pesanan" name="Admin — Detail Pesanan">
+  <template id="admin_detail_pesanan_aktif" name="Admin — Detail Pesanan">
     <t t-call="agf_cargo.admin_base_layout">
       <t t-set="page_title">Detail Pesanan</t>
       <t t-set="active_menu">batch_aktif</t>
 
-      <div class="agf-page-header">
-        <div>
-          <div class="agf-breadcrumb">
-            <a href="/agf/admin/batch-aktif">Batch Aktif</a>
-            <span>›</span>
-            <span><t t-esc="kargo.nomor_penitip"/></span>
-          </div>
-          <h1 class="agf-page-title">
-            Detail Pesanan
-            <span t-attf-class="agf-badge agf-badge-#{kargo.status}" style="font-size:14px; vertical-align:middle; margin-left:8px;">
-              <t t-esc="kargo.status.upper()"/>
-            </span>
-          </h1>
-        </div>
-        <div style="display:flex; gap:8px;">
-          <a t-attf-href="/agf/admin/pesanan/#{kargo.id}/edit"
-             class="agf-btn agf-btn-secondary">Edit Pesanan</a>
-          <form t-attf-action="/agf/admin/pesanan/#{kargo.id}/hapus"
-                method="POST" style="display:inline;">
-            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-            <button type="submit" class="agf-btn agf-btn-danger"
-                    onclick="return confirm('Hapus pesanan ini? Tindakan tidak dapat dibatalkan.')">
-              Hapus
-            </button>
-          </form>
+      <!-- Breadcrumb -->
+      <div class="agf-admin-breadcrumb">
+        <a href="/agf/admin/dashboard">Home</a>
+        <span>›</span>
+        <a href="/agf/admin/batch-aktif">Manajemen Pesanan</a>
+        <span>›</span>
+        <span><t t-esc="kargo.nomor_penitip"/> — Detail</span>
+      </div>
+
+      <!-- Page Header -->
+      <div class="agf-admin-page-header">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <h1>Detail Pesanan</h1>
+          <t t-if="kargo.status == 'hold'"><span class="agf-pill hold">Hold</span></t>
+          <t t-elif="kargo.status == 'arrival'"><span class="agf-pill arrival">Arrival</span></t>
+          <t t-elif="kargo.status == 'processing'"><span class="agf-pill processing">Processing</span></t>
+          <t t-elif="kargo.status == 'shipped'"><span class="agf-pill shipped">Shipped</span></t>
+          <t t-elif="kargo.status == 'done'"><span class="agf-pill done">Done</span></t>
         </div>
       </div>
 
-      <div class="agf-detail-grid">
+      <!-- Two-column detail grid -->
+      <div class="agf-admin-detail-grid">
 
         <!-- Kolom kiri -->
         <div style="display:flex; flex-direction:column; gap:16px;">
 
           <!-- Informasi Pesanan -->
-          <div class="agf-card">
-            <h3 class="agf-card-title">Informasi Pesanan</h3>
-            <div class="agf-info-row">
-              <span class="agf-info-label">Order ID</span>
-              <span><t t-esc="kargo.nomor_penitip"/></span>
-            </div>
-            <div class="agf-info-row">
-              <span class="agf-info-label">Tanggal Masuk</span>
-              <span><t t-esc="kargo.tanggal_daftar and kargo.tanggal_daftar.strftime('%d %B %Y, %H:%M') or '-'"/></span>
-            </div>
-            <div class="agf-info-row">
-              <span class="agf-info-label">Tanggal Keberangkatan</span>
-              <span><t t-esc="kargo.tanggal_keberangkatan or '-'"/></span>
-            </div>
-            <div class="agf-info-row">
-              <span class="agf-info-label">Batch</span>
-              <span><t t-esc="kargo.batch_id.name if kargo.batch_id else '-'"/></span>
-            </div>
-            <div class="agf-info-row">
-              <span class="agf-info-label">Status</span>
-              <span t-attf-class="agf-badge agf-badge-#{kargo.status}">
-                <t t-esc="kargo.status.upper()"/>
-              </span>
-            </div>
-            <div class="agf-info-row">
-              <span class="agf-info-label">QR Tag</span>
-              <span>
-                <t t-if="kargo.qr_tag_id">
-                  <span class="agf-qr-chip"><t t-esc="kargo.qr_tag_id.tag_id"/></span>
-                </t>
-                <t t-else="">—</t>
-              </span>
-            </div>
-            <div class="agf-info-row">
-              <span class="agf-info-label">Bukti Transaksi</span>
-              <span>
-                <t t-if="kargo.bukti_transaksi">
-                  <a t-attf-href="/agf/admin/pesanan/#{kargo.id}/bukti"
-                     target="_blank" class="agf-link">
-                    <t t-esc="kargo.bukti_transaksi_nama or 'Lihat File'"/>
-                  </a>
-                </t>
-                <t t-else="">
-                  <span style="color: var(--agf-text-muted);">Belum diupload</span>
-                </t>
-              </span>
-            </div>
+          <div class="agf-admin-card">
+            <div class="agf-admin-card-title">Informasi Pesanan</div>
+            <table style="width:100%; font-size:13px; border-collapse:collapse;">
+              <tr style="border-bottom:1px solid #F5F5F5;">
+                <td style="padding:8px 0; color:#888; width:180px;">Order ID</td>
+                <td style="padding:8px 0; font-weight:500; color:#007A8A;"><t t-esc="kargo.nomor_penitip"/></td>
+              </tr>
+              <tr style="border-bottom:1px solid #F5F5F5;">
+                <td style="padding:8px 0; color:#888;">Tanggal Masuk</td>
+                <td style="padding:8px 0;"><t t-esc="kargo.tanggal_daftar and kargo.tanggal_daftar.strftime('%d %B %Y') or '-'"/></td>
+              </tr>
+              <tr style="border-bottom:1px solid #F5F5F5;">
+                <td style="padding:8px 0; color:#888;">Jenis Pesanan</td>
+                <td style="padding:8px 0;">Kargo — AGF Cargo</td>
+              </tr>
+              <tr style="border-bottom:1px solid #F5F5F5;">
+                <td style="padding:8px 0; color:#888;">Pelanggan</td>
+                <td style="padding:8px 0;"><t t-esc="kargo.nama_penitip"/></td>
+              </tr>
+              <tr style="border-bottom:1px solid #F5F5F5;">
+                <td style="padding:8px 0; color:#888;">Email</td>
+                <td style="padding:8px 0;"><t t-esc="kargo.email_penitip"/></td>
+              </tr>
+              <tr style="border-bottom:1px solid #F5F5F5;">
+                <td style="padding:8px 0; color:#888;">Batch</td>
+                <td style="padding:8px 0;"><t t-esc="kargo.batch_id.name if kargo.batch_id else '-'"/></td>
+              </tr>
+              <tr style="border-bottom:1px solid #F5F5F5;">
+                <td style="padding:8px 0; color:#888;">Status Saat Ini</td>
+                <td style="padding:8px 0;">
+                  <t t-if="kargo.status == 'hold'"><span class="agf-pill hold">Hold</span></t>
+                  <t t-elif="kargo.status == 'arrival'"><span class="agf-pill arrival">Arrival</span></t>
+                  <t t-elif="kargo.status == 'processing'"><span class="agf-pill processing">Processing</span></t>
+                  <t t-elif="kargo.status == 'shipped'"><span class="agf-pill shipped">Shipped</span></t>
+                  <t t-elif="kargo.status == 'done'"><span class="agf-pill done">Done</span></t>
+                </td>
+              </tr>
+              <t t-if="kargo.qr_tag_id">
+                <tr>
+                  <td style="padding:8px 0; color:#888;">QR Tag</td>
+                  <td style="padding:8px 0;">
+                    <span style="background:rgba(0,172,193,0.08); color:#007A8A; border:1px solid rgba(0,172,193,0.2); border-radius:4px; padding:2px 8px; font-size:12px; font-family:monospace;">
+                      <t t-esc="kargo.qr_tag_id.tag_id"/>
+                    </span>
+                  </td>
+                </tr>
+              </t>
+              <tr>
+                <td style="padding:8px 0; color:#888;">Bukti Transaksi</td>
+                <td style="padding:8px 0;">
+                  <t t-if="kargo.bukti_transaksi">
+                    <a t-attf-href="/agf/admin/pesanan/#{kargo.id}/bukti"
+                       target="_blank"
+                       style="color:#007A8A; text-decoration:none; font-size:13px;"
+                       t-att-title="kargo.bukti_transaksi_nama or 'Bukti Transaksi'">
+                      <i class="fa fa-file" style="margin-right:4px;"/>
+                      <t t-esc="(kargo.bukti_transaksi_nama or 'Bukti Transaksi')[:30] + ('...' if len(kargo.bukti_transaksi_nama or '') > 30 else '')"/>
+                    </a>
+                  </t>
+                  <t t-else="">
+                    <span style="color:#AAA; font-size:13px;">Belum diupload</span>
+                  </t>
+                </td>
+              </tr>
+            </table>
           </div>
 
-          <!-- Info Penitip -->
-          <div class="agf-card">
-            <h3 class="agf-card-title">Informasi Pengirim</h3>
-            <div class="agf-info-row">
-              <span class="agf-info-label">Nama</span>
-              <span><t t-esc="kargo.nama_penitip"/></span>
-            </div>
-            <div class="agf-info-row">
-              <span class="agf-info-label">Email</span>
-              <span><t t-esc="kargo.email_penitip"/></span>
-            </div>
-            <div class="agf-info-row">
-              <span class="agf-info-label">No. HP</span>
-              <span><t t-esc="kargo.hp_penitip"/></span>
-            </div>
-            <div class="agf-info-row">
-              <span class="agf-info-label">Alamat</span>
-              <span><t t-esc="kargo.alamat_penitip"/></span>
-            </div>
-          </div>
-
-          <!-- Info Penerima -->
-          <div class="agf-card">
-            <h3 class="agf-card-title">Informasi Penerima</h3>
-            <div class="agf-info-row">
-              <span class="agf-info-label">Nama</span>
-              <span><t t-esc="kargo.nama_penerima"/></span>
-            </div>
-            <div class="agf-info-row">
-              <span class="agf-info-label">Email</span>
-              <span><t t-esc="kargo.email_penerima"/></span>
-            </div>
-            <div class="agf-info-row">
-              <span class="agf-info-label">No. HP</span>
-              <span><t t-esc="kargo.hp_penerima"/></span>
-            </div>
-            <div class="agf-info-row">
-              <span class="agf-info-label">Alamat + Zip</span>
-              <span><t t-esc="kargo.alamat_penerima"/></span>
-            </div>
-            <div class="agf-info-row">
-              <span class="agf-info-label">Negara</span>
-              <span><t t-esc="kargo.negara_tujuan or '-'"/></span>
-            </div>
-          </div>
-
-          <!-- Detail Pengiriman -->
-          <div class="agf-card">
-            <h3 class="agf-card-title">Detail Pengiriman</h3>
-            <div class="agf-info-row">
-              <span class="agf-info-label">Layanan Lokal</span>
-              <span><t t-esc="dict(kargo._fields['layanan_lokal'].selection).get(kargo.layanan_lokal, '-')"/></span>
-            </div>
-            <div class="agf-info-row">
-              <span class="agf-info-label">Additional Packaging</span>
-              <span><t t-esc="dict(kargo._fields['additional_packaging'].selection).get(kargo.additional_packaging, '-')"/></span>
-            </div>
-            <div class="agf-info-row">
-              <span class="agf-info-label">Winter Request</span>
-              <span><t t-esc="dict(kargo._fields['winter_packaging'].selection).get(kargo.winter_packaging, '-')"/></span>
-            </div>
-            <t t-if="kargo.catatan">
-              <div class="agf-info-row">
-                <span class="agf-info-label">Catatan</span>
-                <span><t t-esc="kargo.catatan"/></span>
-              </div>
-            </t>
-          </div>
-
-        </div>
-
-        <!-- Kolom kanan -->
-        <div style="display:flex; flex-direction:column; gap:16px;">
-
-          <!-- Daftar Tanaman -->
-          <div class="agf-card">
-            <h3 class="agf-card-title">Daftar Tanaman</h3>
-            <table class="agf-table">
+          <!-- Data Tanaman -->
+          <div class="agf-admin-card">
+            <div class="agf-admin-card-title">Data Tanaman Pesanan</div>
+            <table class="agf-admin-table">
               <thead>
                 <tr>
-                  <th>Nama Tanaman</th>
+                  <th>Jenis Tanaman</th>
                   <th>Qty</th>
-                  <th>Ukuran</th>
                   <th>Kondisi</th>
+                  <th>Cek Status</th>
                 </tr>
               </thead>
               <tbody>
@@ -183,26 +121,26 @@
                   <tr>
                     <td><t t-esc="tanaman.nama_tanaman"/></td>
                     <td><t t-esc="tanaman.jumlah"/> pcs</td>
-                    <td><t t-esc="tanaman.ukuran or '-'"/></td>
+                    <td style="color:#888;"><t t-esc="tanaman.ukuran or '-'"/></td>
                     <td>
                       <t t-if="tanaman.kondisi == 'belum_dicek'">
-                        <span class="agf-badge agf-badge-hold">Belum Dicek</span>
+                        <span class="agf-pill" style="background:#F0F0F0; color:#555;">Belum dicek</span>
                       </t>
                       <t t-elif="tanaman.kondisi == 'sehat'">
-                        <span class="agf-badge agf-badge-done">Sehat</span>
+                        <span class="agf-pill done">Sehat</span>
                       </t>
                       <t t-elif="tanaman.kondisi == 'kurang_sehat'">
-                        <span class="agf-badge agf-badge-arrival">Kurang Sehat</span>
+                        <span class="agf-pill arrival">Kurang Sehat</span>
                       </t>
                       <t t-else="">
-                        <span class="agf-badge agf-badge-processing">Bermasalah</span>
+                        <span class="agf-pill" style="background:#FFEDED; color:#A83030;">Bermasalah</span>
                       </t>
                     </td>
                   </tr>
                 </t>
                 <t t-if="not kargo.tanaman_ids">
                   <tr>
-                    <td colspan="4" style="text-align:center; color:var(--agf-text-muted); padding:16px;">
+                    <td colspan="4" style="text-align:center; color:#AAA; padding:24px; font-size:13px;">
                       Belum ada tanaman.
                     </td>
                   </tr>
@@ -210,32 +148,56 @@
               </tbody>
             </table>
           </div>
+        </div>
 
-          <!-- Riwayat Tahapan -->
-          <div class="agf-card">
-            <h3 class="agf-card-title">Riwayat Status</h3>
-            <t t-if="kargo.tahapan_ids">
-              <div style="display:flex; flex-direction:column; gap:12px;">
-                <t t-foreach="kargo.tahapan_ids" t-as="tahapan">
-                  <div style="display:flex; gap:12px; align-items:flex-start;">
-                    <div style="width:8px; height:8px; border-radius:50%; background:var(--agf-cyan); margin-top:5px; flex-shrink:0;"/>
-                    <div>
-                      <div style="font-size:13px; font-weight:500;">
-                        <t t-esc="dict(tahapan._fields['tahap'].selection).get(tahapan.tahap, tahapan.tahap)"/>
-                      </div>
-                      <div style="font-size:12px; color:var(--agf-text-muted);">
-                        <t t-esc="tahapan.timestamp and tahapan.timestamp.strftime('%d %b %Y, %H:%M') or ''"/>
-                        <t t-if="tahapan.catatan"> — <t t-esc="tahapan.catatan"/></t>
-                      </div>
+        <!-- Kolom kanan -->
+        <div style="display:flex; flex-direction:column; gap:16px;">
+
+          <!-- Aksi Admin -->
+          <div class="agf-admin-card">
+            <div class="agf-admin-card-title">Aksi Admin</div>
+            <div class="agf-admin-action-panel">
+                <a t-attf-href="/agf/admin/pesanan/#{kargo.id}/edit"
+                    class="agf-admin-action-btn">Edit dan Ubah Status Pesanan</a>
+                <a href="#" class="agf-admin-action-btn">Cetak &amp; Assign Label QR</a>
+            </div>
+          </div>
+
+        <!-- Riwayat Status -->
+            <div class="agf-admsin-card">
+            <div class="agf-admin-card-title">Riwayat Aktivitas</div>
+            <t t-if="kargo.log_ids">
+                <div class="agf-admin-timeline">
+                <t t-foreach="kargo.log_ids" t-as="log">
+                    <div class="agf-admin-timeline-item" style="padding-bottom:16px;">
+                    <div t-attf-class="agf-admin-timeline-dot #{'pending' if log.jenis == 'detail' else ''}"/>
+                    <div class="agf-admin-timeline-body">
+                        <div style="display:flex; align-items:center; gap:8px; margin-bottom:2px;">
+                        <t t-if="log.jenis == 'status'">
+                            <span style="font-size:11px; background:#E8F5EE; color:#2A7A45; padding:1px 8px; border-radius:20px; font-weight:500;">
+                            Status
+                            </span>
+                        </t>
+                        <t t-else="">
+                            <span style="font-size:11px; background:#E6EEF9; color:#1A4A8A; padding:1px 8px; border-radius:20px; font-weight:500;">
+                            Detail
+                            </span>
+                        </t>
+                        <span class="timeline-label"><t t-esc="log.deskripsi"/></span>
+                        </div>
+                        <div class="timeline-time">
+                        <t t-esc="log.timestamp and log.timestamp.strftime('%d %b %Y, %H:%M') or ''"/>
+                        <t t-if="log.user_id"> — <t t-esc="log.user_id.name"/></t>
+                        </div>
                     </div>
-                  </div>
+                    </div>
                 </t>
-              </div>
+                </div>
             </t>
             <t t-else="">
-              <p style="color:var(--agf-text-muted); font-size:13px;">Belum ada riwayat.</p>
+                <p style="font-size:13px; color:#AAA;">Belum ada riwayat aktivitas.</p>
             </t>
-          </div>
+            </div>
 
         </div>
       </div>
@@ -252,113 +214,111 @@
       <t t-set="page_title">Pesanan Baru</t>
       <t t-set="active_menu">batch_aktif</t>
 
-      <div class="agf-page-header">
+      <div class="agf-admin-breadcrumb">
+        <a href="/agf/admin/batch-aktif">Batch Aktif</a>
+        <span>›</span>
+        <span>Pesanan Baru</span>
+      </div>
+
+      <div class="agf-admin-page-header">
         <div>
-          <div class="agf-breadcrumb">
-            <a href="/agf/admin/batch-aktif">Batch Aktif</a>
-            <span>›</span>
-            <span>Pesanan Baru</span>
-          </div>
-          <h1 class="agf-page-title">Input Pesanan Baru</h1>
-          <span style="font-size:13px; color:var(--agf-text-muted);">
-            Batch <strong><t t-esc="batch.name"/></strong> —
-            Keberangkatan <strong><t t-esc="batch.tanggal_keberangkatan"/></strong>
-          </span>
+          <h1>Input Pesanan Baru</h1>
+          <t t-if="batch_aktif">
+            <span style="font-size:12px; color:#888;">
+              Batch <strong><t t-esc="batch_aktif.name"/></strong> —
+              Keberangkatan <strong><t t-esc="batch_aktif.tanggal_keberangkatan"/></strong>
+            </span>
+          </t>
         </div>
       </div>
 
       <t t-if="errors">
-        <div class="agf-alert agf-alert-error" style="margin-bottom:16px;">
+        <div style="background:#FFEDED; border:1px solid #f5c6cb; border-radius:4px; padding:12px 16px; margin-bottom:16px; font-size:13px; color:#A83030;">
           <strong>Gagal menyimpan:</strong>
-          <ul style="margin:8px 0 0 0; padding-left:20px;">
-            <t t-foreach="errors" t-as="err">
-              <li><t t-esc="err"/></li>
-            </t>
+          <ul style="margin:6px 0 0 0; padding-left:18px;">
+            <t t-foreach="errors" t-as="err"><li><t t-esc="err"/></li></t>
           </ul>
         </div>
       </t>
 
-      <form action="/agf/admin/pesanan/baru/submit" method="POST"
-            enctype="multipart/form-data" class="agf-form-layout">
+      <form action="/agf/admin/pesanan/baru/submit" method="POST" enctype="multipart/form-data">
         <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
 
-        <div class="agf-form-grid">
+        <div class="agf-admin-form-grid">
 
-          <!-- Informasi Pengirim -->
-          <div class="agf-card">
-            <h3 class="agf-card-title">Informasi Pengirim</h3>
-
-            <div class="agf-field">
-              <label class="agf-label">Nama Lengkap <span class="agf-required">*</span></label>
-              <input type="text" name="nama_penitip" class="agf-input" required="1"
+          <!-- Pengirim -->
+          <div class="agf-admin-card">
+            <div class="agf-admin-card-title">Informasi Pengirim</div>
+            <div class="agf-admin-form-group" style="margin-bottom:10px;">
+              <label>Nama Lengkap <span style="color:#A83030;">*</span></label>
+              <input type="text" name="nama_penitip" required="1"
                      t-att-value="post.get('nama_penitip','') if post else ''"/>
             </div>
-            <div class="agf-field">
-              <label class="agf-label">No. WhatsApp <span class="agf-required">*</span></label>
-              <input type="text" name="hp_penitip" class="agf-input" required="1"
+            <div class="agf-admin-form-group" style="margin-bottom:10px;">
+              <label>No. WhatsApp <span style="color:#A83030;">*</span></label>
+              <input type="text" name="hp_penitip" required="1"
                      t-att-value="post.get('hp_penitip','') if post else ''"/>
             </div>
-            <div class="agf-field">
-              <label class="agf-label">Email <span class="agf-required">*</span></label>
-              <input type="email" name="email_penitip" class="agf-input" required="1"
+            <div class="agf-admin-form-group" style="margin-bottom:10px;">
+              <label>Email <span style="color:#A83030;">*</span></label>
+              <input type="email" name="email_penitip" required="1"
                      t-att-value="post.get('email_penitip','') if post else ''"/>
             </div>
-            <div class="agf-field">
-              <label class="agf-label">Alamat <span class="agf-required">*</span></label>
-              <textarea name="alamat_penitip" class="agf-textarea" rows="2">
-                <t t-if="post"><t t-esc="post.get('alamat_penitip','')"/></t>
-              </textarea>
+            <div class="agf-admin-form-group">
+              <label>Alamat <span style="color:#A83030;">*</span></label>
+              <textarea name="alamat_penitip" rows="2"><t t-if="post"><t t-esc="post.get('alamat_penitip','')"/></t></textarea>
             </div>
           </div>
 
-          <!-- Informasi Penerima -->
-          <div class="agf-card">
-            <h3 class="agf-card-title">Informasi Penerima</h3>
-
-            <div class="agf-field">
-              <label class="agf-label">Nama Lengkap <span class="agf-required">*</span></label>
-              <input type="text" name="nama_penerima" class="agf-input" required="1"
+          <!-- Penerima -->
+          <div class="agf-admin-card">
+            <div class="agf-admin-card-title">Informasi Penerima</div>
+            <div class="agf-admin-form-group" style="margin-bottom:10px;">
+              <label>Nama Lengkap <span style="color:#A83030;">*</span></label>
+              <input type="text" name="nama_penerima" required="1"
                      t-att-value="post.get('nama_penerima','') if post else ''"/>
             </div>
-            <div class="agf-field">
-              <label class="agf-label">No. HP</label>
-              <input type="text" name="hp_penerima" class="agf-input"
+            <div class="agf-admin-form-group" style="margin-bottom:10px;">
+              <label>No. HP</label>
+              <input type="text" name="hp_penerima"
                      t-att-value="post.get('hp_penerima','') if post else ''"/>
             </div>
-            <div class="agf-field">
-              <label class="agf-label">Email</label>
-              <input type="email" name="email_penerima" class="agf-input"
+            <div class="agf-admin-form-group" style="margin-bottom:10px;">
+              <label>Email</label>
+              <input type="email" name="email_penerima"
                      t-att-value="post.get('email_penerima','') if post else ''"/>
             </div>
-            <div class="agf-field">
-              <label class="agf-label">Alamat Lengkap + Zip Code <span class="agf-required">*</span></label>
-              <textarea name="alamat_penerima" class="agf-textarea" rows="2">
-                <t t-if="post"><t t-esc="post.get('alamat_penerima','')"/></t>
-              </textarea>
+            <div class="agf-admin-form-group" style="margin-bottom:10px;">
+              <label>Alamat Lengkap + Zip Code <span style="color:#A83030;">*</span></label>
+              <textarea name="alamat_penerima" rows="2"><t t-if="post"><t t-esc="post.get('alamat_penerima','')"/></t></textarea>
             </div>
-            <div class="agf-field">
-              <label class="agf-label">Negara Tujuan</label>
-              <input type="text" name="negara_tujuan" class="agf-input"
-                     t-att-value="post.get('negara_tujuan', batch.negara_tujuan or 'United States') if post else (batch.negara_tujuan or 'United States')"/>
+            <div class="agf-admin-form-group">
+              <label>Negara Tujuan</label>
+              <input type="text" name="negara_tujuan"
+                     t-att-value="post.get('negara_tujuan', batch_aktif.negara_tujuan if batch_aktif else 'United States') if post else (batch_aktif.negara_tujuan if batch_aktif else 'United States')"/>
             </div>
           </div>
 
         </div>
 
         <!-- Daftar Tanaman -->
-        <div class="agf-card">
-          <h3 class="agf-card-title">Daftar Tanaman</h3>
+        <div class="agf-admin-card" style="margin-top:0;">
+          <div class="agf-admin-card-title">Daftar Tanaman</div>
           <div id="tanaman-container">
-            <div class="agf-tanaman-row" style="display:grid; grid-template-columns:2fr 80px 100px 140px 32px; gap:8px; margin-bottom:8px;">
-              <input type="text" name="tanaman_nama_0" class="agf-input" placeholder="Nama / genus tanaman" required="1"/>
-              <input type="number" name="tanaman_jumlah_0" class="agf-input" placeholder="Qty" value="1" min="1"/>
-              <select name="tanaman_ukuran_0" class="agf-select">
+            <div style="display:grid; grid-template-columns:2fr 80px 100px 140px 32px; gap:8px; margin-bottom:8px; align-items:center;">
+              <input type="text" name="tanaman_nama_0" placeholder="Nama / genus tanaman" required="1"
+                     style="border:1px solid #DDD; border-radius:4px; padding:7px 8px; font-size:13px; font-family:inherit;"/>
+              <input type="number" name="tanaman_jumlah_0" value="1" min="1"
+                     style="border:1px solid #DDD; border-radius:4px; padding:7px 8px; font-size:13px;"/>
+              <select name="tanaman_ukuran_0"
+                      style="border:1px solid #DDD; border-radius:4px; padding:7px 8px; font-size:13px; font-family:inherit;">
                 <option value="kecil">Kecil</option>
-                <option value="sedang" selected="1">Sedang</option>
+                <option value="sedang" selected="selected">Sedang</option>
                 <option value="besar">Besar</option>
               </select>
-              <select name="tanaman_kondisi_0" class="agf-select">
-                <option value="belum_dicek" selected="1">Belum Dicek</option>
+              <select name="tanaman_kondisi_0"
+                      style="border:1px solid #DDD; border-radius:4px; padding:7px 8px; font-size:13px; font-family:inherit;">
+                <option value="belum_dicek" selected="selected">Belum Dicek</option>
                 <option value="sehat">Sehat</option>
                 <option value="kurang_sehat">Kurang Sehat</option>
                 <option value="bermasalah">Bermasalah</option>
@@ -366,63 +326,57 @@
               <span/>
             </div>
           </div>
-          <button type="button" onclick="tambahTanaman()"
-                  class="agf-btn agf-btn-secondary" style="margin-top:8px;">
-            + Tambah Tanaman
-          </button>
+          <button type="button" onclick="tambahTanaman()" class="agf-btn agf-btn-outline"
+                  style="margin-top:8px; font-size:13px;">+ Tambah Tanaman</button>
         </div>
 
-        <!-- Pengiriman dan Packaging -->
-        <div class="agf-form-grid">
-          <div class="agf-card">
-            <h3 class="agf-card-title">Pengiriman</h3>
-            <div class="agf-field">
-              <label class="agf-label">Layanan Lokal</label>
-              <select name="layanan_lokal" class="agf-select">
+        <!-- Pengiriman + Packaging -->
+        <div class="agf-admin-form-grid">
+          <div class="agf-admin-card">
+            <div class="agf-admin-card-title">Pengiriman</div>
+            <div class="agf-admin-form-group" style="margin-bottom:10px;">
+              <label>Layanan Lokal</label>
+              <select name="layanan_lokal">
                 <option value="reguler">Reguler 3–5 Hari UPS/USPS</option>
                 <option value="next_day">Next Day 1–2 Hari UPS/USPS (Biaya Tambahan)</option>
                 <option value="southwest">SouthWest Cargo — Pickup Airport (Biaya Tambahan)</option>
               </select>
             </div>
-            <div class="agf-field">
-              <label class="agf-label">Bukti Transaksi</label>
-              <input type="file" name="bukti_transaksi" class="agf-input"
-                     accept=".pdf,.jpg,.jpeg,.png"/>
-              <span class="agf-hint">PDF atau gambar, maks 5MB</span>
+            <div class="agf-admin-form-group">
+              <label>Bukti Transaksi</label>
+              <input type="file" name="bukti_transaksi" accept=".pdf,.jpg,.jpeg,.png"/>
+              <span class="field-hint">PDF atau gambar, maks 5MB</span>
             </div>
           </div>
 
-          <div class="agf-card">
-            <h3 class="agf-card-title">Packaging</h3>
-            <div class="agf-field">
-              <label class="agf-label">Additional Packaging</label>
-              <select name="additional_packaging" class="agf-select">
+          <div class="agf-admin-card">
+            <div class="agf-admin-card-title">Packaging</div>
+            <div class="agf-admin-form-group" style="margin-bottom:10px;">
+              <label>Additional Packaging</label>
+              <select name="additional_packaging">
                 <option value="none">None</option>
                 <option value="dakron">Dakron (Poly Fill)</option>
                 <option value="tissue">Tissue</option>
               </select>
             </div>
-            <div class="agf-field">
-              <label class="agf-label">Winter Request</label>
-              <select name="winter_packaging" class="agf-select">
+            <div class="agf-admin-form-group" style="margin-bottom:10px;">
+              <label>Winter Request</label>
+              <select name="winter_packaging">
                 <option value="none">None</option>
                 <option value="heat_pack">Heat Pack (+$8)</option>
                 <option value="insulation">Insulation (+$8)</option>
                 <option value="heat_insulation">Heatpack &amp; Insulation (+$8)</option>
               </select>
             </div>
-            <div class="agf-field">
-              <label class="agf-label">Catatan Admin</label>
-              <textarea name="catatan" class="agf-textarea" rows="3"
-                        placeholder="Instruksi khusus untuk tim...">
-                <t t-if="post"><t t-esc="post.get('catatan','')"/></t>
-              </textarea>
+            <div class="agf-admin-form-group">
+              <label>Catatan Admin</label>
+              <textarea name="catatan" rows="3" placeholder="Instruksi khusus untuk tim..."><t t-if="post"><t t-esc="post.get('catatan','')"/></t></textarea>
             </div>
           </div>
         </div>
 
-        <div class="agf-form-actions">
-          <a href="/agf/admin/batch-aktif" class="agf-btn agf-btn-secondary">Batal</a>
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px;">
+          <a href="/agf/admin/batch-aktif" class="agf-btn agf-btn-outline">Batal</a>
           <button type="submit" class="agf-btn agf-btn-primary">Simpan Pesanan</button>
         </div>
       </form>
@@ -432,26 +386,24 @@
         function tambahTanaman() {
           var container = document.getElementById('tanaman-container');
           var idx = tanamanCount++;
+          var inputStyle = 'border:1px solid #DDD; border-radius:4px; padding:7px 8px; font-size:13px; font-family:inherit; width:100%; box-sizing:border-box;';
           var row = document.createElement('div');
-          row.className = 'agf-tanaman-row';
-          row.style = 'display:grid; grid-template-columns:2fr 80px 100px 140px 32px; gap:8px; margin-bottom:8px;';
-          row.innerHTML = `
-            <input type="text" name="tanaman_nama_${idx}" class="agf-input" placeholder="Nama / genus tanaman"/>
-            <input type="number" name="tanaman_jumlah_${idx}" class="agf-input" placeholder="Qty" value="1" min="1"/>
-            <select name="tanaman_ukuran_${idx}" class="agf-select">
-              <option value="kecil">Kecil</option>
-              <option value="sedang" selected="selected">Sedang</option>
-              <option value="besar">Besar</option>
-            </select>
-            <select name="tanaman_kondisi_${idx}" class="agf-select">
-              <option value="belum_dicek" selected="selected">Belum Dicek</option>
-              <option value="sehat">Sehat</option>
-              <option value="kurang_sehat">Kurang Sehat</option>
-              <option value="bermasalah">Bermasalah</option>
-            </select>
-            <button type="button" onclick="this.parentElement.remove()"
-                    style="background:none;border:none;color:#ef4444;font-size:18px;cursor:pointer;">×</button>
-          `;
+          row.style = 'display:grid; grid-template-columns:2fr 80px 100px 140px 32px; gap:8px; margin-bottom:8px; align-items:center;';
+          row.innerHTML =
+            '<input type="text" name="tanaman_nama_' + idx + '" placeholder="Nama / genus tanaman" style="' + inputStyle + '"/>' +
+            '<input type="number" name="tanaman_jumlah_' + idx + '" value="1" min="1" style="' + inputStyle + '"/>' +
+            '<select name="tanaman_ukuran_' + idx + '" style="' + inputStyle + '">' +
+              '<option value="kecil">Kecil</option>' +
+              '<option value="sedang" selected="selected">Sedang</option>' +
+              '<option value="besar">Besar</option>' +
+            '</select>' +
+            '<select name="tanaman_kondisi_' + idx + '" style="' + inputStyle + '">' +
+              '<option value="belum_dicek" selected="selected">Belum Dicek</option>' +
+              '<option value="sehat">Sehat</option>' +
+              '<option value="kurang_sehat">Kurang Sehat</option>' +
+              '<option value="bermasalah">Bermasalah</option>' +
+            '</select>' +
+            '<button type="button" onclick="this.parentElement.remove()" style="background:none;border:none;color:#ef4444;font-size:18px;cursor:pointer;padding:0;">×</button>';
           container.appendChild(row);
         }
       </script>
@@ -467,194 +419,177 @@
       <t t-set="page_title">Edit Pesanan</t>
       <t t-set="active_menu">batch_aktif</t>
 
-      <div class="agf-page-header">
-        <div>
-          <div class="agf-breadcrumb">
-            <a href="/agf/admin/batch-aktif">Batch Aktif</a>
-            <span>›</span>
-            <a t-attf-href="/agf/admin/pesanan/#{kargo.id}">
-              <t t-esc="kargo.nomor_penitip"/>
-            </a>
-            <span>›</span>
-            <span>Edit</span>
-          </div>
-          <h1 class="agf-page-title">Edit Pesanan — <t t-esc="kargo.nomor_penitip"/></h1>
-        </div>
+      <div class="agf-admin-breadcrumb">
+        <a href="/agf/admin/batch-aktif">Batch Aktif</a>
+        <span>›</span>
+        <a t-attf-href="/agf/admin/pesanan/#{kargo.id}"><t t-esc="kargo.nomor_penitip"/></a>
+        <span>›</span>
+        <span>Edit</span>
+      </div>
+
+      <div class="agf-admin-page-header">
+        <h1>Edit Pesanan — <t t-esc="kargo.nomor_penitip"/></h1>
       </div>
 
       <t t-if="errors">
-        <div class="agf-alert agf-alert-error" style="margin-bottom:16px;">
+        <div style="background:#FFEDED; border:1px solid #f5c6cb; border-radius:4px; padding:12px 16px; margin-bottom:16px; font-size:13px; color:#A83030;">
           <strong>Gagal menyimpan:</strong>
-          <ul style="margin:8px 0 0 0; padding-left:20px;">
-            <t t-foreach="errors" t-as="err">
-              <li><t t-esc="err"/></li>
-            </t>
+          <ul style="margin:6px 0 0 0; padding-left:18px;">
+            <t t-foreach="errors" t-as="err"><li><t t-esc="err"/></li></t>
           </ul>
         </div>
       </t>
 
       <form t-attf-action="/agf/admin/pesanan/#{kargo.id}/edit/submit"
-            method="POST" enctype="multipart/form-data" class="agf-form-layout">
+            method="POST" enctype="multipart/form-data">
         <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
 
         <!-- Status -->
-        <div class="agf-card">
-          <h3 class="agf-card-title">Status Pesanan</h3>
-          <div class="agf-field" style="max-width:300px;">
-            <label class="agf-label">Status</label>
-            <select name="status" class="agf-select">
-              <option value="hold" t-att-selected="'selected' if kargo.status == 'hold' else None">Hold</option>
-              <option value="arrival" t-att-selected="'selected' if kargo.status == 'arrival' else None">Arrival</option>
-              <option value="processing" t-att-selected="'selected' if kargo.status == 'processing' else None">Processing</option>
-              <option value="shipped" t-att-selected="'selected' if kargo.status == 'shipped' else None">Shipped</option>
-              <option value="done" t-att-selected="'selected' if kargo.status == 'done' else None">Done</option>
+        <div class="agf-admin-card" style="margin-bottom:16px;">
+          <div class="agf-admin-card-title">Status Pesanan</div>
+          <div class="agf-admin-form-group" style="max-width:280px;">
+            <label>Status</label>
+            <select name="status">
+            <option value="hold"
+                    t-att-selected="'selected' if kargo.status == 'hold' else None">Hold</option>
+            <option value="arrival"
+                    t-att-selected="'selected' if kargo.status == 'arrival' else None">Arrival</option>
+            <option value="processing"
+                    t-att-selected="'selected' if kargo.status == 'processing' else None">Processing</option>
+            <option value="shipped"
+                    t-att-selected="'selected' if kargo.status == 'shipped' else None">Shipped</option>
+            <option value="done"
+                    t-att-selected="'selected' if kargo.status == 'done' else None">Done</option>
             </select>
           </div>
         </div>
 
-        <div class="agf-form-grid">
+        <div class="agf-admin-form-grid">
+
           <!-- Pengirim -->
-          <div class="agf-card">
-            <h3 class="agf-card-title">Informasi Pengirim</h3>
-            <div class="agf-field">
-              <label class="agf-label">Nama Lengkap</label>
-              <input type="text" name="nama_penitip" class="agf-input" t-att-value="kargo.nama_penitip"/>
+          <div class="agf-admin-card">
+            <div class="agf-admin-card-title">Informasi Pengirim</div>
+            <div class="agf-admin-form-group" style="margin-bottom:10px;">
+              <label>Nama Lengkap</label>
+              <input type="text" name="nama_penitip" t-att-value="kargo.nama_penitip"/>
             </div>
-            <div class="agf-field">
-              <label class="agf-label">No. WhatsApp</label>
-              <input type="text" name="hp_penitip" class="agf-input" t-att-value="kargo.hp_penitip"/>
+            <div class="agf-admin-form-group" style="margin-bottom:10px;">
+              <label>No. WhatsApp</label>
+              <input type="text" name="hp_penitip" t-att-value="kargo.hp_penitip"/>
             </div>
-            <div class="agf-field">
-              <label class="agf-label">Email</label>
-              <input type="email" name="email_penitip" class="agf-input" t-att-value="kargo.email_penitip"/>
+            <div class="agf-admin-form-group" style="margin-bottom:10px;">
+              <label>Email</label>
+              <input type="email" name="email_penitip" t-att-value="kargo.email_penitip"/>
             </div>
-            <div class="agf-field">
-              <label class="agf-label">Alamat</label>
-              <textarea name="alamat_penitip" class="agf-textarea" rows="2">
-                <t t-esc="kargo.alamat_penitip"/>
-              </textarea>
+            <div class="agf-admin-form-group">
+              <label>Alamat</label>
+              <textarea name="alamat_penitip" rows="2"><t t-esc="kargo.alamat_penitip"/></textarea>
             </div>
           </div>
 
           <!-- Penerima -->
-          <div class="agf-card">
-            <h3 class="agf-card-title">Informasi Penerima</h3>
-            <div class="agf-field">
-              <label class="agf-label">Nama Lengkap</label>
-              <input type="text" name="nama_penerima" class="agf-input" t-att-value="kargo.nama_penerima"/>
+          <div class="agf-admin-card">
+            <div class="agf-admin-card-title">Informasi Penerima</div>
+            <div class="agf-admin-form-group" style="margin-bottom:10px;">
+              <label>Nama Lengkap</label>
+              <input type="text" name="nama_penerima" t-att-value="kargo.nama_penerima"/>
             </div>
-            <div class="agf-field">
-              <label class="agf-label">No. HP</label>
-              <input type="text" name="hp_penerima" class="agf-input" t-att-value="kargo.hp_penerima"/>
+            <div class="agf-admin-form-group" style="margin-bottom:10px;">
+              <label>No. HP</label>
+              <input type="text" name="hp_penerima" t-att-value="kargo.hp_penerima"/>
             </div>
-            <div class="agf-field">
-              <label class="agf-label">Email</label>
-              <input type="email" name="email_penerima" class="agf-input" t-att-value="kargo.email_penerima"/>
+            <div class="agf-admin-form-group" style="margin-bottom:10px;">
+              <label>Email</label>
+              <input type="email" name="email_penerima" t-att-value="kargo.email_penerima"/>
             </div>
-            <div class="agf-field">
-              <label class="agf-label">Alamat Lengkap + Zip Code</label>
-              <textarea name="alamat_penerima" class="agf-textarea" rows="2">
-                <t t-esc="kargo.alamat_penerima"/>
-              </textarea>
+            <div class="agf-admin-form-group" style="margin-bottom:10px;">
+              <label>Alamat Lengkap + Zip Code</label>
+              <textarea name="alamat_penerima" rows="2"><t t-esc="kargo.alamat_penerima"/></textarea>
             </div>
-            <div class="agf-field">
-              <label class="agf-label">Negara Tujuan</label>
-              <input type="text" name="negara_tujuan" class="agf-input" t-att-value="kargo.negara_tujuan or ''"/>
+            <div class="agf-admin-form-group">
+              <label>Negara Tujuan</label>
+              <input type="text" name="negara_tujuan" t-att-value="kargo.negara_tujuan or ''"/>
             </div>
           </div>
+
         </div>
 
         <!-- Daftar Tanaman -->
-        <div class="agf-card">
-          <h3 class="agf-card-title">Daftar Tanaman</h3>
+        <div class="agf-admin-card">
+          <div class="agf-admin-card-title">Daftar Tanaman</div>
           <div id="tanaman-container">
             <t t-foreach="kargo.tanaman_ids" t-as="tanaman">
-              <div class="agf-tanaman-row" style="display:grid; grid-template-columns:2fr 80px 100px 140px 32px; gap:8px; margin-bottom:8px;">
+              <div style="display:grid; grid-template-columns:2fr 80px 100px 140px 32px; gap:8px; margin-bottom:8px; align-items:center;">
                 <input type="text" t-attf-name="tanaman_nama_#{tanaman_index}"
-                       class="agf-input" t-att-value="tanaman.nama_tanaman"/>
+                       t-att-value="tanaman.nama_tanaman"
+                       style="border:1px solid #DDD; border-radius:4px; padding:7px 8px; font-size:13px; font-family:inherit;"/>
                 <input type="number" t-attf-name="tanaman_jumlah_#{tanaman_index}"
-                       class="agf-input" t-att-value="tanaman.jumlah" min="1"/>
-                <select t-attf-name="tanaman_ukuran_#{tanaman_index}" class="agf-select">
-                  <option value="kecil" t-att-selected="'selected' if tanaman.ukuran == 'kecil' else None">Kecil</option>
-                  <option value="sedang" t-att-selected="'selected' if tanaman.ukuran == 'sedang' else None">Sedang</option>
-                  <option value="besar" t-att-selected="'selected' if tanaman.ukuran == 'besar' else None">Besar</option>
+                       t-att-value="tanaman.jumlah" min="1"
+                       style="border:1px solid #DDD; border-radius:4px; padding:7px 8px; font-size:13px;"/>
+                <select t-attf-name="tanaman_ukuran_#{tanaman_index}"
+                        style="border:1px solid #DDD; border-radius:4px; padding:7px 8px; font-size:13px; font-family:inherit;">
+                  <option value="kecil" t-att-selected="'selected' if tanaman.ukuran == 'kecil' else ''">Kecil</option>
+                  <option value="sedang" t-att-selected="'selected' if tanaman.ukuran == 'sedang' else ''">Sedang</option>
+                  <option value="besar" t-att-selected="'selected' if tanaman.ukuran == 'besar' else ''">Besar</option>
                 </select>
-                <select t-attf-name="tanaman_kondisi_#{tanaman_index}" class="agf-select">
-                  <option value="belum_dicek" t-att-selected="'selected' if tanaman.kondisi == 'belum_dicek' else None">Belum Dicek</option>
-                  <option value="sehat" t-att-selected="'selected' if tanaman.kondisi == 'sehat' else None">Sehat</option>
-                  <option value="kurang_sehat" t-att-selected="'selected' if tanaman.kondisi == 'kurang_sehat' else None">Kurang Sehat</option>
-                  <option value="bermasalah" t-att-selected="'selected' if tanaman.kondisi == 'bermasalah' else None">Bermasalah</option>
+                <select t-attf-name="tanaman_kondisi_#{tanaman_index}"
+                        style="border:1px solid #DDD; border-radius:4px; padding:7px 8px; font-size:13px; font-family:inherit;">
+                  <option value="belum_dicek" t-att-selected="'selected' if tanaman.kondisi == 'belum_dicek' else ''">Belum Dicek</option>
+                  <option value="sehat" t-att-selected="'selected' if tanaman.kondisi == 'sehat' else ''">Sehat</option>
+                  <option value="kurang_sehat" t-att-selected="'selected' if tanaman.kondisi == 'kurang_sehat' else ''">Kurang Sehat</option>
+                  <option value="bermasalah" t-att-selected="'selected' if tanaman.kondisi == 'bermasalah' else ''">Bermasalah</option>
                 </select>
                 <button type="button" onclick="this.parentElement.remove()"
-                        style="background:none;border:none;color:#ef4444;font-size:18px;cursor:pointer;">×</button>
+                        style="background:none;border:none;color:#ef4444;font-size:18px;cursor:pointer;padding:0;">×</button>
               </div>
             </t>
           </div>
-          <button type="button" onclick="tambahTanaman()"
-                  class="agf-btn agf-btn-secondary" style="margin-top:8px;">
-            + Tambah Tanaman
-          </button>
+          <button type="button" onclick="tambahTanaman()" class="agf-btn agf-btn-outline"
+                  style="margin-top:8px; font-size:13px;">+ Tambah Tanaman</button>
         </div>
 
-        <!-- Pengiriman dan Packaging -->
-        <div class="agf-form-grid">
-          <div class="agf-card">
-            <h3 class="agf-card-title">Pengiriman</h3>
-            <div class="agf-field">
-              <label class="agf-label">Layanan Lokal</label>
-              <select name="layanan_lokal" class="agf-select">
-                <option value="reguler" t-att-selected="'selected' if kargo.layanan_lokal == 'reguler' else None">Reguler 3–5 Hari UPS/USPS</option>
-                <option value="next_day" t-att-selected="'selected' if kargo.layanan_lokal == 'next_day' else None">Next Day 1–2 Hari UPS/USPS</option>
-                <option value="southwest" t-att-selected="'selected' if kargo.layanan_lokal == 'southwest' else None">SouthWest Cargo</option>
+        <!-- Pengiriman + Packaging -->
+        <div class="agf-admin-form-grid">
+          <div class="agf-admin-card">
+            <div class="agf-admin-card-title">Pengiriman</div>
+            <div class="agf-admin-form-group" style="margin-bottom:10px;">
+              <label>Layanan Lokal</label>
+              <select name="layanan_lokal">
+                <option value="reguler" t-att-selected="'selected' if kargo.layanan_lokal == 'reguler' else ''">Reguler 3–5 Hari UPS/USPS</option>
+                <option value="next_day" t-att-selected="'selected' if kargo.layanan_lokal == 'next_day' else ''">Next Day 1–2 Hari UPS/USPS</option>
+                <option value="southwest" t-att-selected="'selected' if kargo.layanan_lokal == 'southwest' else ''">SouthWest Cargo</option>
               </select>
-            </div>
-            <div class="agf-field">
-              <label class="agf-label">Bukti Transaksi</label>
-              <t t-if="kargo.bukti_transaksi">
-                <div style="margin-bottom:8px; font-size:13px;">
-                  File saat ini:
-                  <a t-attf-href="/agf/admin/pesanan/#{kargo.id}/bukti"
-                     target="_blank" class="agf-link">
-                    <t t-esc="kargo.bukti_transaksi_nama or 'Lihat File'"/>
-                  </a>
-                </div>
-              </t>
-              <input type="file" name="bukti_transaksi" class="agf-input"
-                     accept=".pdf,.jpg,.jpeg,.png"/>
-              <span class="agf-hint">Kosongkan jika tidak ingin mengganti</span>
             </div>
           </div>
 
-          <div class="agf-card">
-            <h3 class="agf-card-title">Packaging</h3>
-            <div class="agf-field">
-              <label class="agf-label">Additional Packaging</label>
-              <select name="additional_packaging" class="agf-select">
-                <option value="none" t-att-selected="'selected' if kargo.additional_packaging == 'none' else None">None</option>
-                <option value="dakron" t-att-selected="'selected' if kargo.additional_packaging == 'dakron' else None">Dakron (Poly Fill)</option>
-                <option value="tissue" t-att-selected="'selected' if kargo.additional_packaging == 'tissue' else None">Tissue</option>
+          <div class="agf-admin-card">
+            <div class="agf-admin-card-title">Packaging</div>
+            <div class="agf-admin-form-group" style="margin-bottom:10px;">
+              <label>Additional Packaging</label>
+              <select name="additional_packaging">
+                <option value="none" t-att-selected="'selected' if kargo.additional_packaging == 'none' else ''">None</option>
+                <option value="dakron" t-att-selected="'selected' if kargo.additional_packaging == 'dakron' else ''">Dakron (Poly Fill)</option>
+                <option value="tissue" t-att-selected="'selected' if kargo.additional_packaging == 'tissue' else ''">Tissue</option>
               </select>
             </div>
-            <div class="agf-field">
-              <label class="agf-label">Winter Request</label>
-              <select name="winter_packaging" class="agf-select">
-                <option value="none" t-att-selected="'selected' if kargo.winter_packaging == 'none' else None">None</option>
-                <option value="heat_pack" t-att-selected="'selected' if kargo.winter_packaging == 'heat_pack' else None">Heat Pack (+$8)</option>
-                <option value="insulation" t-att-selected="'selected' if kargo.winter_packaging == 'insulation' else None">Insulation (+$8)</option>
-                <option value="heat_insulation" t-att-selected="'selected' if kargo.winter_packaging == 'heat_insulation' else None">Heatpack &amp; Insulation (+$8)</option>
+            <div class="agf-admin-form-group" style="margin-bottom:10px;">
+              <label>Winter Request</label>
+              <select name="winter_packaging">
+                <option value="none" t-att-selected="'selected' if kargo.winter_packaging == 'none' else ''">None</option>
+                <option value="heat_pack" t-att-selected="'selected' if kargo.winter_packaging == 'heat_pack' else ''">Heat Pack (+$8)</option>
+                <option value="insulation" t-att-selected="'selected' if kargo.winter_packaging == 'insulation' else ''">Insulation (+$8)</option>
+                <option value="heat_insulation" t-att-selected="'selected' if kargo.winter_packaging == 'heat_insulation' else ''">Heatpack &amp; Insulation (+$8)</option>
               </select>
             </div>
-            <div class="agf-field">
-              <label class="agf-label">Catatan Admin</label>
-              <textarea name="catatan" class="agf-textarea" rows="3">
-                <t t-esc="kargo.catatan or ''"/>
-              </textarea>
+            <div class="agf-admin-form-group">
+              <label>Catatan Admin</label>
+              <textarea name="catatan" rows="3"><t t-esc="kargo.catatan or ''"/></textarea>
             </div>
           </div>
         </div>
 
-        <div class="agf-form-actions">
-          <a t-attf-href="/agf/admin/pesanan/#{kargo.id}" class="agf-btn agf-btn-secondary">Batal</a>
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px;">
+          <a t-attf-href="/agf/admin/pesanan/#{kargo.id}" class="agf-btn agf-btn-outline">Batal</a>
           <button type="submit" class="agf-btn agf-btn-primary">Simpan Perubahan</button>
         </div>
       </form>
@@ -664,26 +599,24 @@
         function tambahTanaman() {
           var container = document.getElementById('tanaman-container');
           var idx = tanamanCount++;
+          var inputStyle = 'border:1px solid #DDD; border-radius:4px; padding:7px 8px; font-size:13px; font-family:inherit; width:100%; box-sizing:border-box;';
           var row = document.createElement('div');
-          row.className = 'agf-tanaman-row';
-          row.style = 'display:grid; grid-template-columns:2fr 80px 100px 140px 32px; gap:8px; margin-bottom:8px;';
-          row.innerHTML = `
-            <input type="text" name="tanaman_nama_${idx}" class="agf-input" placeholder="Nama / genus tanaman"/>
-            <input type="number" name="tanaman_jumlah_${idx}" class="agf-input" value="1" min="1"/>
-            <select name="tanaman_ukuran_${idx}" class="agf-select">
-              <option value="kecil">Kecil</option>
-              <option value="sedang" selected="selected">Sedang</option>
-              <option value="besar">Besar</option>
-            </select>
-            <select name="tanaman_kondisi_${idx}" class="agf-select">
-              <option value="belum_dicek" selected="selected">Belum Dicek</option>
-              <option value="sehat">Sehat</option>
-              <option value="kurang_sehat">Kurang Sehat</option>
-              <option value="bermasalah">Bermasalah</option>
-            </select>
-            <button type="button" onclick="this.parentElement.remove()"
-                    style="background:none;border:none;color:#ef4444;font-size:18px;cursor:pointer;">×</button>
-          `;
+          row.style = 'display:grid; grid-template-columns:2fr 80px 100px 140px 32px; gap:8px; margin-bottom:8px; align-items:center;';
+          row.innerHTML =
+            '<input type="text" name="tanaman_nama_' + idx + '" placeholder="Nama / genus tanaman" style="' + inputStyle + '"/>' +
+            '<input type="number" name="tanaman_jumlah_' + idx + '" value="1" min="1" style="' + inputStyle + '"/>' +
+            '<select name="tanaman_ukuran_' + idx + '" style="' + inputStyle + '">' +
+              '<option value="kecil">Kecil</option>' +
+              '<option value="sedang" selected="selected">Sedang</option>' +
+              '<option value="besar">Besar</option>' +
+            '</select>' +
+            '<select name="tanaman_kondisi_' + idx + '" style="' + inputStyle + '">' +
+              '<option value="belum_dicek" selected="selected">Belum Dicek</option>' +
+              '<option value="sehat">Sehat</option>' +
+              '<option value="kurang_sehat">Kurang Sehat</option>' +
+              '<option value="bermasalah">Bermasalah</option>' +
+            '</select>' +
+            '<button type="button" onclick="this.parentElement.remove()" style="background:none;border:none;color:#ef4444;font-size:18px;cursor:pointer;padding:0;">×</button>';
           container.appendChild(row);
         }
       </script>

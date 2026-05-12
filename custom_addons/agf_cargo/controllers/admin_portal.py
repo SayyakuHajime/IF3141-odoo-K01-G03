@@ -161,7 +161,7 @@ class AdminPortal(http.Controller):
         kargo = request.env['agf.kargo'].browse(kargo_id)
         if not kargo.exists():
             return request.not_found()
-        return request.render('agf_cargo.admin_detail_pesanan', {
+        return request.render('agf_cargo.admin_detail_pesanan_aktif', {
             'kargo': kargo,
             'user_initials': self._get_user_initials(),
         })
@@ -185,6 +185,10 @@ class AdminPortal(http.Controller):
             return request.not_found()
 
         try:
+            # Simpan status lama sebelum write
+            status_lama = kargo.status
+            status_baru = post.get('status', kargo.status)
+
             kargo.write({
                 'nama_penitip': post.get('nama_penitip', kargo.nama_penitip),
                 'hp_penitip': post.get('hp_penitip', kargo.hp_penitip),
@@ -199,10 +203,10 @@ class AdminPortal(http.Controller):
                 'additional_packaging': post.get('additional_packaging', kargo.additional_packaging),
                 'winter_packaging': post.get('winter_packaging', kargo.winter_packaging),
                 'catatan': post.get('catatan', ''),
-                'status': post.get('status', kargo.status),
+                'status': status_baru,
             })
 
-            # Update tanaman — hapus semua lalu buat ulang
+            # Update tanaman
             kargo.tanaman_ids.unlink()
             idx = 0
             while post.get(f'tanaman_nama_{idx}'):
@@ -221,7 +225,7 @@ class AdminPortal(http.Controller):
                     })
                 idx += 1
 
-            # Handle bukti transaksi upload
+            # Handle bukti transaksi
             bukti = request.httprequest.files.get('bukti_transaksi')
             if bukti and bukti.filename:
                 import base64
@@ -230,7 +234,26 @@ class AdminPortal(http.Controller):
                     'bukti_transaksi_nama': bukti.filename,
                 })
 
+            # Catat log
+            status_labels = {
+                'hold': 'Hold', 'arrival': 'Arrival', 'processing': 'Processing',
+                'shipped': 'Shipped', 'done': 'Done',
+            }
+            if status_baru != status_lama:
+                request.env['agf.kargo.log'].create({
+                    'kargo_id': kargo.id,
+                    'jenis': 'status',
+                    'deskripsi': f"Status diubah dari {status_labels.get(status_lama, status_lama)} menjadi {status_labels.get(status_baru, status_baru)}",
+                })
+            else:
+                request.env['agf.kargo.log'].create({
+                    'kargo_id': kargo.id,
+                    'jenis': 'detail',
+                    'deskripsi': 'Detail pesanan diperbarui',
+                })
+
             return request.redirect(f'/agf/admin/pesanan/{kargo_id}')
+
         except Exception as e:
             _logger.error(f"EDIT PESANAN ERROR: {e}")
             return request.render('agf_cargo.admin_form_pesanan_edit', {
