@@ -17,10 +17,10 @@
                         <i class="fa fa-home"/> Dashboard
                     </a>
                     <div class="agf-admin-sidebar-section">Operasional</div>
-                    <a href="/agf/admin/pesanan" class="agf-admin-sidebar-link">
+                    <a href="/agf/admin/batch-aktif" class="agf-admin-sidebar-link">
                         <i class="fa fa-box"/> Manajemen Batch Aktif
                     </a>
-                    <a href="/agf/admin/batch" class="agf-admin-sidebar-link">
+                    <a href="/agf/admin/riwayat-batch" class="agf-admin-sidebar-link">
                         <i class="fa fa-history"/> Riwayat Batch
                     </a>
                     <a href="/agf/admin/qr" class="agf-admin-sidebar-link">

@@ -24,6 +24,7 @@ class AgfBatch(models.Model):
             ('aktif', 'Aktif'),
             ('selesai', 'Selesai'),
             ('terkirim', 'Terkirim'),
+            ('dibatalkan', 'Dibatalkan'),
         ],
         string='Status',
         default='aktif',
@@ -45,6 +46,15 @@ class AgfBatch(models.Model):
     )
     tanggal_selesai = fields.Date(string='Tanggal Tutup Pendaftaran')
     catatan = fields.Text(string='Catatan')
+    negara_tujuan = fields.Char(
+        string='Negara Tujuan',
+        default='United States',
+    )
+    kapasitas_maks = fields.Integer(
+        string='Kapasitas Maksimal (tanaman)',
+        default=0,
+        help='0 = tidak dibatasi',
+    )
 
     kargo_ids = fields.One2many('agf.kargo', 'batch_id', string='Daftar Pesanan')
 
@@ -94,6 +104,10 @@ class AgfBatch(models.Model):
         self.ensure_one()
         self.status = 'terkirim'
 
+    def action_cancel(self):
+        self.ensure_one()
+        self.status = 'dibatalkan'
+        
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:

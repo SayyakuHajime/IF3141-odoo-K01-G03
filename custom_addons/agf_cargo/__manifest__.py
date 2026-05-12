@@ -12,12 +12,8 @@
         'views/assets.xml',  
         'views/admin/base_layout.xml',
         'views/admin/admin_dashboard.xml',
+        'views/admin/batch.xml', 
     ],
-    'assets': {
-        'web.assets_frontend': [
-            ...
-        ],
-    },
     'installable': True,
     'application': True,
     'license': 'LGPL-3',
