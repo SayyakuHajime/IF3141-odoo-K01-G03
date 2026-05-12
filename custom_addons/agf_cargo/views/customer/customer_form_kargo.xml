@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<template id="customer_form_kargo" name="AGF Cargo - Form Pendaftaran">
+<template id="customer_form_kargo" name="AGF Cargo — Form Pendaftaran">
 <t t-call="website.layout">
     <t t-set="no_header" t-value="1"/>
     <t t-set="no_footer" t-value="1"/>
@@ -91,11 +91,14 @@
                     <span>Pahami Informasi ini terlebih dahulu!</span>
                 </div>
                 <div class="agf-form__tnc">
-                    <p>1. Pastikan tanaman dalam kondisi sehat sebelum dikirim.</p>
-                    <p>2. AGF Cargo tidak bertanggung jawab atas kerusakan akibat kondisi tanaman yang sudah buruk sebelum pengiriman.</p>
-                    <p>3. Pembayaran dilakukan setelah pendaftaran dikonfirmasi oleh admin.</p>
-                    <p>4. Tanaman akan dijemput sesuai jadwal batch yang sedang berjalan.</p>
-                    <p>5. Pastikan alamat penerima sudah benar dan lengkap beserta kode pos.</p>
+                    <p>1. Tanaman yang akan di ekspor, akan di treatment di AGF. Tanaman harus sampai  H-7 sebelum pengiriman.</p>
+                    <p>2. Segala bentuk keterlambatan yang diakibatkan oleh pengiriman lokal di negara tujuan, diluar tanggung jawab dan kendali kami.</p>
+                    <p>3. Kami tidak memberikan jaminan atas tanaman yang rusak ataupun mati saat tiba di alamat tujuan.</p>
+                    <p>4. Proses pengiriman membutuhkan 2 hari pengiriman dari Indonesia, 1 hari Clearance dan USDA, 2 hari pengiriman lokal. *Dalam keadaan tertentu mungkin waktu akan bertambah.</p>
+                    <p>5. Segala bentuk biaya yang ditimbulkan atas kendala yang terjadi di badan karantina negara setempat yang mengakibatkan tanaman harus dimusnahkan atau re-ekspor menjadi tanggung jawab pengirim.</p>
+                    <p>6. Membaca berarti menyetujui syarat dan ketentuan kiriman ini.</p>
+                    <p>Kirim Ke alamat kami berikut ini dengan nama penerima "Art Garden Admin Dwi":</p>
+                    <p>Kp Jl. Kebon Hui, RT.05/RW.17, Cigugur Girang, Kec. Parongpong, Kabupaten Bandung Barat, Jawa Barat 40559</p>
                 </div>
             </div>
 
@@ -419,6 +422,7 @@
 
     <!-- JavaScript untuk dynamic tanaman rows -->
     <script>
+        //<![CDATA[
         (function() {
             var count = 1;
 
@@ -428,58 +432,64 @@
                     var row = document.createElement('div');
                     row.className = 'agf-form__tanaman-row';
                     row.dataset.index = idx;
-                    row.innerHTML = [
-                        '<div class="agf-form__tanaman-fields">',
-                        '  <div class="agf-form__field">',
-                        '    <label class="agf-form__label">',
-                        '      Nama / Genus Tanaman',
-                        '      <span class="agf-form__required">*</span>',
-                        '    </label>',
-                        '    <input type="text"',
-                        '           name="tanaman_nama_' + idx + '"',
-                        '           class="agf-form__input"',
-                        '           placeholder="Contoh: Monstera deliciosa"',
-                        '           required />',
-                        '  </div>',
-                        '  <div class="agf-form__tanaman-meta">',
-                        '    <div class="agf-form__field">',
-                        '      <label class="agf-form__label">Jumlah</label>',
-                        '      <input type="number"',
-                        '             name="tanaman_jumlah_' + idx + '"',
-                        '             class="agf-form__input agf-form__input--sm"',
-                        '             value="1" min="1" required />',
-                        '    </div>',
-                        '    <div class="agf-form__field">',
-                        '      <label class="agf-form__label">Ukuran</label>',
-                        '      <select name="tanaman_ukuran_' + idx + '"',
-                        '              class="agf-form__input agf-form__input--sm">',
-                        '        <option value="kecil">Kecil</option>',
-                        '        <option value="sedang" selected>Sedang</option>',
-                        '        <option value="besar">Besar</option>',
-                        '      </select>',
-                        '    </div>',
-                        '  </div>',
-                        '  <button type="button"',
-                        '          class="agf-form__btn-remove"',
-                        '          onclick="this.closest(\'.agf-form__tanaman-row\').remove();',
-                        '                   document.getElementById(\'tanaman-count\').value',
-                        '                       = document.querySelectorAll(\'.agf-form__tanaman-row\').length">',
-                        '    <i data-lucide="trash-2"',
-                        '       style="width:14px;height:14px"/>',
-                        '    Hapus',
-                        '  </button>',
-                        '</div>',
-                    ].join('');
 
+                    var html = '';
+                    html += '<div class="agf-form__tanaman-fields">';
+                    html += '  <div class="agf-form__field">';
+                    html += '    <label class="agf-form__label">';
+                    html += '      Nama / Genus Tanaman';
+                    html += '      <span class="agf-form__required">*</span>';
+                    html += '    </label>';
+                    html += '    <input type="text"';
+                    html += '           name="tanaman_nama_' + idx + '"';
+                    html += '           class="agf-form__input"';
+                    html += '           placeholder="Contoh: Monstera deliciosa"';
+                    html += '           required />';
+                    html += '  </div>';
+                    html += '  <div class="agf-form__tanaman-meta">';
+                    html += '    <div class="agf-form__field">';
+                    html += '      <label class="agf-form__label">Jumlah</label>';
+                    html += '      <input type="number"';
+                    html += '             name="tanaman_jumlah_' + idx + '"';
+                    html += '             class="agf-form__input agf-form__input--sm"';
+                    html += '             value="1" min="1" required />';
+                    html += '    </div>';
+                    html += '    <div class="agf-form__field">';
+                    html += '      <label class="agf-form__label">Ukuran</label>';
+                    html += '      <select name="tanaman_ukuran_' + idx + '"';
+                    html += '              class="agf-form__input agf-form__input--sm">';
+                    html += '        <option value="kecil">Kecil</option>';
+                    html += '        <option value="sedang" selected>Sedang</option>';
+                    html += '        <option value="besar">Besar</option>';
+                    html += '      </select>';
+                    html += '    </div>';
+                    html += '  </div>';
+                    html += '  <button type="button" class="agf-form__btn-remove"';
+                    html += '          id="btn-remove-' + idx + '">';
+                    html += '    Hapus';
+                    html += '  </button>';
+                    html += '</div>';
+
+                    row.innerHTML = html;
                     document.getElementById('tanaman-list').appendChild(row);
+
+                    // Attach event listener ke tombol hapus
+                    document.getElementById('btn-remove-' + idx)
+                        .addEventListener('click', function() {
+                            row.remove();
+                            document.getElementById('tanaman-count').value =
+                                document.querySelectorAll('.agf-form__tanaman-row').length;
+                            if (window.lucide) { lucide.createIcons(); }
+                        });
+
                     count++;
                     document.getElementById('tanaman-count').value =
                         document.querySelectorAll('.agf-form__tanaman-row').length;
 
-                    // Re-init lucide icons untuk elemen baru
                     if (window.lucide) { lucide.createIcons(); }
                 });
         })();
+        //]]>
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/lucide@0.462.0/dist/umd/lucide.min.js"/>
