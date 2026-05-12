@@ -744,6 +744,7 @@ $white:         #FFFFFF;
 
 .agf-timeline__bukti-row {
     display: flex;
+    margin-bottom: 4px;
     align-items: center;
     gap: 8px;
     flex-wrap: wrap;
@@ -788,7 +789,6 @@ $white:         #FFFFFF;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
-    margin-top: 10px;
     padding: 10px 12px;
     background: $grey-bg;
     border: 1px solid $grey-border;

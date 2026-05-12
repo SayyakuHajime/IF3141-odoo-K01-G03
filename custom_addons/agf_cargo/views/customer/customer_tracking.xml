@@ -57,7 +57,6 @@
             <t t-set="is_penitip"
                t-value="nomor and nomor.upper().startswith('AGF-')"/>
 
-            <!-- Cek apakah tahap verifikasi bayar sudah selesai -->
             <t t-set="verifikasi_bayar_done"
                t-value="bool(kargo.tahapan_ids.filtered(
                    lambda t: t.tahap == '04_cek_dokumen'
@@ -88,19 +87,18 @@
                 <div class="agf-tracking__timeline">
 
                     <t t-set="all_steps" t-value="[
-                        ('01_registrasi',    'Pendaftaran kargo berhasil masuk ke sistem'),
-                        ('02_penjemputan',   'Tanaman diambil dari anda oleh pihak AGF Cargo'),
-                        ('03_gudang_asal',   'Tanaman telah tiba di gudang AGF Cargo'),
-                        ('04_cek_dokumen',   'Bukti pembayaran telah diverifikasi oleh admin'),
-                        ('05_terminal_asal', 'Tanaman sedang dalam proses persiapan'),
-                        ('06_transit',       'Tanaman telah diserahkan ke pihak imigrasi untuk proses pengiriman'),
+                        ('01_registrasi',     'Pendaftaran kargo berhasil masuk ke sistem'),
+                        ('02_penjemputan',    'Tanaman diambil dari anda oleh pihak AGF Cargo'),
+                        ('03_gudang_asal',    'Tanaman telah tiba di gudang AGF Cargo'),
+                        ('04_cek_dokumen',    'Bukti pembayaran telah diverifikasi oleh admin'),
+                        ('05_terminal_asal',  'Tanaman sedang dalam proses persiapan'),
+                        ('06_transit',        'Tanaman telah diserahkan ke pihak imigrasi untuk proses pengiriman'),
                         ('07_terminal_tujuan','Tanaman telah tiba di negara tujuan'),
-                        ('08_bea_cukai',     'Tanaman telah diserahkan ke pihak UPS lokal'),
-                        ('09_gudang_tujuan', 'Tanaman telah tiba di alamat penerima'),
-                        ('10_pengiriman',    'Penerima telah mengonfirmasi penerimaan tanaman'),
+                        ('08_bea_cukai',      'Tanaman telah diserahkan ke pihak UPS lokal'),
+                        ('09_gudang_tujuan',  'Tanaman telah tiba di alamat penerima'),
+                        ('10_pengiriman',     'Penerima telah mengonfirmasi penerimaan tanaman'),
                     ]"/>
 
-                    <!-- Tahapan yang menampilkan status tanaman -->
                     <t t-set="steps_with_kondisi" t-value="[
                         '03_gudang_asal',
                         '04_cek_dokumen',
@@ -170,19 +168,18 @@
                                         </div>
                                     </t>
 
-                                    <!-- Status tanaman (mulai tahap gudang_asal) -->
+                                    <!-- Status tanaman -->
                                     <t t-if="step_key in steps_with_kondisi">
                                         <t t-set="kondisi_list"
                                            t-value="kargo.tanaman_ids.mapped('kondisi')"/>
                                         <t t-if="kondisi_list and
                                                  any(k != 'belum_dicek'
                                                      for k in kondisi_list)">
-                                            <t t-set="kondisi_label"
-                                               t-value="
-                                                   'Bermasalah' if 'bermasalah' in kondisi_list
-                                                   else 'Kurang Sehat' if 'kurang_sehat' in kondisi_list
-                                                   else 'Healthy'
-                                               "/>
+                                            <t t-set="kondisi_label" t-value="
+                                                'Bermasalah' if 'bermasalah' in kondisi_list
+                                                else 'Kurang Sehat' if 'kurang_sehat' in kondisi_list
+                                                else 'Healthy'
+                                            "/>
                                             <span t-attf-class="agf-timeline__status-badge
                                                 agf-timeline__status-badge--{{
                                                     'red' if kondisi_label == 'Bermasalah'
@@ -203,11 +200,12 @@
                                     </t>
 
                                 </t>
+                                <!-- END t-if log -->
 
                                 <!-- AKSI KHUSUS PENITIP -->
                                 <t t-if="is_penitip">
 
-                                    <!-- Upload / Edit bukti pembayaran muncul di tahap 01_registrasi -->
+                                    <!-- Tahap 01 — upload/edit bukti -->
                                     <t t-if="step_key == '01_registrasi'">
 
                                         <!-- Belum ada bukti -->
@@ -220,8 +218,7 @@
                                                 <form
                                                     t-attf-action="/agf/customer/upload_bukti/#{kargo.id}"
                                                     method="POST"
-                                                    enctype="multipart/form-data"
-                                                    id="form-upload-bukti">
+                                                    enctype="multipart/form-data">
                                                     <input type="hidden"
                                                            name="csrf_token"
                                                            t-att-value="request.csrf_token()"/>
@@ -239,7 +236,6 @@
                                                            style="width:14px;height:14px"/>
                                                         Upload Bukti Pembayaran
                                                     </label>
-                                                    <!-- Konfirmasi sebelum submit -->
                                                     <div id="bukti-confirm-bar"
                                                          class="agf-timeline__confirm-bar"
                                                          style="display:none">
@@ -268,8 +264,9 @@
                                         <!-- Sudah ada bukti -->
                                         <t t-if="kargo.bukti_pembayaran">
                                             <div class="agf-timeline__action">
+                                            
+                                                <!-- Tombol row -->
                                                 <div class="agf-timeline__bukti-row">
-                                                    <!-- Tombol lihat -->
                                                     <button type="button"
                                                             id="btn-lihat-bukti"
                                                             class="agf-timeline__view-btn">
@@ -277,28 +274,24 @@
                                                            style="width:14px;height:14px"/>
                                                         Lihat Bukti Pembayaran
                                                     </button>
-
-                                                    <!-- Tombol edit -->
                                                     <t t-if="not verifikasi_bayar_done">
                                                         <button type="button"
-                                                                id="btn-edit-bukti"
+                                                                id="btn-ganti-bukti"
                                                                 class="agf-timeline__edit-btn">
                                                             <i data-lucide="pencil"
                                                                style="width:14px;height:14px"/>
                                                             Ganti
                                                         </button>
-                                                        
                                                     </t>
                                                 </div>
 
-                                                <!-- Form ganti file -->
+                                                <!-- Form ganti -->
                                                 <t t-if="not verifikasi_bayar_done">
                                                     <form
                                                         t-attf-action="/agf/customer/upload_bukti/#{kargo.id}"
                                                         method="POST"
                                                         enctype="multipart/form-data"
-                                                        id="form-ganti-bukti"
-                                                        style="display:none">
+                                                        id="form-ganti-bukti">
                                                         <input type="hidden"
                                                                name="csrf_token"
                                                                t-att-value="request.csrf_token()"/>
@@ -310,12 +303,6 @@
                                                                accept="image/*,application/pdf"
                                                                class="agf-timeline__file-input"
                                                                id="ganti-file-input"/>
-                                                        <label for="ganti-file-input"
-                                                               class="agf-timeline__upload-btn">
-                                                            <i data-lucide="upload"
-                                                               style="width:14px;height:14px"/>
-                                                            Pilih File Baru
-                                                        </label>
                                                         <div id="ganti-confirm-bar"
                                                              class="agf-timeline__confirm-bar"
                                                              style="display:none">
@@ -340,14 +327,14 @@
                                                     </form>
                                                 </t>
 
+
                                             </div>
                                         </t>
 
                                     </t>
-                                    <!-- END bukti pembayaran -->
+                                    <!-- END tahap 01 -->
 
-                                    <!-- Konfirmasi tanaman diambil
-                                         muncul di tahap 02_penjemputan -->
+                                    <!-- Tahap 02 — konfirmasi penjemputan -->
                                     <t t-if="step_key == '02_penjemputan'
                                              and is_active
                                              and not kargo.konfirmasi_penjemputan">
@@ -393,7 +380,7 @@
 
             </div>
 
-            <!-- MODAL PREVIEW BUKTI PEMBAYARAN -->
+            <!-- MODAL PREVIEW BUKTI -->
             <t t-if="is_penitip and kargo.bukti_pembayaran">
                 <div id="modal-bukti"
                      class="agf-modal"
@@ -417,8 +404,7 @@
                                 t-attf-src="/web/image/ir.attachment/#{kargo.bukti_pembayaran.id}/datas"
                                 class="agf-modal__img"
                                 alt="Bukti Pembayaran"
-                                onerror="this.style.display='none';
-                                         document.getElementById('bukti-pdf-fallback').style.display='flex'"
+                                onerror="this.style.display='none';document.getElementById('bukti-pdf-fallback').style.display='flex'"
                             />
                             <div id="bukti-pdf-fallback"
                                  class="agf-modal__pdf-fallback"
@@ -455,67 +441,60 @@
                 if (this.files.length > 0) {
                     fnEl.textContent = this.files[0].name;
                     bar.style.display = 'flex';
-                    lucide.createIcons();
+                    if (window.lucide) lucide.createIcons();
                 }
             });
             var cancelBtn = document.getElementById('bukti-cancel-btn');
             if (cancelBtn) {
                 cancelBtn.addEventListener('click', function() {
                     fileInput.value = '';
-                    document.getElementById('bukti-confirm-bar').style.display = 'none';
+                    document.getElementById('bukti-confirm-bar')
+                        .style.display = 'none';
                 });
             }
         }
 
-        // --- Edit / Ganti bukti ---
-        var editBtn = document.getElementById('btn-edit-bukti');
-        var gantiForm = document.getElementById('form-ganti-bukti');
-        if (editBtn && gantiForm) {
-            editBtn.addEventListener('click', function() {
-                gantiForm.style.display =
-                    gantiForm.style.display === 'none' ? 'block' : 'none';
-                lucide.createIcons();
+        // --- Tombol Ganti → langsung trigger file picker ---
+        var btnGanti = document.getElementById('btn-ganti-bukti');
+        var gantiInput = document.getElementById('ganti-file-input');
+
+        if (btnGanti && gantiInput) {
+            btnGanti.addEventListener('click', function() {
+                gantiInput.click();
             });
 
-            var gantiInput = document.getElementById('ganti-file-input');
-            if (gantiInput) {
-                gantiInput.addEventListener('change', function() {
-                    var bar = document.getElementById('ganti-confirm-bar');
-                    var fnEl = document.getElementById('ganti-filename');
-                    if (this.files.length > 0) {
-                        fnEl.textContent = this.files[0].name;
-                        bar.style.display = 'flex';
-                        lucide.createIcons();
-                    }
-                });
-            }
+            gantiInput.addEventListener('change', function() {
+                var bar = document.getElementById('ganti-confirm-bar');
+                var fnEl = document.getElementById('ganti-filename');
+                if (this.files.length > 0) {
+                    fnEl.textContent = this.files[0].name;
+                    bar.style.display = 'flex';
+                    if (window.lucide) lucide.createIcons();
+                }
+            });
 
             var gantiCancel = document.getElementById('ganti-cancel-btn');
             if (gantiCancel) {
                 gantiCancel.addEventListener('click', function() {
-                    if (gantiInput) gantiInput.value = '';
-                    document.getElementById('ganti-confirm-bar').style.display = 'none';
-                    gantiForm.style.display = 'none';
+                    gantiInput.value = '';
+                    document.getElementById('ganti-confirm-bar')
+                        .style.display = 'none';
                 });
             }
         }
 
         // --- Modal preview ---
-        var btnLihat = document.getElementById('btn-lihat-bukti');
-        var modal = document.getElementById('modal-bukti');
+        var btnLihat  = document.getElementById('btn-lihat-bukti');
+        var modal     = document.getElementById('modal-bukti');
         var modalClose = document.getElementById('modal-close');
-        var backdrop = document.getElementById('modal-backdrop');
+        var backdrop  = document.getElementById('modal-backdrop');
 
-        function openModal() {
-            if (modal) modal.style.display = 'flex';
-        }
-        function closeModal() {
-            if (modal) modal.style.display = 'none';
-        }
+        function openModal()  { if (modal) modal.style.display = 'flex'; }
+        function closeModal() { if (modal) modal.style.display = 'none'; }
 
-        if (btnLihat) btnLihat.addEventListener('click', openModal);
+        if (btnLihat)   btnLihat.addEventListener('click', openModal);
         if (modalClose) modalClose.addEventListener('click', closeModal);
-        if (backdrop) backdrop.addEventListener('click', closeModal);
+        if (backdrop)   backdrop.addEventListener('click', closeModal);
 
     })();
     //]]>
