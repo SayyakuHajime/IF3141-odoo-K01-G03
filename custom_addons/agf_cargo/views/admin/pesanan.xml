@@ -77,10 +77,44 @@
               <t t-if="kargo.qr_tag_id">
                 <tr>
                   <td style="padding:8px 0; color:#888;">QR Tag</td>
-                  <td style="padding:8px 0;">
-                    <span style="background:rgba(0,172,193,0.08); color:#007A8A; border:1px solid rgba(0,172,193,0.2); border-radius:4px; padding:2px 8px; font-size:12px; font-family:monospace;">
+                  <td style="padding:8px 0; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                    <a t-attf-href="/agf/admin/qr/#{kargo.qr_tag_id.id}"
+                      style="background:rgba(0,172,193,0.08); color:#007A8A; border:1px solid rgba(0,172,193,0.2); border-radius:4px; padding:2px 8px; font-size:12px; font-family:monospace; text-decoration:none;">
                       <t t-esc="kargo.qr_tag_id.tag_id"/>
-                    </span>
+                    </a>
+                    <form t-attf-action="/agf/admin/pesanan/#{kargo.id}/unassign-qr" method="POST" style="margin:0; display:inline;">
+                      <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                      <button type="submit"
+                              onclick="return confirm('Lepas QR dari pesanan ini?')"
+                              style="background:none; border:1px solid #FECACA; color:#EF4444; border-radius:4px; padding:2px 8px; font-size:11px; cursor:pointer;">
+                        <i class="fa fa-unlink"/> Unassign
+                      </button>
+                    </form>
+                  </td>
+                </tr>
+              </t>
+              <t t-else="">
+                <tr>
+                  <td style="padding:8px 0; color:#888;">QR Tag</td>
+                  <td style="padding:8px 0;">
+                    <t t-set="idle_tags" t-value="request.env['agf.qr.tag'].sudo().search([('status','=','idle')], limit=10)"/>
+                    <t t-if="idle_tags">
+                      <form t-attf-action="/agf/admin/pesanan/#{kargo.id}/assign-qr" method="POST" style="margin:0; display:flex; gap:6px; align-items:center;">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <select name="tag_db_id" style="border:1px solid #DDD; border-radius:4px; padding:4px 6px; font-size:12px; font-family:monospace;">
+                          <option value="">— Pilih QR —</option>
+                          <t t-foreach="idle_tags" t-as="qt">
+                            <option t-att-value="qt.id"><t t-esc="qt.tag_id"/></option>
+                          </t>
+                        </select>
+                        <button type="submit" style="background:#007A8A; color:white; border:none; border-radius:4px; padding:4px 10px; font-size:12px; cursor:pointer;">
+                          Assign QR
+                        </button>
+                      </form>
+                    </t>
+                    <t t-else="">
+                      <span style="color:#AAA; font-size:13px;">Tidak ada QR idle tersedia</span>
+                    </t>
                   </td>
                 </tr>
               </t>

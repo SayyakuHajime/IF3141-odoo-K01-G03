@@ -14,6 +14,7 @@
         'views/admin/admin_dashboard.xml',
         'views/admin/batch.xml', 
         'views/admin/pesanan.xml', 
+        'views/admin/qr.xml',
     ],
     'installable': True,
     'application': True,

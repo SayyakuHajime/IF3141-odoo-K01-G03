@@ -472,3 +472,113 @@ class AdminPortal(http.Controller):
             '<br>'.join(result) if result else 'TIDAK ADA BATCH SAMA SEKALI',
             headers=[('Content-Type', 'text/html')]
         )
+        
+    # ─── QR MANAGEMENT ────────────────────────────────────────────────
+
+    @http.route('/agf/admin/qr', type='http', auth='user', website=True)
+    def qr_list(self, **kwargs):
+        tags = request.env['agf.qr.tag'].search([], order='tag_id asc')
+        total = len(tags)
+        aktif = len(tags.filtered(lambda t: t.status == 'aktif'))
+        idle = len(tags.filtered(lambda t: t.status == 'idle'))
+        rusak = len(tags.filtered(lambda t: t.status == 'rusak'))
+        return request.render('agf_cargo.admin_qr_list', {
+            'tags': tags,
+            'total': total,
+            'aktif': aktif,
+            'idle': idle,
+            'rusak': rusak,
+            'user_initials': self._get_user_initials(),
+        })
+
+    @http.route('/agf/admin/qr/<int:tag_db_id>', type='http', auth='user', website=True)
+    def qr_detail(self, tag_db_id, **kwargs):
+        tag = request.env['agf.qr.tag'].browse(tag_db_id)
+        if not tag.exists():
+            return request.not_found()
+        kargo_list_idle = []
+        if not tag.kargo_id:
+            # Semua kargo di batch aktif yang belum punya QR tag
+            batch_aktif = request.env['agf.batch'].search([('status', '=', 'aktif')], limit=1)
+            if batch_aktif:
+                kargo_list_idle = batch_aktif.kargo_ids.filtered(lambda k: not k.qr_tag_id)
+        return request.render('agf_cargo.admin_qr_detail', {
+            'tag': tag,
+            'kargo_list_idle': kargo_list_idle,
+            'user_initials': self._get_user_initials(),
+        })
+
+    @http.route('/agf/admin/qr/create', type='http', auth='user', website=True)
+    def qr_create_preview(self, **kwargs):
+        # Generate preview ID tanpa commit ke DB
+        seq_next = request.env['ir.sequence'].sudo().next_by_code('agf.qr.tag') or '0001'
+        batch_aktif = request.env['agf.batch'].search([('status', '=', 'aktif')], limit=1)
+        prefix = batch_aktif.batch_id if batch_aktif else 'AGF'
+        preview_id = f'QR-{prefix}-{seq_next}'
+        return request.render('agf_cargo.admin_qr_create', {
+            'preview_id': preview_id,
+            'batch_aktif': batch_aktif,
+            'user_initials': self._get_user_initials(),
+        })
+
+    @http.route('/agf/admin/qr/create/submit', type='http', auth='user', methods=['POST'], website=True, csrf=True)
+    def qr_create_submit(self, **post):
+        batch_aktif = request.env['agf.batch'].search([('status', '=', 'aktif')], limit=1)
+        catatan = post.get('catatan', '')
+        tag = request.env['agf.qr.tag'].create({
+            'batch_id': batch_aktif.id if batch_aktif else False,
+            'catatan': catatan,
+            # tag_id akan di-generate otomatis oleh create() di model
+        })
+        return request.redirect(f'/agf/admin/qr/{tag.id}')
+
+    @http.route('/agf/admin/qr/<int:tag_db_id>/assign', type='http', auth='user', methods=['POST'], website=True, csrf=True)
+    def qr_assign(self, tag_db_id, **post):
+        tag = request.env['agf.qr.tag'].browse(tag_db_id)
+        if not tag.exists():
+            return request.not_found()
+        kargo_id = int(post.get('kargo_id', 0))
+        if kargo_id:
+            kargo = request.env['agf.kargo'].browse(kargo_id)
+            if kargo.exists():
+                # Lepas QR lama dari kargo ini kalau ada
+                if kargo.qr_tag_id:
+                    kargo.qr_tag_id.action_release()
+                tag.action_assign(kargo_id)
+                kargo.qr_tag_id = tag.id
+        return request.redirect(f'/agf/admin/qr/{tag_db_id}')
+
+    @http.route('/agf/admin/qr/<int:tag_db_id>/unassign', type='http', auth='user', methods=['POST'], website=True, csrf=True)
+    def qr_unassign(self, tag_db_id, **post):
+        tag = request.env['agf.qr.tag'].browse(tag_db_id)
+        if not tag.exists():
+            return request.not_found()
+        if tag.kargo_id:
+            tag.kargo_id.qr_tag_id = False
+        tag.action_release()
+        return request.redirect(f'/agf/admin/qr/{tag_db_id}')
+
+    @http.route('/agf/admin/pesanan/<int:kargo_id>/assign-qr', type='http', auth='user', methods=['POST'], website=True, csrf=True)
+    def pesanan_assign_qr(self, kargo_id, **post):
+        kargo = request.env['agf.kargo'].browse(kargo_id)
+        if not kargo.exists():
+            return request.not_found()
+        tag_db_id = int(post.get('tag_db_id', 0))
+        if tag_db_id:
+            tag = request.env['agf.qr.tag'].browse(tag_db_id)
+            if tag.exists() and tag.status == 'idle':
+                if kargo.qr_tag_id:
+                    kargo.qr_tag_id.action_release()
+                tag.action_assign(kargo_id)
+                kargo.qr_tag_id = tag.id
+        return request.redirect(f'/agf/admin/pesanan/{kargo_id}')
+
+    @http.route('/agf/admin/pesanan/<int:kargo_id>/unassign-qr', type='http', auth='user', methods=['POST'], website=True, csrf=True)
+    def pesanan_unassign_qr(self, kargo_id, **post):
+        kargo = request.env['agf.kargo'].browse(kargo_id)
+        if not kargo.exists():
+            return request.not_found()
+        if kargo.qr_tag_id:
+            kargo.qr_tag_id.action_release()
+            kargo.qr_tag_id = False
+        return request.redirect(f'/agf/admin/pesanan/{kargo_id}')
