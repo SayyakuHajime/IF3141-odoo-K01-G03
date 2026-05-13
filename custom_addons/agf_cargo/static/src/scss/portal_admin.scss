@@ -691,6 +691,13 @@ body.website_page {
     }
 }
 
+.agf-btn-danger {
+  background: #ef4444;  // ini solid merah
+  color: white;
+  border: none;
+  &:hover { background: #dc2626; }
+}
+
 .agf-btn-sm {
     display: inline-flex;
     align-items: center;
@@ -1167,4 +1174,171 @@ body.website_page {
     p { margin: 0; }
 
     &--lg { padding: $spacing-xl * 2 $spacing-lg; }
+}
+
+.agf-admin-filter-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid #E8E8E8;
+    padding: 0 $spacing-lg;
+    background: $admin-card-bg;
+
+    a {
+        padding: $spacing-sm $spacing-md;
+        font-size: 13px;
+        color: #888;
+        text-decoration: none;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -1px;
+        transition: color 0.15s, border-color 0.15s;
+        white-space: nowrap;
+
+        &:hover { color: $admin-accent-dark; }
+        &.active {
+            color: $admin-accent-dark;
+            border-bottom-color: $admin-accent;
+            font-weight: $font-weight-medium;
+        }
+    }
+}
+
+// ── Detail Page Two-Column (pesanan detail) ──
+.agf-admin-detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: $spacing-lg;
+    align-items: start;
+
+    @media (max-width: $bp-desktop) { grid-template-columns: 1fr; }
+}
+
+// ── Legacy table alias (dipakai di pesanan.xml & batch.xml) ──
+.agf-admin-table-wrapper {
+    background: $admin-card-bg;
+    border-radius: $admin-radius;
+    border: 1px solid #E8E8E8;
+    overflow: hidden;
+}
+
+.agf-admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+
+    thead tr {
+        background: #FAFAFA;
+        border-bottom: 1px solid #ECECEC;
+    }
+
+    th {
+        padding: $spacing-sm $spacing-md;
+        text-align: left;
+        font-weight: $font-weight-medium;
+        color: #666;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        white-space: nowrap;
+    }
+
+    td {
+        padding: $spacing-sm $spacing-md;
+        border-bottom: 1px solid #F5F5F5;
+        color: #333;
+        vertical-align: middle;
+    }
+
+    tbody tr {
+        transition: background 0.1s;
+        &:hover { background: #FAFBFC; }
+        &:last-child td { border-bottom: none; }
+    }
+}
+
+.agf-admin-table-footer {
+    padding: $spacing-sm $spacing-lg;
+    font-size: 12px;
+    color: #AAA;
+    border-top: 1px solid #F0F0F0;
+}
+
+
+// ── Aksi Admin Panel ──
+.agf-admin-action-panel {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+}
+
+.agf-admin-action-btn {
+    display: block;
+    padding: $spacing-sm $spacing-md;
+    border-radius: $admin-radius;
+    font-size: 13px;
+    color: $admin-accent-dark;
+    text-decoration: none;
+    background: #FAFAFA;
+    border: 1px solid #EBEBEB;
+    cursor: pointer;
+    font-family: $font-family-base;
+    text-align: left;
+    transition: background 0.15s;
+
+    &:hover { background: #F0F8FA; border-color: $admin-accent; }
+    &.danger { color: $color-danger; &:hover { background: $color-danger-bg; border-color: $color-danger; } }
+}
+
+// ── Timeline (Riwayat Status) ──
+.agf-admin-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.agf-admin-timeline-item {
+    display: flex;
+    gap: $spacing-md;
+    position: relative;
+
+    &:not(:last-child)::before {
+        content: '';
+        position: absolute;
+        left: 7px;
+        top: 20px;
+        bottom: -4px;
+        width: 2px;
+        background: #E8E8E8;
+    }
+}
+
+.agf-admin-timeline-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: $admin-accent;
+    flex-shrink: 0;
+    margin-top: 3px;
+    border: 2px solid #FFF;
+    box-shadow: 0 0 0 2px $admin-accent;
+
+    &.pending {
+        background: #DDD;
+        box-shadow: 0 0 0 2px #DDD;
+    }
+}
+
+.agf-admin-timeline-body {
+    padding-bottom: $spacing-md;
+    flex: 1;
+
+    .timeline-label {
+        font-size: 13px;
+        font-weight: $font-weight-medium;
+        color: #333;
+    }
+    .timeline-time {
+        font-size: 11px;
+        color: #AAA;
+        margin-top: 2px;
+    }
 }

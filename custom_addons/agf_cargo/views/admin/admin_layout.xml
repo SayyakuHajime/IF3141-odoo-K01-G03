@@ -30,7 +30,7 @@
                                 <i data-lucide="package-check" style="width:15px;height:15px"/>
                                 Batch Aktif
                             </a>
-                            <a href="/agf/admin/batch"
+                            <a href="/agf/admin/riwayat-batch"
                                t-att-class="'agf-nav-item' + (' agf-nav-item--active' if current_page == 'batch' else '')">
                                 <i data-lucide="history" style="width:15px;height:15px"/>
                                 Riwayat Batch

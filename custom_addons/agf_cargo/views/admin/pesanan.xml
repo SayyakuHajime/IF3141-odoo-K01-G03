@@ -5,7 +5,7 @@
        1. DETAIL PESANAN
        ============================================================ -->
   <template id="admin_detail_pesanan_aktif" name="Admin — Detail Pesanan">
-    <t t-call="agf_cargo.admin_base_layout">
+    <t t-call="agf_cargo.admin_layout">
       <t t-set="page_title">Detail Pesanan</t>
       <t t-set="active_menu">batch_aktif</t>
 
@@ -198,7 +198,7 @@
           </div>
 
         <!-- Riwayat Status -->
-            <div class="agf-admsin-card">
+            <div class="agf-admin-card">
             <div class="agf-admin-card-title">Riwayat Aktivitas</div>
             <t t-if="kargo.log_ids">
                 <div class="agf-admin-timeline">
@@ -244,7 +244,7 @@
        2. FORM CREATE PESANAN BARU
        ============================================================ -->
   <template id="admin_form_pesanan_baru" name="Admin — Form Pesanan Baru">
-    <t t-call="agf_cargo.admin_base_layout">
+    <t t-call="agf_cargo.admin_layout">
       <t t-set="page_title">Pesanan Baru</t>
       <t t-set="active_menu">batch_aktif</t>
 
@@ -449,7 +449,7 @@
        3. FORM EDIT PESANAN
        ============================================================ -->
   <template id="admin_form_pesanan_edit" name="Admin — Form Edit Pesanan">
-    <t t-call="agf_cargo.admin_base_layout">
+    <t t-call="agf_cargo.admin_layout">
       <t t-set="page_title">Edit Pesanan</t>
       <t t-set="active_menu">batch_aktif</t>
 

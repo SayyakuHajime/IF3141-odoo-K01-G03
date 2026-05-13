@@ -429,7 +429,7 @@ class AdminPortal(http.Controller):
         values.update({
             'batch': batch,
         })
-        return request.render('agf_cargo.admin_batch_detail', values)
+        return request.render('agf_cargo.admin_detail_batch', values)
 
     @http.route('/agf/admin/pengguna', type='http', auth='user', website=True)
     def pengguna(self, **kwargs):
