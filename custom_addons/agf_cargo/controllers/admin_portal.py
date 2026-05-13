@@ -104,7 +104,7 @@ class AdminPortal(http.Controller):
         if search:
             domain += ['|', ('nomor_penitip', 'ilike', search), ('nama_penitip', 'ilike', search)]
         kargo_list = request.env['agf.kargo'].sudo().search(domain)
-        return request.render('agf_cargo.admin_batch_aktif', {
+        return request.render('agf_cargo.admin_batch_aktif_page', {
             **self._base_ctx(),
             'batch': batch,
             'kargo_list': kargo_list,
@@ -119,6 +119,7 @@ class AdminPortal(http.Controller):
         if not batch_aktif:
             return request.redirect('/agf/admin/batch-aktif')
         return request.render('agf_cargo.admin_form_pesanan_baru', {
+            **self._base_ctx(),
             'batch': batch_aktif,
             'user_initials': self._get_user_initials(),
         })
@@ -172,6 +173,7 @@ class AdminPortal(http.Controller):
 
         if errors:
             return request.render('agf_cargo.admin_form_pesanan_baru', {
+                **self._base_ctx(),
                 'batch': batch_aktif,
                 'errors': errors,
                 'post': post,
@@ -215,31 +217,24 @@ class AdminPortal(http.Controller):
         except Exception as e:
             _logger.error(f"CREATE PESANAN ERROR: {e}")
             return request.render('agf_cargo.admin_form_pesanan_baru', {
+                **self._base_ctx(),
                 'batch': batch_aktif,
                 'errors': [str(e)],
                 'post': post,
                 'user_initials': self._get_user_initials(),
             })
 
-    @http.route('/agf/admin/pesanan/baru', type='http', auth='user', website=True)
-    def form_pesanan(self, **kwargs):
-        batch_aktif = request.env['agf.batch'].sudo().search([('status', '=', 'aktif')], limit=1)
-        return request.render('agf_cargo.admin_form_pesanan', {**self._base_ctx(), 'batch_aktif': batch_aktif})
-
-    @http.route('/agf/admin/pesanan/baru', type='http', auth='user', website=True)
-    def form_pesanan(self, **kwargs):
-        batch_aktif = request.env['agf.batch'].sudo().search([('status', '=', 'aktif')], limit=1)
-        return request.render('agf_cargo.admin_form_pesanan', {**self._base_ctx(), 'batch_aktif': batch_aktif})
-
     @http.route('/agf/admin/pesanan/<int:kargo_id>', type='http', auth='user', website=True)
     def detail_pesanan(self, kargo_id, **kwargs):
-        kargo = request.env['agf.kargo'].sudo().browse(kargo_id)
+        kargo = request.env['agf.kargo'].browse(kargo_id)
         if not kargo.exists():
             return request.not_found()
-        return request.render('agf_cargo.admin_detail_pesanan_aktif', {
+        
+        values = self._base_ctx()
+        values.update({
             'kargo': kargo,
-            'user_initials': self._get_user_initials(),
         })
+        return request.render('agf_cargo.admin_detail_pesanan_aktif', values)
 
     @http.route('/agf/admin/pesanan/<int:kargo_id>/edit', type='http', auth='user', website=True)
     def form_pesanan_edit(self, kargo_id, **kwargs):
@@ -247,6 +242,7 @@ class AdminPortal(http.Controller):
         if not kargo.exists():
             return request.not_found()
         return request.render('agf_cargo.admin_form_pesanan_edit', {
+            **self._base_ctx(),
             'kargo': kargo,
             'user_initials': self._get_user_initials(),
         })
@@ -332,6 +328,7 @@ class AdminPortal(http.Controller):
         except Exception as e:
             _logger.error(f"EDIT PESANAN ERROR: {e}")
             return request.render('agf_cargo.admin_form_pesanan_edit', {
+                **self._base_ctx(),
                 'kargo': kargo,
                 'errors': [str(e)],
                 'user_initials': self._get_user_initials(),
@@ -368,7 +365,17 @@ class AdminPortal(http.Controller):
             'idle': len(tags.filtered(lambda t: t.status == 'idle')),
             'rusak': len(tags.filtered(lambda t: t.status == 'rusak')),
         }
-        return request.render('agf_cargo.admin_qr_code', {'tags': tags, 'stats': stats, 'user_initials': self._get_user_initials(),})
+        return request.render('agf_cargo.admin_qr_code', {**self._base_ctx(), 'tags': tags, 'stats': stats, 'user_initials': self._get_user_initials(),})
+
+    @http.route('/agf/admin/qr/print', type='http', auth='user', website=True)
+    def print_qr_labels(self, **kwargs):
+        tags = request.env['agf.qr.tag'].search([('status', '=', 'aktif')])
+        
+        values = self._base_ctx()
+        values.update({
+            'tags': tags,
+        })
+        return request.render('agf_cargo.admin_qr_print', values)
     
     @http.route('/agf/admin/batch-aktif', type='http', auth='user', website=True)
     def batch_aktif_page(self, status=None, **kwargs):
@@ -387,6 +394,7 @@ class AdminPortal(http.Controller):
             status_counts = {}
 
         return request.render('agf_cargo.admin_batch_aktif_page', {
+            **self._base_ctx(),
             'batch': batch,
             'kargo_list': kargo_list,
             'status_counts': status_counts,
@@ -411,31 +419,17 @@ class AdminPortal(http.Controller):
             'total_tanaman_all': total_tanaman_all,
         })
 
-    @http.route('/agf/admin/batch/baru', type='json', auth='user', methods=['POST'], csrf=False)
-    def admin_buat_batch(self, tanggal_keberangkatan=None, catatan='', **kwargs):
-        env = request.env
-        existing = env['agf.batch'].sudo().search([('status', '=', 'aktif')], limit=1)
-        if existing:
-            return {
-                'success': False,
-                'error': f'Sudah ada batch aktif: {existing.name}. Tutup batch aktif dulu.',
-            }
-        if not tanggal_keberangkatan:
-            return {'success': False, 'error': 'Tanggal keberangkatan wajib diisi.'}
-        batch = env['agf.batch'].sudo().create({
-            'tanggal_keberangkatan': tanggal_keberangkatan,
-            'tanggal_mulai': date.today().isoformat(),
-            'catatan': catatan or '',
-            'status': 'aktif',
-        })
-        return {'success': True, 'batch_id': batch.id, 'batch_name': batch.name}
-
     @http.route('/agf/admin/batch/<int:batch_id>', type='http', auth='user', website=True)
     def detail_batch(self, batch_id, **kwargs):
-        batch = request.env['agf.batch'].sudo().browse(batch_id)
+        batch = request.env['agf.batch'].browse(batch_id)
         if not batch.exists():
             return request.not_found()
-        return request.render('agf_cargo.admin_detail_batch', {**self._base_ctx(), 'batch': batch, 'user_initials': self._get_user_initials(),})
+        
+        values = self._base_ctx()
+        values.update({
+            'batch': batch,
+        })
+        return request.render('agf_cargo.admin_batch_detail', values)
 
     @http.route('/agf/admin/pengguna', type='http', auth='user', website=True)
     def pengguna(self, **kwargs):
@@ -500,6 +494,7 @@ class AdminPortal(http.Controller):
     @http.route('/agf/admin/batch/baru', type='http', auth='user', website=True)
     def form_batch_baru(self, **kwargs):
         return request.render('agf_cargo.admin_form_batch_baru', {
+            **self._base_ctx(),
             'user_initials': self._get_user_initials(),
         })
 
@@ -553,6 +548,7 @@ class AdminPortal(http.Controller):
 
         if errors:
             return request.render('agf_cargo.admin_form_batch_baru', {
+                **self._base_ctx(),
                 'errors': errors,
                 'user_initials': self._get_user_initials(),
                 'post': post,
@@ -573,6 +569,7 @@ class AdminPortal(http.Controller):
             return request.redirect('/agf/admin/batch-aktif')
         except Exception as e:
             return request.render('agf_cargo.admin_form_batch_baru', {
+                **self._base_ctx(),
                 'errors': [str(e)],
                 'user_initials': self._get_user_initials(),
                 'post': post,
@@ -584,6 +581,7 @@ class AdminPortal(http.Controller):
         if not batch.exists():
             return request.not_found()
         return request.render('agf_cargo.admin_form_batch_edit', {
+            **self._base_ctx(),
             'batch': batch,
             'user_initials': self._get_user_initials(),
         })
@@ -606,6 +604,7 @@ class AdminPortal(http.Controller):
             return request.redirect(f'/agf/admin/batch-aktif')
         except Exception as e:
             return request.render('agf_cargo.admin_form_batch_edit', {
+                **self._base_ctx(),
                 'batch': batch,
                 'error': str(e),
                 'user_initials': self._get_user_initials(),
@@ -640,6 +639,7 @@ class AdminPortal(http.Controller):
         idle = len(tags.filtered(lambda t: t.status == 'idle'))
         rusak = len(tags.filtered(lambda t: t.status == 'rusak'))
         return request.render('agf_cargo.admin_qr_list', {
+            **self._base_ctx(),
             'tags': tags,
             'total': total,
             'aktif': aktif,
@@ -660,6 +660,7 @@ class AdminPortal(http.Controller):
             if batch_aktif:
                 kargo_list_idle = batch_aktif.kargo_ids.filtered(lambda k: not k.qr_tag_id)
         return request.render('agf_cargo.admin_qr_detail', {
+            **self._base_ctx(),
             'tag': tag,
             'kargo_list_idle': kargo_list_idle,
             'user_initials': self._get_user_initials(),
@@ -673,6 +674,7 @@ class AdminPortal(http.Controller):
         prefix = batch_aktif.batch_id if batch_aktif else 'AGF'
         preview_id = f'QR-{prefix}-{seq_next}'
         return request.render('agf_cargo.admin_qr_create', {
+            **self._base_ctx(),
             'preview_id': preview_id,
             'batch_aktif': batch_aktif,
             'user_initials': self._get_user_initials(),

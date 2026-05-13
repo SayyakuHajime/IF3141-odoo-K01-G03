@@ -5,128 +5,128 @@
        1. QR LIST — /agf/admin/qr
        ============================================================ -->
   <template id="admin_qr_list" name="Admin — Manajemen QR Code">
-    <t t-call="agf_cargo.admin_base_layout">
+    <t t-call="agf_cargo.admin_layout">
       <t t-set="page_title">Manajemen QR Code</t>
       <t t-set="active_menu">qr</t>
 
-      <div class="agf-admin-breadcrumb">
+      <div class="agf-breadcrumb">
         <a href="/agf/admin/dashboard">Home</a>
-        <span>›</span>
-        <span>Manajemen QR Code</span>
+        <span class="agf-breadcrumb__sep">›</span>
+        <span class="agf-breadcrumb__active">Manajemen QR Code</span>
       </div>
 
-      <div class="agf-admin-page-header" style="display:flex; align-items:center; justify-content:space-between;">
-        <h1>Manajemen QR Code</h1>
+      <div class="agf-page-header">
+        <h1 class="agf-page-header__title">Manajemen QR Code</h1>
         <div style="display:flex; gap:8px;">
-          <a href="/agf/admin/qr/create" class="agf-btn agf-btn-outline">Print Labels</a>
-          <a href="/agf/admin/qr/create" class="agf-btn agf-btn-primary">+ Buat QR Baru</a>
+          <a href="/agf/admin/qr/create" class="agf-btn-secondary">Print Labels</a>
+          <a href="/agf/admin/qr/create" class="agf-btn-primary">+ Buat QR Baru</a>
         </div>
       </div>
 
       <!-- Stats -->
-      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px;">
-        <div class="agf-admin-card" style="text-align:center; padding:20px;">
-          <div style="width:40px;height:40px;border-radius:8px;background:rgba(0,172,193,0.1);margin:0 auto 12px;display:flex;align-items:center;justify-content:center;">
+      <div class="agf-stat-grid">
+        <div class="agf-stat-card">
+          <div class="agf-stat-card__icon" style="background:rgba(0,172,193,0.1);">
             <i class="fa fa-qrcode" style="color:#00ACC1; font-size:18px;"/>
           </div>
-          <div style="font-size:28px;font-weight:700;color:#00ACC1;"><t t-esc="total"/></div>
-          <div style="font-size:13px;color:#888;margin-top:4px;">Total QR Tag</div>
-        </div>
-        <div class="agf-admin-card" style="text-align:center; padding:20px;">
-          <div style="width:40px;height:40px;border-radius:8px;background:rgba(52,211,153,0.1);margin:0 auto 12px;display:flex;align-items:center;justify-content:center;">
-            <i class="fa fa-check-circle" style="color:#10B981; font-size:18px;"/>
+          <div class="agf-stat-card__body">
+            <div class="agf-stat-card__value"><t t-esc="total"/></div>
+            <div class="agf-stat-card__label">Total QR Tag</div>
           </div>
-          <div style="font-size:28px;font-weight:700;color:#10B981;"><t t-esc="aktif"/></div>
-          <div style="font-size:13px;color:#888;margin-top:4px;">Aktif Digunakan</div>
         </div>
-        <div class="agf-admin-card" style="text-align:center; padding:20px;">
-          <div style="width:40px;height:40px;border-radius:8px;background:rgba(167,139,250,0.1);margin:0 auto 12px;display:flex;align-items:center;justify-content:center;">
-            <i class="fa fa-circle" style="color:#A78BFA; font-size:18px;"/>
+        <div class="agf-stat-card">
+          <div class="agf-stat-card__icon" style="background:rgba(42,122,69,0.1);">
+            <i class="fa fa-check-circle" style="color:#2A7A45; font-size:18px;"/>
           </div>
-          <div style="font-size:28px;font-weight:700;color:#A78BFA;"><t t-esc="idle"/></div>
-          <div style="font-size:13px;color:#888;margin-top:4px;">Tersedia (Idle)</div>
+          <div class="agf-stat-card__body">
+            <div class="agf-stat-card__value"><t t-esc="aktif"/></div>
+            <div class="agf-stat-card__label">Aktif Digunakan</div>
+          </div>
         </div>
-        <div class="agf-admin-card" style="text-align:center; padding:20px;">
-          <div style="width:40px;height:40px;border-radius:8px;background:rgba(239,68,68,0.1);margin:0 auto 12px;display:flex;align-items:center;justify-content:center;">
-            <i class="fa fa-times-circle" style="color:#EF4444; font-size:18px;"/>
+        <div class="agf-stat-card">
+          <div class="agf-stat-card__icon" style="background:#F5F3FF;">
+            <i class="fa fa-circle" style="color:#4B3FA0; font-size:18px;"/>
           </div>
-          <div style="font-size:28px;font-weight:700;color:#EF4444;"><t t-esc="rusak"/></div>
-          <div style="font-size:13px;color:#888;margin-top:4px;">Rusak / Hilang</div>
+          <div class="agf-stat-card__body">
+            <div class="agf-stat-card__value"><t t-esc="idle"/></div>
+            <div class="agf-stat-card__label">Tersedia (Idle)</div>
+          </div>
+        </div>
+        <div class="agf-stat-card">
+          <div class="agf-stat-card__icon" style="background:#FFEDED;">
+            <i class="fa fa-times-circle" style="color:#A83030; font-size:18px;"/>
+          </div>
+          <div class="agf-stat-card__body">
+            <div class="agf-stat-card__value"><t t-esc="rusak"/></div>
+            <div class="agf-stat-card__label">Rusak / Hilang</div>
+          </div>
         </div>
       </div>
 
       <!-- Table -->
-      <div class="agf-admin-card" style="padding:0; overflow:hidden;">
-        <table class="agf-admin-table" style="margin:0;">
-          <thead>
-            <tr>
-              <th>QR Tag ID</th>
-              <th>Batch</th>
-              <th>Tanaman</th>
-              <th>Penitip</th>
-              <th>Status</th>
-              <th>Last Used</th>
-              <th>Aksi</th>
-            </tr>
-          </thead>
-          <tbody>
-            <t t-foreach="tags" t-as="tag">
-              <tr style="cursor:pointer;" t-attf-onclick="window.location='/agf/admin/qr/#{tag.id}'">
-                <td>
-                  <span style="font-family:monospace; font-size:13px; color:#007A8A; font-weight:500;">
-                    <t t-esc="tag.tag_id"/>
-                  </span>
-                </td>
-                <td><t t-esc="tag.batch_id.name if tag.batch_id else '—'"/></td>
-                <td>
-                  <t t-if="tag.kargo_id and tag.kargo_id.tanaman_ids">
-                    <t t-esc="tag.kargo_id.tanaman_ids[0].nama_tanaman"/>
-                    <t t-if="len(tag.kargo_id.tanaman_ids) > 1">
-                      <span style="color:#888; font-size:12px;"> +<t t-esc="len(tag.kargo_id.tanaman_ids) - 1"/> lainnya</span>
-                    </t>
-                  </t>
-                  <t t-else="">—</t>
-                </td>
-                <td><t t-esc="tag.kargo_id.nama_penitip if tag.kargo_id else '—'"/></td>
-                <td>
-                  <t t-if="tag.status == 'aktif'">
-                    <span class="agf-pill processing">Aktif</span>
-                  </t>
-                  <t t-elif="tag.status == 'idle'">
-                    <span class="agf-pill" style="background:#F3F4F6; color:#6B7280; border:1px solid #E5E7EB;">Idle</span>
-                  </t>
-                  <t t-elif="tag.status == 'rusak'">
-                    <span class="agf-pill" style="background:#FEE2E2; color:#EF4444;">Rusak</span>
-                  </t>
-                  <t t-else="">
-                    <span class="agf-pill" style="background:#F9FAFB; color:#9CA3AF;">Selesai</span>
-                  </t>
-                </td>
-                <td style="color:#888; font-size:13px;">
-                  <t t-esc="tag.write_date.strftime('%d %b %Y') if tag.write_date else '—'"/>
-                </td>
-                <td onclick="event.stopPropagation()">
-                  <t t-if="tag.status == 'aktif'">
-                    <a t-attf-href="/agf/admin/qr/#{tag.id}" class="agf-btn agf-btn-outline" style="font-size:12px; padding:4px 10px;">Reassign</a>
-                  </t>
-                  <t t-elif="tag.status == 'idle'">
-                    <a t-attf-href="/agf/admin/qr/#{tag.id}" class="agf-btn agf-btn-primary" style="font-size:12px; padding:4px 10px;">Assign</a>
-                  </t>
-                  <t t-else="">
-                    <a t-attf-href="/agf/admin/qr/#{tag.id}" class="agf-btn agf-btn-outline" style="font-size:12px; padding:4px 10px;">Detail</a>
-                  </t>
-                </td>
-              </tr>
-            </t>
-            <t t-if="not tags">
+      <div class="agf-card" style="overflow:hidden;">
+        <div class="agf-table-wrap">
+          <table class="agf-table agf-table--hover">
+            <thead>
               <tr>
-                <td colspan="7" style="text-align:center; color:#AAA; padding:32px;">
-                  Belum ada QR tag. <a href="/agf/admin/qr/create" style="color:#007A8A;">Buat QR baru →</a>
-                </td>
+                <th>QR Tag ID</th><th>Batch</th><th>Tanaman</th>
+                <th>Penitip</th><th>Status</th><th>Last Used</th><th>Aksi</th>
               </tr>
-            </t>
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              <t t-foreach="tags" t-as="tag">
+                <tr style="cursor:pointer;" t-attf-onclick="window.location='/agf/admin/qr/#{tag.id}'">
+                  <td>
+                    <span class="agf-info-row__value--mono" style="font-size:13px;"><t t-esc="tag.tag_id"/></span>
+                  </td>
+                  <td><t t-esc="tag.batch_id.name if tag.batch_id else '—'"/></td>
+                  <td>
+                    <t t-if="tag.kargo_id and tag.kargo_id.tanaman_ids">
+                      <t t-esc="tag.kargo_id.tanaman_ids[0].nama_tanaman"/>
+                      <t t-if="len(tag.kargo_id.tanaman_ids) > 1">
+                        <span class="agf-table__sub"> +<t t-esc="len(tag.kargo_id.tanaman_ids)-1"/> lainnya</span>
+                      </t>
+                    </t>
+                    <t t-else="">—</t>
+                  </td>
+                  <td><t t-esc="tag.kargo_id.nama_penitip if tag.kargo_id else '—'"/></td>
+                  <td>
+                    <t t-if="tag.status == 'aktif'">
+                      <span class="agf-pill processing">Aktif</span>
+                    </t>
+                    <t t-elif="tag.status == 'idle'">
+                      <span class="agf-pill idle">Idle</span>
+                    </t>
+                    <t t-elif="tag.status == 'rusak'">
+                      <span class="agf-pill rusak">Rusak</span>
+                    </t>
+                  </td>
+                  <td><span class="agf-table__sub"><t t-esc="tag.write_date.strftime('%d %b %Y') if tag.write_date else '—'"/></span></td>
+                  <td onclick="event.stopPropagation()">
+                    <t t-if="tag.status == 'aktif'">
+                      <a t-attf-href="/agf/admin/qr/#{tag.id}" class="agf-btn-sm agf-btn-sm--outline">Reassign</a>
+                    </t>
+                    <t t-elif="tag.status == 'idle'">
+                      <a t-attf-href="/agf/admin/qr/#{tag.id}" class="agf-btn-sm">Assign</a>
+                    </t>
+                    <t t-else="">
+                      <a t-attf-href="/agf/admin/qr/#{tag.id}" class="agf-btn-sm agf-btn-sm--outline">Detail</a>
+                    </t>
+                  </td>
+                </tr>
+              </t>
+              <t t-if="not tags">
+                <tr>
+                  <td colspan="7">
+                    <div class="agf-empty-state">
+                      <p>Belum ada QR tag. <a href="/agf/admin/qr/create" class="agf-link">Buat QR baru →</a></p>
+                    </div>
+                  </td>
+                </tr>
+              </t>
+            </tbody>
+          </table>
+        </div>
       </div>
 
     </t>
@@ -137,152 +137,135 @@
        2. QR DETAIL — /agf/admin/qr/<id>
        ============================================================ -->
   <template id="admin_qr_detail" name="Admin — Detail QR Tag">
-    <t t-call="agf_cargo.admin_base_layout">
+    <t t-call="agf_cargo.admin_layout">
       <t t-set="page_title">Detail QR Tag</t>
       <t t-set="active_menu">qr</t>
 
-      <div class="agf-admin-breadcrumb">
+      <div class="agf-breadcrumb">
         <a href="/agf/admin/dashboard">Home</a>
-        <span>›</span>
+        <span class="agf-breadcrumb__sep">›</span>
         <a href="/agf/admin/qr">Manajemen QR Code</a>
-        <span>›</span>
-        <span><t t-esc="tag.tag_id"/></span>
+        <span class="agf-breadcrumb__sep">›</span>
+        <span class="agf-breadcrumb__active"><t t-esc="tag.tag_id"/></span>
       </div>
 
-      <div class="agf-admin-page-header">
-        <h1>Detail QR Tag</h1>
+      <div class="agf-page-header">
+        <h1 class="agf-page-header__title">Detail QR Tag</h1>
+        <a href="/agf/admin/qr" class="agf-btn-secondary">← Kembali</a>
       </div>
 
-      <div style="display:grid; grid-template-columns:340px 1fr; gap:24px; align-items:start;">
+      <div style="display:grid; grid-template-columns:320px 1fr; gap:24px; align-items:start;">
 
         <!-- Kolom kiri: QR visual + info tag -->
         <div style="display:flex; flex-direction:column; gap:16px;">
 
           <!-- QR Preview Card -->
-          <div class="agf-admin-card" style="text-align:center; padding:32px 24px;">
-            <!-- QR visual placeholder (kotak dengan pola sederhana) -->
-            <div style="width:160px; height:160px; margin:0 auto 16px; border:2px solid #E5E7EB; border-radius:12px; display:flex; align-items:center; justify-content:center; background:#FAFAFA; position:relative; overflow:hidden;">
-              <!-- Pola QR sederhana pakai CSS grid -->
+          <div class="agf-card" style="text-align:center; padding:32px 24px;">
+            <div style="width:160px; height:160px; margin:0 auto 16px; border:2px solid #E5E7EB; border-radius:12px; display:flex; align-items:center; justify-content:center; background:#FAFAFA;">
               <div style="display:grid; grid-template-columns:repeat(7,1fr); gap:3px; padding:12px;">
                 <t t-foreach="[1,1,1,1,1,1,1, 1,0,0,0,0,0,1, 1,0,1,1,1,0,1, 1,0,1,0,1,0,1, 1,0,1,1,1,0,1, 1,0,0,0,0,0,1, 1,1,1,1,1,1,1]" t-as="cell">
                   <div t-attf-style="width:10px;height:10px;background:#{cell and '#222' or '#FFF'};border-radius:1px;"/>
                 </t>
               </div>
             </div>
-            <div style="font-family:monospace; font-size:18px; font-weight:700; color:#1A1A1A; letter-spacing:1px;">
-              <t t-esc="tag.tag_id"/>
-            </div>
+            <div style="font-family:monospace; font-size:18px; font-weight:700; color:#111827; letter-spacing:1px;"><t t-esc="tag.tag_id"/></div>
             <div style="margin-top:8px;">
-              <t t-if="tag.status == 'aktif'">
-                <span class="agf-pill processing">Aktif Digunakan</span>
-              </t>
-              <t t-elif="tag.status == 'idle'">
-                <span class="agf-pill" style="background:#F3F4F6; color:#6B7280; border:1px solid #E5E7EB;">Tersedia (Idle)</span>
-              </t>
-              <t t-elif="tag.status == 'rusak'">
-                <span class="agf-pill" style="background:#FEE2E2; color:#EF4444;">Rusak / Hilang</span>
-              </t>
+              <t t-if="tag.status == 'aktif'"><span class="agf-pill processing">Aktif Digunakan</span></t>
+              <t t-elif="tag.status == 'idle'"><span class="agf-pill idle">Tersedia (Idle)</span></t>
+              <t t-elif="tag.status == 'rusak'"><span class="agf-pill rusak">Rusak / Hilang</span></t>
             </div>
-            <div style="margin-top:16px; font-size:12px; color:#9CA3AF;">
+            <div style="margin-top:12px; font-size:12px; color:#9CA3AF;">
               Dibuat: <t t-esc="tag.tanggal_cetak.strftime('%d %B %Y') if tag.tanggal_cetak else '—'"/>
             </div>
-            <!-- Tombol print (visual only) -->
-            <button onclick="window.print()"
-                    style="margin-top:16px; width:100%; padding:8px; border:1px solid #007A8A; background:white; color:#007A8A; border-radius:6px; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
+            <button onclick="window.print()" class="agf-btn-secondary"
+                    style="margin-top:16px; width:100%; display:flex; align-items:center; justify-content:center; gap:6px;">
               <i class="fa fa-print"/> Print QR Label
             </button>
           </div>
 
           <!-- Info Tag -->
-          <div class="agf-admin-card">
-            <div class="agf-admin-card-title">Info Tag</div>
-            <table style="width:100%; font-size:13px; border-collapse:collapse;">
-              <tr style="border-bottom:1px solid #F5F5F5;">
-                <td style="padding:8px 0; color:#888; width:100px;">Tag ID</td>
-                <td style="padding:8px 0; font-family:monospace; color:#007A8A;"><t t-esc="tag.tag_id"/></td>
-              </tr>
-              <tr style="border-bottom:1px solid #F5F5F5;">
-                <td style="padding:8px 0; color:#888;">Batch</td>
-                <td style="padding:8px 0;"><t t-esc="tag.batch_id.name if tag.batch_id else '—'"/></td>
-              </tr>
-              <tr style="border-bottom:1px solid #F5F5F5;">
-                <td style="padding:8px 0; color:#888;">Status</td>
-                <td style="padding:8px 0;"><t t-esc="dict(tag._fields['status'].selection).get(tag.status, tag.status)"/></td>
-              </tr>
-              <tr>
-                <td style="padding:8px 0; color:#888;">Catatan</td>
-                <td style="padding:8px 0; color:#555;"><t t-esc="tag.catatan or '—'"/></td>
-              </tr>
-            </table>
+          <div class="agf-card">
+            <div class="agf-card__header"><span class="agf-card__title">Info Tag</span></div>
+            <div class="agf-info-rows">
+              <div class="agf-info-row">
+                <span class="agf-info-row__label">Tag ID</span>
+                <span class="agf-info-row__value agf-info-row__value--mono"><t t-esc="tag.tag_id"/></span>
+              </div>
+              <div class="agf-info-row">
+                <span class="agf-info-row__label">Batch</span>
+                <span class="agf-info-row__value"><t t-esc="tag.batch_id.name if tag.batch_id else '—'"/></span>
+              </div>
+              <div class="agf-info-row">
+                <span class="agf-info-row__label">Status</span>
+                <span class="agf-info-row__value"><t t-esc="dict(tag._fields['status'].selection).get(tag.status, tag.status)"/></span>
+              </div>
+              <div class="agf-info-row">
+                <span class="agf-info-row__label">Catatan</span>
+                <span class="agf-info-row__value"><t t-esc="tag.catatan or '—'"/></span>
+              </div>
+            </div>
           </div>
 
         </div>
 
-        <!-- Kolom kanan: info pesanan / assign form -->
+        <!-- Kolom kanan: info pesanan / assign -->
         <div style="display:flex; flex-direction:column; gap:16px;">
 
-          <!-- Jika ada pesanan yang attached -->
+          <!-- Jika ada pesanan attached -->
           <t t-if="tag.kargo_id">
-            <div class="agf-admin-card">
-              <div class="agf-admin-card-title" style="display:flex; justify-content:space-between; align-items:center;">
-                <span>Pesanan yang Di-attach</span>
-                <!-- Unassign button -->
+            <div class="agf-card">
+              <div class="agf-card__header">
+                <span class="agf-card__title">Pesanan yang Di-attach</span>
                 <form t-attf-action="/agf/admin/qr/#{tag.id}/unassign" method="POST" style="margin:0;">
                   <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                  <button type="submit"
-                          onclick="return confirm('Lepas QR dari pesanan ini?')"
-                          style="background:#FEE2E2; color:#EF4444; border:1px solid #FECACA; border-radius:6px; padding:4px 12px; font-size:12px; cursor:pointer;">
+                  <button type="submit" class="agf-btn-danger"
+                          style="padding:4px 12px; font-size:12px;"
+                          onclick="return confirm('Lepas QR dari pesanan ini?')">
                     <i class="fa fa-unlink"/> Unassign
                   </button>
                 </form>
               </div>
-              <table style="width:100%; font-size:13px; border-collapse:collapse;">
-                <tr style="border-bottom:1px solid #F5F5F5;">
-                  <td style="padding:8px 0; color:#888; width:160px;">Order ID</td>
-                  <td style="padding:8px 0;">
-                    <a t-attf-href="/agf/admin/pesanan/#{tag.kargo_id.id}"
-                       style="color:#007A8A; font-weight:500; font-family:monospace;">
+              <div class="agf-info-rows">
+                <div class="agf-info-row">
+                  <span class="agf-info-row__label">Order ID</span>
+                  <span class="agf-info-row__value">
+                    <a t-attf-href="/agf/admin/pesanan/#{tag.kargo_id.id}" class="agf-link agf-info-row__value--mono">
                       <t t-esc="tag.kargo_id.nomor_penitip"/>
                     </a>
-                  </td>
-                </tr>
-                <tr style="border-bottom:1px solid #F5F5F5;">
-                  <td style="padding:8px 0; color:#888;">Pengirim</td>
-                  <td style="padding:8px 0;"><t t-esc="tag.kargo_id.nama_penitip"/></td>
-                </tr>
-                <tr style="border-bottom:1px solid #F5F5F5;">
-                  <td style="padding:8px 0; color:#888;">No. HP</td>
-                  <td style="padding:8px 0;"><t t-esc="tag.kargo_id.hp_penitip"/></td>
-                </tr>
-                <tr style="border-bottom:1px solid #F5F5F5;">
-                  <td style="padding:8px 0; color:#888;">Status Pesanan</td>
-                  <td style="padding:8px 0;">
-                    <t t-set="s" t-value="tag.kargo_id.status"/>
-                    <t t-if="s == 'hold'"><span class="agf-pill hold">Hold</span></t>
-                    <t t-elif="s == 'arrival'"><span class="agf-pill arrival">Arrival</span></t>
-                    <t t-elif="s == 'processing'"><span class="agf-pill processing">Processing</span></t>
-                    <t t-elif="s == 'shipped'"><span class="agf-pill shipped">Shipped</span></t>
-                    <t t-elif="s == 'done'"><span class="agf-pill done">Done</span></t>
-                  </td>
-                </tr>
-                <tr style="border-bottom:1px solid #F5F5F5;">
-                  <td style="padding:8px 0; color:#888;">Batch</td>
-                  <td style="padding:8px 0;"><t t-esc="tag.kargo_id.batch_id.name if tag.kargo_id.batch_id else '—'"/></td>
-                </tr>
-                <tr>
-                  <td style="padding:8px 0; color:#888;">Jumlah Tanaman</td>
-                  <td style="padding:8px 0;"><t t-esc="tag.kargo_id.total_tanaman"/> tanaman</td>
-                </tr>
-              </table>
-
-              <!-- Daftar tanaman -->
+                  </span>
+                </div>
+                <div class="agf-info-row">
+                  <span class="agf-info-row__label">Pengirim</span>
+                  <span class="agf-info-row__value"><t t-esc="tag.kargo_id.nama_penitip"/></span>
+                </div>
+                <div class="agf-info-row">
+                  <span class="agf-info-row__label">No. HP</span>
+                  <span class="agf-info-row__value"><t t-esc="tag.kargo_id.hp_penitip"/></span>
+                </div>
+                <div class="agf-info-row">
+                  <span class="agf-info-row__label">Status Pesanan</span>
+                  <span class="agf-info-row__value">
+                    <span t-attf-class="agf-badge-status status-#{tag.kargo_id.status}">
+                      <t t-esc="tag.kargo_id.status.capitalize()"/>
+                    </span>
+                  </span>
+                </div>
+                <div class="agf-info-row">
+                  <span class="agf-info-row__label">Batch</span>
+                  <span class="agf-info-row__value"><t t-esc="tag.kargo_id.batch_id.name if tag.kargo_id.batch_id else '—'"/></span>
+                </div>
+                <div class="agf-info-row">
+                  <span class="agf-info-row__label">Jumlah Tanaman</span>
+                  <span class="agf-info-row__value"><t t-esc="tag.kargo_id.total_tanaman"/> tanaman</span>
+                </div>
+              </div>
               <t t-if="tag.kargo_id.tanaman_ids">
-                <div style="margin-top:16px; border-top:1px solid #F5F5F5; padding-top:12px;">
-                  <div style="font-size:12px; color:#888; margin-bottom:8px;">Daftar Tanaman:</div>
+                <div style="padding:0 16px 12px;">
+                  <div style="font-size:12px; color:#9CA3AF; margin-bottom:8px; font-weight:500;">Daftar Tanaman:</div>
                   <t t-foreach="tag.kargo_id.tanaman_ids" t-as="tanaman">
                     <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid #F9FAFB; font-size:13px;">
                       <span><t t-esc="tanaman.nama_tanaman"/></span>
-                      <span style="color:#888;"><t t-esc="tanaman.jumlah"/> pcs · <t t-esc="tanaman.ukuran or '-'"/></span>
+                      <span class="agf-table__sub"><t t-esc="tanaman.jumlah"/> pcs · <t t-esc="tanaman.ukuran or '-'"/></span>
                     </div>
                   </t>
                 </div>
@@ -290,89 +273,84 @@
             </div>
 
             <!-- Reassign ke pesanan lain -->
-            <div class="agf-admin-card">
-              <div class="agf-admin-card-title">Reassign ke Pesanan Lain</div>
-              <p style="font-size:13px; color:#888; margin-bottom:12px;">
-                Pilih pesanan dari batch aktif yang belum memiliki QR tag untuk di-assign ke tag ini.
-                QR tag saat ini akan otomatis di-unassign dari pesanan lama.
-              </p>
-              <form t-attf-action="/agf/admin/qr/#{tag.id}/assign" method="POST">
-                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                <div style="display:flex; gap:8px;">
-                  <select name="kargo_id" style="flex:1; border:1px solid #DDD; border-radius:6px; padding:8px 10px; font-size:13px; font-family:inherit;">
-                    <option value="">— Pilih Pesanan —</option>
-                    <t t-foreach="kargo_list_idle" t-as="k">
-                      <option t-att-value="k.id">
-                        <t t-esc="k.nomor_penitip"/> — <t t-esc="k.nama_penitip"/>
-                      </option>
-                    </t>
-                  </select>
-                  <button type="submit" class="agf-btn agf-btn-primary" style="white-space:nowrap;">
-                    Assign
-                  </button>
+            <t t-if="kargo_list_idle">
+              <div class="agf-card">
+                <div class="agf-card__header"><span class="agf-card__title">Reassign ke Pesanan Lain</span></div>
+                <div style="padding:16px;">
+                  <p style="font-size:13px; color:#6B7280; margin:0 0 12px;">
+                    Pilih pesanan dari batch aktif yang belum memiliki QR tag.
+                    QR saat ini akan otomatis di-unassign dari pesanan lama.
+                  </p>
+                  <form t-attf-action="/agf/admin/qr/#{tag.id}/assign" method="POST">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <div style="display:flex; gap:8px;">
+                      <select name="kargo_id" class="agf-form-input agf-form-select" style="flex:1;">
+                        <option value="">— Pilih Pesanan —</option>
+                        <t t-foreach="kargo_list_idle" t-as="k">
+                          <option t-att-value="k.id"><t t-esc="k.nomor_penitip"/> — <t t-esc="k.nama_penitip"/></option>
+                        </t>
+                      </select>
+                      <button type="submit" class="agf-btn-primary" style="white-space:nowrap;">Reassign</button>
+                    </div>
+                  </form>
                 </div>
-              </form>
-            </div>
+              </div>
+            </t>
           </t>
 
-          <!-- Jika tag idle (belum ada pesanan) -->
+          <!-- Tag idle -->
           <t t-if="tag.status == 'idle'">
-            <div class="agf-admin-card">
-              <div style="text-align:center; padding:24px 0; color:#9CA3AF;">
-                <i class="fa fa-qrcode" style="font-size:40px; margin-bottom:12px; display:block; color:#E5E7EB;"/>
-                <div style="font-size:14px; font-weight:500; color:#6B7280; margin-bottom:4px;">Tag ini belum digunakan</div>
-                <div style="font-size:13px;">Assign ke pesanan untuk mulai menggunakannya.</div>
+            <div class="agf-card">
+              <div class="agf-empty-state" style="padding:32px 16px;">
+                <i class="fa fa-qrcode" style="font-size:40px; color:#E5E7EB;"/>
+                <p style="font-weight:500; color:#6B7280;">Tag ini belum digunakan</p>
+                <p>Assign ke pesanan untuk mulai menggunakannya.</p>
               </div>
             </div>
 
             <t t-if="kargo_list_idle">
-              <div class="agf-admin-card">
-                <div class="agf-admin-card-title">Assign ke Pesanan</div>
-                <p style="font-size:13px; color:#888; margin-bottom:12px;">
-                  Pilih pesanan dari batch aktif yang belum memiliki QR tag.
-                </p>
-                <form t-attf-action="/agf/admin/qr/#{tag.id}/assign" method="POST">
-                  <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                  <div style="display:flex; gap:8px;">
-                    <select name="kargo_id" style="flex:1; border:1px solid #DDD; border-radius:6px; padding:8px 10px; font-size:13px; font-family:inherit;">
-                      <option value="">— Pilih Pesanan —</option>
-                      <t t-foreach="kargo_list_idle" t-as="k">
-                        <option t-att-value="k.id">
-                          <t t-esc="k.nomor_penitip"/> — <t t-esc="k.nama_penitip"/>
-                        </option>
-                      </t>
-                    </select>
-                    <button type="submit" class="agf-btn agf-btn-primary" style="white-space:nowrap;">
-                      Assign
-                    </button>
-                  </div>
-                </form>
+              <div class="agf-card">
+                <div class="agf-card__header"><span class="agf-card__title">Assign ke Pesanan</span></div>
+                <div style="padding:16px;">
+                  <p style="font-size:13px; color:#6B7280; margin:0 0 12px;">
+                    Pilih pesanan dari batch aktif yang belum memiliki QR tag.
+                  </p>
+                  <form t-attf-action="/agf/admin/qr/#{tag.id}/assign" method="POST">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <div style="display:flex; gap:8px;">
+                      <select name="kargo_id" class="agf-form-input agf-form-select" style="flex:1;">
+                        <option value="">— Pilih Pesanan —</option>
+                        <t t-foreach="kargo_list_idle" t-as="k">
+                          <option t-att-value="k.id"><t t-esc="k.nomor_penitip"/> — <t t-esc="k.nama_penitip"/></option>
+                        </t>
+                      </select>
+                      <button type="submit" class="agf-btn-primary" style="white-space:nowrap;">Assign</button>
+                    </div>
+                  </form>
+                </div>
               </div>
             </t>
             <t t-else="">
-              <div class="agf-admin-card" style="text-align:center; padding:16px;">
-                <span style="font-size:13px; color:#9CA3AF;">Semua pesanan di batch aktif sudah memiliki QR tag.</span>
+              <div class="agf-card">
+                <div class="agf-empty-state">
+                  <p>Semua pesanan di batch aktif sudah memiliki QR tag.</p>
+                </div>
               </div>
             </t>
           </t>
 
-          <!-- Jika rusak -->
+          <!-- Tag rusak -->
           <t t-if="tag.status == 'rusak'">
-            <div class="agf-admin-card">
-              <div style="text-align:center; padding:24px 0;">
-                <i class="fa fa-times-circle" style="font-size:40px; color:#EF4444; display:block; margin-bottom:12px;"/>
-                <div style="font-size:14px; font-weight:500; color:#EF4444;">Tag ini ditandai rusak / hilang</div>
-                <div style="font-size:13px; color:#9CA3AF; margin-top:4px;">Tidak dapat digunakan untuk pesanan baru.</div>
+            <div class="agf-card">
+              <div class="agf-empty-state" style="padding:32px 16px;">
+                <i class="fa fa-times-circle" style="font-size:40px; color:#A83030;"/>
+                <p style="font-weight:500; color:#A83030;">Tag ini ditandai rusak / hilang</p>
+                <p>Tidak dapat digunakan untuk pesanan baru.</p>
               </div>
             </div>
           </t>
 
         </div>
-      </div>
-
-      <!-- Back button -->
-      <div style="margin-top:24px;">
-        <a href="/agf/admin/qr" class="agf-btn agf-btn-outline">← Kembali ke Daftar QR</a>
       </div>
 
     </t>
@@ -383,28 +361,27 @@
        3. QR CREATE — /agf/admin/qr/create
        ============================================================ -->
   <template id="admin_qr_create" name="Admin — Buat QR Baru">
-    <t t-call="agf_cargo.admin_base_layout">
+    <t t-call="agf_cargo.admin_layout">
       <t t-set="page_title">Buat QR Baru</t>
       <t t-set="active_menu">qr</t>
 
-      <div class="agf-admin-breadcrumb">
+      <div class="agf-breadcrumb">
         <a href="/agf/admin/dashboard">Home</a>
-        <span>›</span>
+        <span class="agf-breadcrumb__sep">›</span>
         <a href="/agf/admin/qr">Manajemen QR Code</a>
-        <span>›</span>
-        <span>Buat QR Baru</span>
+        <span class="agf-breadcrumb__sep">›</span>
+        <span class="agf-breadcrumb__active">Buat QR Baru</span>
       </div>
-
-      <div class="agf-admin-page-header">
-        <h1>Buat QR Tag Baru</h1>
+      <div class="agf-page-header">
+        <h1 class="agf-page-header__title">Buat QR Tag Baru</h1>
       </div>
 
       <div style="max-width:480px; margin:0 auto;">
-        <div class="agf-admin-card" style="text-align:center; padding:40px 32px;">
+        <div class="agf-card" style="text-align:center; padding:40px 32px;">
 
           <!-- Preview QR -->
           <div style="margin-bottom:24px;">
-            <div style="font-size:13px; color:#9CA3AF; margin-bottom:8px; text-transform:uppercase; letter-spacing:0.5px;">Preview QR Tag</div>
+            <div style="font-size:12px; color:#9CA3AF; margin-bottom:8px; text-transform:uppercase; letter-spacing:0.5px;">Preview QR Tag</div>
             <div style="width:180px; height:180px; margin:0 auto 16px; border:2px dashed #E5E7EB; border-radius:12px; display:flex; align-items:center; justify-content:center; background:#FAFAFA;">
               <div style="display:grid; grid-template-columns:repeat(7,1fr); gap:3px; padding:16px;">
                 <t t-foreach="[1,1,1,1,1,1,1, 1,0,0,0,0,0,1, 1,0,1,1,1,0,1, 1,0,1,0,1,0,1, 1,0,1,1,1,0,1, 1,0,0,0,0,0,1, 1,1,1,1,1,1,1]" t-as="cell">
@@ -420,32 +397,26 @@
 
           <!-- Info batch -->
           <t t-if="batch_aktif">
-            <div style="background:#F0FDFA; border:1px solid #99F6E4; border-radius:8px; padding:10px 14px; margin-bottom:20px; text-align:left; font-size:13px;">
-              <i class="fa fa-info-circle" style="color:#0D9488; margin-right:6px;"/>
-              QR ini akan dikaitkan ke batch aktif:
-              <strong><t t-esc="batch_aktif.name"/></strong>
+            <div class="agf-alert agf-alert--info" style="text-align:left; margin-bottom:20px;">
+              <i class="fa fa-info-circle"/>
+              <span>QR ini akan dikaitkan ke batch aktif: <strong><t t-esc="batch_aktif.name"/></strong></span>
             </div>
           </t>
 
           <!-- Form -->
           <form action="/agf/admin/qr/create/submit" method="POST" style="text-align:left;">
             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-            <div class="agf-admin-form-group" style="margin-bottom:16px;">
-              <label style="font-size:13px; color:#555; display:block; margin-bottom:6px;">Catatan (opsional)</label>
-              <textarea name="catatan" rows="2"
-                        style="width:100%; border:1px solid #DDD; border-radius:6px; padding:8px 10px; font-size:13px; font-family:inherit; box-sizing:border-box; resize:vertical;"
-                        placeholder="Misal: pengganti tag rusak, batch khusus..."></textarea>
+            <div class="agf-form-group" style="margin-bottom:16px;">
+              <label>Catatan (opsional)</label>
+              <textarea name="catatan" rows="2" placeholder="Misal: pengganti tag rusak, batch khusus..."></textarea>
             </div>
-
             <div style="display:flex; gap:8px; margin-top:8px;">
-              <a href="/agf/admin/qr" class="agf-btn agf-btn-outline" style="flex:1; text-align:center;">Batal</a>
-              <!-- Print button (visual only) -->
-              <button type="button" onclick="window.print()"
-                      class="agf-btn agf-btn-outline"
+              <a href="/agf/admin/qr" class="agf-btn-secondary" style="flex:1; text-align:center; justify-content:center;">Batal</a>
+              <button type="button" onclick="window.print()" class="agf-btn-secondary"
                       style="flex:1; display:flex; align-items:center; justify-content:center; gap:6px;">
                 <i class="fa fa-print"/> Print Preview
               </button>
-              <button type="submit" class="agf-btn agf-btn-primary" style="flex:1;">
+              <button type="submit" class="agf-btn-primary" style="flex:1;">
                 ✓ Konfirmasi &amp; Buat
               </button>
             </div>
