@@ -57,7 +57,7 @@
 
       <t t-if="batch">
         <div class="agf-card" style="overflow:hidden;">
-          <div class="agf-filter-tabs">
+          <div class="agf-admin-filter-tabs">
             <a t-attf-href="/agf/admin/batch-aktif" t-attf-class="#{'' if current_status else 'active'}">
               Semua (<t t-esc="status_counts.get('hold',0)+status_counts.get('arrival',0)+status_counts.get('processing',0)+status_counts.get('shipped',0)+status_counts.get('done',0)"/>)
             </a>
@@ -99,7 +99,7 @@
               </tbody>
             </table>
           </div>
-          <div class="agf-table-footer"><t t-esc="len(kargo_list)"/> pesanan ditampilkan</div>
+          <div class="agf-admin-table-footer"><t t-esc="len(kargo_list)"/> pesanan ditampilkan</div>
         </div>
 
         <a href="/agf/admin/pesanan/baru"

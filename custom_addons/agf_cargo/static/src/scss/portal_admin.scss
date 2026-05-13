@@ -698,10 +698,23 @@ body.website_page {
 }
 
 .agf-btn-danger {
-  background: #ef4444;  // ini solid merah
-  color: white;
-  border: none;
-  &:hover { background: #dc2626; }
+    display: inline-flex;          
+    align-items: center;           
+    gap: 6px;                      
+    background: #ef4444;
+    color: #FFFFFF;
+    border: none;
+    border-radius: $admin-radius;  
+    padding: 8px 16px;              
+    cursor: pointer;               
+    font-size: 13.5px;             
+    font-weight: $font-weight-medium; 
+    text-decoration: none;         
+    white-space: nowrap;           
+    transition: background 0.15s;  
+    font-family: $font-family-base; 
+
+    &:hover { background: #dc2626; color: #FFFFFF; text-decoration: none; }
 }
 
 .agf-btn-sm {
@@ -1188,9 +1201,15 @@ body.website_page {
     border-bottom: 1px solid #E8E8E8;
     padding: 0 $spacing-lg;
     background: $admin-card-bg;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap; 
+    overflow-y: hidden;      
+    scrollbar-width: none;  
+    &::-webkit-scrollbar { display: none; }
 
     a {
-        padding: $spacing-sm $spacing-md;
+        padding: $spacing-sm 20px;
         font-size: 13px;
         color: #888;
         text-decoration: none;

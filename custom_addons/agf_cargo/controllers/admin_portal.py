@@ -226,13 +226,14 @@ class AdminPortal(http.Controller):
 
     @http.route('/agf/admin/pesanan/<int:kargo_id>', type='http', auth='user', website=True)
     def detail_pesanan(self, kargo_id, **kwargs):
-        kargo = request.env['agf.kargo'].browse(kargo_id)
+        kargo = request.env['agf.kargo'].sudo().browse(kargo_id)  
         if not kargo.exists():
             return request.not_found()
         
         values = self._base_ctx()
         values.update({
             'kargo': kargo,
+            'user_initials': self._get_user_initials(),  
         })
         return request.render('agf_cargo.admin_detail_pesanan_aktif', values)
 
