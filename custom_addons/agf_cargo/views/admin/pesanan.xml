@@ -10,7 +10,7 @@
       <t t-set="current_page" t-value="'pesanan'"/>
 
       <!-- Breadcrumb -->
-      <div class="agf-admin-breadcrumb">
+      <div class="agf-breadcrumb">
         <a href="/agf/admin/dashboard">Home</a>
         <span>›</span>
         <a href="/agf/admin/batch-aktif">Manajemen Pesanan</a>
@@ -19,7 +19,7 @@
       </div>
 
       <!-- Page Header -->
-      <div class="agf-admin-page-header">
+      <div class="agf-page-header">
         <div style="display:flex; align-items:center; gap:12px;">
           <h1>Detail Pesanan</h1>
           <t t-if="kargo.status == 'hold'"><span class="agf-pill hold">Hold</span></t>
@@ -37,8 +37,11 @@
         <div style="display:flex; flex-direction:column; gap:16px;">
 
           <!-- Informasi Pesanan -->
-          <div class="agf-admin-card">
-            <div class="agf-admin-card-title">Informasi Pesanan</div>
+          <div class="agf-card">
+            <div class="agf-card__header">
+            <span class="agf-card__title">Informasi Pesanan</span>
+            </div>
+            <div class="agf-card__body">
             <table style="width:100%; font-size:13px; border-collapse:collapse;">
               <tr style="border-bottom:1px solid #F5F5F5;">
                 <td style="padding:8px 0; color:#888; width:180px;">Order ID</td>
@@ -136,11 +139,14 @@
                 </td>
               </tr>
             </table>
+            </div>
           </div>
 
           <!-- Data Tanaman -->
-          <div class="agf-admin-card">
-            <div class="agf-admin-card-title">Data Tanaman Pesanan</div>
+          <div class="agf-card">
+            <div class="agf-card__header">
+            <span class="agf-card__title">Data Tanaman Pesanan</span>
+            </div>
             <table class="agf-admin-table">
               <thead>
                 <tr>
@@ -188,18 +194,25 @@
         <div style="display:flex; flex-direction:column; gap:16px;">
 
           <!-- Aksi Admin -->
-          <div class="agf-admin-card">
-            <div class="agf-admin-card-title">Aksi Admin</div>
+          <div class="agf-card">
+            <div class="agf-card__header">
+            <span class="agf-card__title">Aksi Admin</span>
+            </div>
+            <div class="agf-card__body">
             <div class="agf-admin-action-panel">
                 <a t-attf-href="/agf/admin/pesanan/#{kargo.id}/edit"
                     class="agf-admin-action-btn">Edit dan Ubah Status Pesanan</a>
                 <a href="#" class="agf-admin-action-btn">Cetak &amp; Assign Label QR</a>
             </div>
+            </div>
           </div>
 
         <!-- Riwayat Status -->
-            <div class="agf-admin-card">
-            <div class="agf-admin-card-title">Riwayat Aktivitas</div>
+            <div class="agf-card">
+            <div class="agf-card__header">
+            <span class="agf-card__title">Riwayat Aktivitas</span>
+            </div>
+            <div class="agf-card__body">
             <t t-if="kargo.log_ids">
                 <div class="agf-admin-timeline">
                 <t t-foreach="kargo.log_ids" t-as="log">
@@ -232,6 +245,7 @@
                 <p style="font-size:13px; color:#AAA;">Belum ada riwayat aktivitas.</p>
             </t>
             </div>
+            </div>
 
         </div>
       </div>
@@ -248,13 +262,13 @@
       <t t-set="page_title">Pesanan Baru</t>
       <t t-set="current_page" t-value="'pesanan'"/>
 
-      <div class="agf-admin-breadcrumb">
+      <div class="agf-breadcrumb">
         <a href="/agf/admin/batch-aktif">Batch Aktif</a>
         <span>›</span>
         <span>Pesanan Baru</span>
       </div>
 
-      <div class="agf-admin-page-header">
+      <div class="agf-page-header">
         <div>
           <h1>Input Pesanan Baru</h1>
           <t t-if="batch_aktif">
@@ -281,93 +295,123 @@
         <div class="agf-admin-form-grid">
 
           <!-- Pengirim -->
-          <div class="agf-admin-card">
-            <div class="agf-admin-card-title">Informasi Pengirim</div>
+          <div class="agf-card">
+            <div class="agf-card__header">
+            <span class="agf-card__title">Informasi Pengirim</span>
+            </div>
+            <div class="agf-card__body"> 
             <div class="agf-admin-form-group" style="margin-bottom:10px;">
               <label>Nama Lengkap <span style="color:#A83030;">*</span></label>
               <input type="text" name="nama_penitip" required="1"
                      t-att-value="post.get('nama_penitip','') if post else ''"/>
             </div>
+            </div>
+            <div class="agf-card__body"> 
             <div class="agf-admin-form-group" style="margin-bottom:10px;">
               <label>No. WhatsApp <span style="color:#A83030;">*</span></label>
               <input type="text" name="hp_penitip" required="1"
                      t-att-value="post.get('hp_penitip','') if post else ''"/>
             </div>
+            </div>
+            <div class="agf-card__body"> 
             <div class="agf-admin-form-group" style="margin-bottom:10px;">
               <label>Email <span style="color:#A83030;">*</span></label>
               <input type="email" name="email_penitip" required="1"
                      t-att-value="post.get('email_penitip','') if post else ''"/>
             </div>
+            </div>
+            <div class="agf-card__body"> 
             <div class="agf-admin-form-group">
               <label>Alamat <span style="color:#A83030;">*</span></label>
               <textarea name="alamat_penitip" rows="2"><t t-if="post"><t t-esc="post.get('alamat_penitip','')"/></t></textarea>
             </div>
+            </div>
           </div>
 
           <!-- Penerima -->
-          <div class="agf-admin-card">
-            <div class="agf-admin-card-title">Informasi Penerima</div>
+          <div class="agf-card">
+            <div class="agf-card__header">
+            <span class="agf-card__title">Informasi Penerima</span>
+            </div>
+            <div class="agf-card__body"> 
             <div class="agf-admin-form-group" style="margin-bottom:10px;">
               <label>Nama Lengkap <span style="color:#A83030;">*</span></label>
               <input type="text" name="nama_penerima" required="1"
                      t-att-value="post.get('nama_penerima','') if post else ''"/>
             </div>
+            </div>
+            <div class="agf-card__body"> 
             <div class="agf-admin-form-group" style="margin-bottom:10px;">
               <label>No. HP</label>
               <input type="text" name="hp_penerima"
                      t-att-value="post.get('hp_penerima','') if post else ''"/>
             </div>
+            </div>
+            <div class="agf-card__body"> 
             <div class="agf-admin-form-group" style="margin-bottom:10px;">
               <label>Email</label>
               <input type="email" name="email_penerima"
                      t-att-value="post.get('email_penerima','') if post else ''"/>
             </div>
+            </div>
+            <div class="agf-card__body"> 
             <div class="agf-admin-form-group" style="margin-bottom:10px;">
               <label>Alamat Lengkap + Zip Code <span style="color:#A83030;">*</span></label>
               <textarea name="alamat_penerima" rows="2"><t t-if="post"><t t-esc="post.get('alamat_penerima','')"/></t></textarea>
             </div>
+            </div>
+            <div class="agf-card__body"> 
             <div class="agf-admin-form-group">
               <label>Negara Tujuan</label>
               <input type="text" name="negara_tujuan"
                      t-att-value="post.get('negara_tujuan', batch_aktif.negara_tujuan if batch_aktif else 'United States') if post else (batch_aktif.negara_tujuan if batch_aktif else 'United States')"/>
+            </div>
             </div>
           </div>
 
         </div>
 
         <!-- Daftar Tanaman -->
-        <div class="agf-admin-card" style="margin-top:0;">
-          <div class="agf-admin-card-title">Daftar Tanaman</div>
-          <div id="tanaman-container">
-            <div style="display:grid; grid-template-columns:2fr 80px 100px 140px 32px; gap:8px; margin-bottom:8px; align-items:center;">
-              <input type="text" name="tanaman_nama_0" placeholder="Nama / genus tanaman" required="1"
-                     style="border:1px solid #DDD; border-radius:4px; padding:7px 8px; font-size:13px; font-family:inherit;"/>
-              <input type="number" name="tanaman_jumlah_0" value="1" min="1"
-                     style="border:1px solid #DDD; border-radius:4px; padding:7px 8px; font-size:13px;"/>
-              <select name="tanaman_ukuran_0"
-                      style="border:1px solid #DDD; border-radius:4px; padding:7px 8px; font-size:13px; font-family:inherit;">
-                <option value="kecil">Kecil</option>
-                <option value="sedang" selected="selected">Sedang</option>
-                <option value="besar">Besar</option>
-              </select>
-              <select name="tanaman_kondisi_0"
-                      style="border:1px solid #DDD; border-radius:4px; padding:7px 8px; font-size:13px; font-family:inherit;">
-                <option value="belum_dicek" selected="selected">Belum Dicek</option>
-                <option value="sehat">Sehat</option>
-                <option value="kurang_sehat">Kurang Sehat</option>
-                <option value="bermasalah">Bermasalah</option>
-              </select>
-              <span/>
-            </div>
+        <div class="agf-card" style="margin-bottom:16px;">
+          <div class="agf-card__header">
+            <span class="agf-card__title">Daftar Tanaman</span>
           </div>
-          <button type="button" onclick="tambahTanaman()" class="agf-btn agf-btn-outline"
-                  style="margin-top:8px; font-size:13px;">+ Tambah Tanaman</button>
+          <div class="agf-card__body">
+            <div id="tanaman-container">
+              <!-- Row pertama hardcoded kosong — tidak ada kargo di form create -->
+              <div style="display:grid; grid-template-columns:2fr 80px 110px 150px 32px; gap:8px; margin-bottom:8px; align-items:center;">
+                <input type="text" name="tanaman_nama_0" placeholder="Nama / genus tanaman" required="1"
+                      style="border:1px solid #D1D5DB; border-radius:4px; padding:7px 8px; font-size:13px; font-family:inherit; width:100%; box-sizing:border-box;"/>
+                <input type="number" name="tanaman_jumlah_0" value="1" min="1"
+                      style="border:1px solid #D1D5DB; border-radius:4px; padding:7px 8px; font-size:13px; width:100%; box-sizing:border-box;"/>
+                <select name="tanaman_ukuran_0"
+                        style="border:1px solid #D1D5DB; border-radius:4px; padding:7px 8px; font-size:13px; font-family:inherit; width:100%; box-sizing:border-box;">
+                  <option value="kecil">Kecil</option>
+                  <option value="sedang" selected="selected">Sedang</option>
+                  <option value="besar">Besar</option>
+                </select>
+                <select name="tanaman_kondisi_0"
+                        style="border:1px solid #D1D5DB; border-radius:4px; padding:7px 8px; font-size:13px; font-family:inherit; width:100%; box-sizing:border-box;">
+                  <option value="belum_dicek" selected="selected">Belum Dicek</option>
+                  <option value="sehat">Sehat</option>
+                  <option value="kurang_sehat">Kurang Sehat</option>
+                  <option value="bermasalah">Bermasalah</option>
+                </select>
+                <span/>
+              </div>
+            </div>
+            <button type="button" onclick="tambahTanaman()" class="agf-btn agf-btn-outline"
+                    style="margin-top:8px; font-size:13px;">+ Tambah Tanaman</button>
+          </div>
         </div>
 
         <!-- Pengiriman + Packaging -->
         <div class="agf-admin-form-grid">
-          <div class="agf-admin-card">
-            <div class="agf-admin-card-title">Pengiriman</div>
+          <div class="agf-card">
+            <div class="agf-card__header">
+            <span class="agf-card__title">Pengiriman</span>
+            </div>
+            <div class="agf-card__body"> 
             <div class="agf-admin-form-group" style="margin-bottom:10px;">
               <label>Layanan Lokal</label>
               <select name="layanan_lokal">
@@ -376,15 +420,21 @@
                 <option value="southwest">SouthWest Cargo — Pickup Airport (Biaya Tambahan)</option>
               </select>
             </div>
+            </div>
+            <div class="agf-card__body"> 
             <div class="agf-admin-form-group">
               <label>Bukti Transaksi</label>
               <input type="file" name="bukti_transaksi" accept=".pdf,.jpg,.jpeg,.png"/>
               <span class="field-hint">PDF atau gambar, maks 5MB</span>
             </div>
+            </div>
           </div>
 
-          <div class="agf-admin-card">
-            <div class="agf-admin-card-title">Packaging</div>
+          <div class="agf-card">
+            <div class="agf-card__header">
+            <span class="agf-card__title">Packaging</span>
+            </div>
+            <div class="agf-card__body"> 
             <div class="agf-admin-form-group" style="margin-bottom:10px;">
               <label>Additional Packaging</label>
               <select name="additional_packaging">
@@ -393,6 +443,8 @@
                 <option value="tissue">Tissue</option>
               </select>
             </div>
+            </div>
+            <div class="agf-card__body"> 
             <div class="agf-admin-form-group" style="margin-bottom:10px;">
               <label>Winter Request</label>
               <select name="winter_packaging">
@@ -402,9 +454,12 @@
                 <option value="heat_insulation">Heatpack &amp; Insulation (+$8)</option>
               </select>
             </div>
+            </div>
+            <div class="agf-card__body"> 
             <div class="agf-admin-form-group">
               <label>Catatan Admin</label>
               <textarea name="catatan" rows="3" placeholder="Instruksi khusus untuk tim..."><t t-if="post"><t t-esc="post.get('catatan','')"/></t></textarea>
+            </div>
             </div>
           </div>
         </div>
@@ -420,9 +475,9 @@
         function tambahTanaman() {
           var container = document.getElementById('tanaman-container');
           var idx = tanamanCount++;
-          var inputStyle = 'border:1px solid #DDD; border-radius:4px; padding:7px 8px; font-size:13px; font-family:inherit; width:100%; box-sizing:border-box;';
+          var inputStyle = 'border:1px solid #D1D5DB; border-radius:4px; padding:7px 8px; font-size:13px; font-family:inherit; width:100%; box-sizing:border-box;';
           var row = document.createElement('div');
-          row.style = 'display:grid; grid-template-columns:2fr 80px 100px 140px 32px; gap:8px; margin-bottom:8px; align-items:center;';
+          row.style = 'display:grid; grid-template-columns:2fr 80px 110px 150px 32px; gap:8px; margin-bottom:8px; align-items:center;';
           row.innerHTML =
             '<input type="text" name="tanaman_nama_' + idx + '" placeholder="Nama / genus tanaman" style="' + inputStyle + '"/>' +
             '<input type="number" name="tanaman_jumlah_' + idx + '" value="1" min="1" style="' + inputStyle + '"/>' +
@@ -437,7 +492,7 @@
               '<option value="kurang_sehat">Kurang Sehat</option>' +
               '<option value="bermasalah">Bermasalah</option>' +
             '</select>' +
-            '<button type="button" onclick="this.parentElement.remove()" style="background:none;border:none;color:#ef4444;font-size:18px;cursor:pointer;padding:0;">×</button>';
+            '<button type="button" onclick="this.parentElement.remove()" style="background:none; border:none; color:#EF4444; font-size:18px; cursor:pointer; padding:0; line-height:1;">×</button>';
           container.appendChild(row);
         }
       </script>
@@ -453,7 +508,7 @@
       <t t-set="page_title">Edit Pesanan</t>
       <t t-set="current_page" t-value="'pesanan'"/>
 
-      <div class="agf-admin-breadcrumb">
+      <div class="agf-breadcrumb">
         <a href="/agf/admin/batch-aktif">Batch Aktif</a>
         <span>›</span>
         <a t-attf-href="/agf/admin/pesanan/#{kargo.id}"><t t-esc="kargo.nomor_penitip"/></a>
@@ -461,7 +516,7 @@
         <span>Edit</span>
       </div>
 
-      <div class="agf-admin-page-header">
+      <div class="agf-page-header">
         <h1>Edit Pesanan — <t t-esc="kargo.nomor_penitip"/></h1>
       </div>
 
@@ -479,8 +534,11 @@
         <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
 
         <!-- Status -->
-        <div class="agf-admin-card" style="margin-bottom:16px;">
-          <div class="agf-admin-card-title">Status Pesanan</div>
+        <div class="agf-card" style="margin-bottom:16px;">
+            <div class="agf-card__header">
+            <span class="agf-card__title">Status Pesanan</span>
+            </div>
+            <div class="agf-card__body"> 
           <div class="agf-admin-form-group" style="max-width:280px;">
             <label>Status</label>
             <select name="status">
@@ -496,96 +554,122 @@
                     t-att-selected="'selected' if kargo.status == 'done' else None">Done</option>
             </select>
           </div>
+          </div>
         </div>
 
         <div class="agf-admin-form-grid">
 
           <!-- Pengirim -->
-          <div class="agf-admin-card">
-            <div class="agf-admin-card-title">Informasi Pengirim</div>
+          <div class="agf-card">
+            <div class="agf-card__header">
+            <span class="agf-card__title">Informasi Pengirim</span>
+            </div>
+            <div class="agf-card__body"> 
             <div class="agf-admin-form-group" style="margin-bottom:10px;">
               <label>Nama Lengkap</label>
               <input type="text" name="nama_penitip" t-att-value="kargo.nama_penitip"/>
             </div>
+            </div>
+            <div class="agf-card__body"> 
             <div class="agf-admin-form-group" style="margin-bottom:10px;">
               <label>No. WhatsApp</label>
               <input type="text" name="hp_penitip" t-att-value="kargo.hp_penitip"/>
             </div>
+            </div>
+            <div class="agf-card__body"> 
             <div class="agf-admin-form-group" style="margin-bottom:10px;">
               <label>Email</label>
               <input type="email" name="email_penitip" t-att-value="kargo.email_penitip"/>
             </div>
+            </div>
+            <div class="agf-card__body"> 
             <div class="agf-admin-form-group">
               <label>Alamat</label>
               <textarea name="alamat_penitip" rows="2"><t t-esc="kargo.alamat_penitip"/></textarea>
             </div>
+            </div>
           </div>
 
           <!-- Penerima -->
-          <div class="agf-admin-card">
-            <div class="agf-admin-card-title">Informasi Penerima</div>
+          <div class="agf-card">
+            <div class="agf-card__header">
+            <span class="agf-card__title">Informasi Penerima</span>
+            </div>
+            <div class="agf-card__body"> 
             <div class="agf-admin-form-group" style="margin-bottom:10px;">
               <label>Nama Lengkap</label>
               <input type="text" name="nama_penerima" t-att-value="kargo.nama_penerima"/>
             </div>
+            </div>
+            <div class="agf-card__body"> 
             <div class="agf-admin-form-group" style="margin-bottom:10px;">
               <label>No. HP</label>
               <input type="text" name="hp_penerima" t-att-value="kargo.hp_penerima"/>
             </div>
+            </div>
+            <div class="agf-card__body"> 
             <div class="agf-admin-form-group" style="margin-bottom:10px;">
               <label>Email</label>
               <input type="email" name="email_penerima" t-att-value="kargo.email_penerima"/>
             </div>
+            </div>
+            <div class="agf-card__body"> 
             <div class="agf-admin-form-group" style="margin-bottom:10px;">
               <label>Alamat Lengkap + Zip Code</label>
               <textarea name="alamat_penerima" rows="2"><t t-esc="kargo.alamat_penerima"/></textarea>
             </div>
+            </div>
+            <div class="agf-card__body"> 
             <div class="agf-admin-form-group">
               <label>Negara Tujuan</label>
               <input type="text" name="negara_tujuan" t-att-value="kargo.negara_tujuan or ''"/>
+            </div>
             </div>
           </div>
 
         </div>
 
         <!-- Daftar Tanaman -->
-        <div class="agf-admin-card">
-          <div class="agf-admin-card-title">Daftar Tanaman</div>
-          <div id="tanaman-container">
-            <t t-foreach="kargo.tanaman_ids" t-as="tanaman">
-              <div style="display:grid; grid-template-columns:2fr 80px 100px 140px 32px; gap:8px; margin-bottom:8px; align-items:center;">
-                <input type="text" t-attf-name="tanaman_nama_#{tanaman_index}"
-                       t-att-value="tanaman.nama_tanaman"
-                       style="border:1px solid #DDD; border-radius:4px; padding:7px 8px; font-size:13px; font-family:inherit;"/>
-                <input type="number" t-attf-name="tanaman_jumlah_#{tanaman_index}"
-                       t-att-value="tanaman.jumlah" min="1"
-                       style="border:1px solid #DDD; border-radius:4px; padding:7px 8px; font-size:13px;"/>
-                <select t-attf-name="tanaman_ukuran_#{tanaman_index}"
-                        style="border:1px solid #DDD; border-radius:4px; padding:7px 8px; font-size:13px; font-family:inherit;">
-                  <option value="kecil" t-att-selected="'selected' if tanaman.ukuran == 'kecil' else ''">Kecil</option>
-                  <option value="sedang" t-att-selected="'selected' if tanaman.ukuran == 'sedang' else ''">Sedang</option>
-                  <option value="besar" t-att-selected="'selected' if tanaman.ukuran == 'besar' else ''">Besar</option>
-                </select>
-                <select t-attf-name="tanaman_kondisi_#{tanaman_index}"
-                        style="border:1px solid #DDD; border-radius:4px; padding:7px 8px; font-size:13px; font-family:inherit;">
-                  <option value="belum_dicek" t-att-selected="'selected' if tanaman.kondisi == 'belum_dicek' else ''">Belum Dicek</option>
-                  <option value="sehat" t-att-selected="'selected' if tanaman.kondisi == 'sehat' else ''">Sehat</option>
-                  <option value="kurang_sehat" t-att-selected="'selected' if tanaman.kondisi == 'kurang_sehat' else ''">Kurang Sehat</option>
-                  <option value="bermasalah" t-att-selected="'selected' if tanaman.kondisi == 'bermasalah' else ''">Bermasalah</option>
-                </select>
-                <button type="button" onclick="this.parentElement.remove()"
-                        style="background:none;border:none;color:#ef4444;font-size:18px;cursor:pointer;padding:0;">×</button>
-              </div>
-            </t>
+        <div class="agf-card" style="margin-bottom:16px;">
+          <div class="agf-card__header">
+            <span class="agf-card__title">Daftar Tanaman</span>
           </div>
-          <button type="button" onclick="tambahTanaman()" class="agf-btn agf-btn-outline"
-                  style="margin-top:8px; font-size:13px;">+ Tambah Tanaman</button>
+          <div class="agf-card__body">
+            <div id="tanaman-container">
+              <!-- Row pertama hardcoded kosong — tidak ada kargo di form create -->
+              <div style="display:grid; grid-template-columns:2fr 80px 110px 150px 32px; gap:8px; margin-bottom:8px; align-items:center;">
+                <input type="text" name="tanaman_nama_0" placeholder="Nama / genus tanaman" required="1"
+                      style="border:1px solid #D1D5DB; border-radius:4px; padding:7px 8px; font-size:13px; font-family:inherit; width:100%; box-sizing:border-box;"/>
+                <input type="number" name="tanaman_jumlah_0" value="1" min="1"
+                      style="border:1px solid #D1D5DB; border-radius:4px; padding:7px 8px; font-size:13px; width:100%; box-sizing:border-box;"/>
+                <select name="tanaman_ukuran_0"
+                        style="border:1px solid #D1D5DB; border-radius:4px; padding:7px 8px; font-size:13px; font-family:inherit; width:100%; box-sizing:border-box;">
+                  <option value="kecil">Kecil</option>
+                  <option value="sedang" selected="selected">Sedang</option>
+                  <option value="besar">Besar</option>
+                </select>
+                <select name="tanaman_kondisi_0"
+                        style="border:1px solid #D1D5DB; border-radius:4px; padding:7px 8px; font-size:13px; font-family:inherit; width:100%; box-sizing:border-box;">
+                  <option value="belum_dicek" selected="selected">Belum Dicek</option>
+                  <option value="sehat">Sehat</option>
+                  <option value="kurang_sehat">Kurang Sehat</option>
+                  <option value="bermasalah">Bermasalah</option>
+                </select>
+                <span/>
+              </div>
+            </div>
+            <button type="button" onclick="tambahTanaman()" class="agf-btn agf-btn-outline"
+                    style="margin-top:8px; font-size:13px;">+ Tambah Tanaman</button>
+          </div>
         </div>
 
         <!-- Pengiriman + Packaging -->
         <div class="agf-admin-form-grid">
-          <div class="agf-admin-card">
-            <div class="agf-admin-card-title">Pengiriman</div>
+          <div class="agf-card">
+            <div class="agf-card__header">
+            <span class="agf-card__title">Pengiriman</span>
+            </div>
+            <div class="agf-card__body"> 
             <div class="agf-admin-form-group" style="margin-bottom:10px;">
               <label>Layanan Lokal</label>
               <select name="layanan_lokal">
@@ -594,10 +678,14 @@
                 <option value="southwest" t-att-selected="'selected' if kargo.layanan_lokal == 'southwest' else ''">SouthWest Cargo</option>
               </select>
             </div>
+            </div>
           </div>
 
-          <div class="agf-admin-card">
-            <div class="agf-admin-card-title">Packaging</div>
+          <div class="agf-card">
+            <div class="agf-card__header">
+            <span class="agf-card__title">Packaging</span>
+            </div>
+            <div class="agf-card__body"> 
             <div class="agf-admin-form-group" style="margin-bottom:10px;">
               <label>Additional Packaging</label>
               <select name="additional_packaging">
@@ -606,6 +694,8 @@
                 <option value="tissue" t-att-selected="'selected' if kargo.additional_packaging == 'tissue' else ''">Tissue</option>
               </select>
             </div>
+            </div>
+            <div class="agf-card__body"> 
             <div class="agf-admin-form-group" style="margin-bottom:10px;">
               <label>Winter Request</label>
               <select name="winter_packaging">
@@ -615,9 +705,12 @@
                 <option value="heat_insulation" t-att-selected="'selected' if kargo.winter_packaging == 'heat_insulation' else ''">Heatpack &amp; Insulation (+$8)</option>
               </select>
             </div>
+            </div>
+            <div class="agf-card__body"> 
             <div class="agf-admin-form-group">
               <label>Catatan Admin</label>
               <textarea name="catatan" rows="3"><t t-esc="kargo.catatan or ''"/></textarea>
+            </div>
             </div>
           </div>
         </div>
@@ -629,13 +722,13 @@
       </form>
 
       <script>
-        var tanamanCount = <t t-esc="len(kargo.tanaman_ids)"/>;
+        var tanamanCount = 1;
         function tambahTanaman() {
           var container = document.getElementById('tanaman-container');
           var idx = tanamanCount++;
-          var inputStyle = 'border:1px solid #DDD; border-radius:4px; padding:7px 8px; font-size:13px; font-family:inherit; width:100%; box-sizing:border-box;';
+          var inputStyle = 'border:1px solid #D1D5DB; border-radius:4px; padding:7px 8px; font-size:13px; font-family:inherit; width:100%; box-sizing:border-box;';
           var row = document.createElement('div');
-          row.style = 'display:grid; grid-template-columns:2fr 80px 100px 140px 32px; gap:8px; margin-bottom:8px; align-items:center;';
+          row.style = 'display:grid; grid-template-columns:2fr 80px 110px 150px 32px; gap:8px; margin-bottom:8px; align-items:center;';
           row.innerHTML =
             '<input type="text" name="tanaman_nama_' + idx + '" placeholder="Nama / genus tanaman" style="' + inputStyle + '"/>' +
             '<input type="number" name="tanaman_jumlah_' + idx + '" value="1" min="1" style="' + inputStyle + '"/>' +
@@ -650,7 +743,7 @@
               '<option value="kurang_sehat">Kurang Sehat</option>' +
               '<option value="bermasalah">Bermasalah</option>' +
             '</select>' +
-            '<button type="button" onclick="this.parentElement.remove()" style="background:none;border:none;color:#ef4444;font-size:18px;cursor:pointer;padding:0;">×</button>';
+            '<button type="button" onclick="this.parentElement.remove()" style="background:none; border:none; color:#EF4444; font-size:18px; cursor:pointer; padding:0; line-height:1;">×</button>';
           container.appendChild(row);
         }
       </script>

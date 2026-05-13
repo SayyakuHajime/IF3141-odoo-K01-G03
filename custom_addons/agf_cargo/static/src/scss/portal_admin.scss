@@ -407,6 +407,10 @@ body.website_page {
         color: #9CA3AF;
         margin-top: 2px;
     }
+
+    &__body {
+    padding: $spacing-md;
+}
 }
 
 // ══════════════════════════════════════════
@@ -1367,3 +1371,150 @@ body.website_page {
         margin-top: 2px;
     }
 }
+
+
+// ══════════════════════════════════════════
+// FORM COMPONENTS (pesanan create/edit)
+// ══════════════════════════════════════════
+
+// ── Form grid — 2 kolom side-by-side di desktop ──
+.agf-admin-form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $spacing-md;
+    margin-bottom: $spacing-md;
+
+    @media (min-width: $bp-desktop) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+// ── Form group — label stacked di atas input ──
+.agf-admin-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: $spacing-md; 
+
+    label {
+        font-size: 12.5px;
+        font-weight: $font-weight-medium;
+        color: #374151;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="number"],
+    input[type="tel"],
+    input[type="date"],
+    select,
+    textarea {
+        width: 100%;
+        box-sizing: border-box;
+        border: 1px solid #D1D5DB;
+        border-radius: $admin-radius;
+        padding: 7px 10px;
+        font-size: 13px;
+        color: #111827;
+        font-family: $font-family-base;
+        background: #FFFFFF;
+        transition: border-color 0.15s, box-shadow 0.15s;
+
+        &:focus {
+            outline: none;
+            border-color: $admin-accent;
+            box-shadow: 0 0 0 3px rgba($admin-accent, 0.12);
+        }
+    }
+
+    textarea {
+        resize: vertical;
+        min-height: 68px;
+    }
+
+    select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        padding-right: 30px;
+        cursor: pointer;
+    }
+
+    input[type="file"] {
+        width: 100%;
+        box-sizing: border-box;
+        border: 1px solid #D1D5DB;
+        border-radius: $admin-radius;
+        padding: 5px 8px;
+        font-size: 12px;
+        color: #6B7280;
+        background: #FAFAFA;
+        cursor: pointer;
+    }
+
+    .field-hint {
+        font-size: 11.5px;
+        color: #9CA3AF;
+    }
+    
+    &:last-child {
+        margin-bottom: 0;   // ← last group di dalam card tidak perlu margin bawah
+    }
+}
+
+// ── Pill badges (agf-pill) ──
+.agf-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 10px;
+    border-radius: 99px;
+    font-size: 11.5px;
+    font-weight: 600;
+    white-space: nowrap;
+
+    &.hold        { background: $pill-hold-bg;       color: $pill-hold-text; }
+    &.arrival     { background: $pill-arrival-bg;    color: $pill-arrival-text; }
+    &.processing  { background: $pill-processing-bg; color: $pill-processing-text; }
+    &.shipped     { background: $pill-shipped-bg;    color: $pill-shipped-text; }
+    &.done        { background: $pill-done-bg;       color: $pill-done-text; }
+}
+
+// ── agf-btn (dipakai di form baru & edit) ──
+.agf-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: $admin-radius;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 13.5px;
+    font-weight: $font-weight-medium;
+    font-family: $font-family-base;
+    text-decoration: none;
+    white-space: nowrap;
+    border: none;
+    transition: background 0.15s, color 0.15s;
+
+    &.agf-btn-primary {
+        background: $admin-accent;
+        color: $admin-accent-text;
+        &:hover { background: $admin-accent-dark; color: #FFFFFF; text-decoration: none; }
+    }
+
+    &.agf-btn-outline {
+        background: #FFFFFF;
+        color: #374151;
+        border: 1px solid #D1D5DB;
+        &:hover { background: #F3F4F6; color: #111827; text-decoration: none; }
+    }
+}
+
+.agf-card > table,
+.agf-card > .agf-admin-form-group,
+.agf-card > .agf-admin-action-panel,
+.agf-card > div:not(.agf-card__header):not(.agf-table-wrap) {
+    padding-left: $spacing-md;
+    padding-right: $spacing-md;
+}
+.agf-card > table { padding: 0 $spacing-md; }
