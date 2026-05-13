@@ -7,7 +7,7 @@
   <template id="admin_qr_list" name="Admin — Manajemen QR Code">
     <t t-call="agf_cargo.admin_layout">
       <t t-set="page_title">Manajemen QR Code</t>
-      <t t-set="active_menu">qr</t>
+      <t t-set="current_page" t-value="'qr'"/>
 
       <div class="agf-breadcrumb">
         <a href="/agf/admin/dashboard">Home</a>
@@ -139,7 +139,7 @@
   <template id="admin_qr_detail" name="Admin — Detail QR Tag">
     <t t-call="agf_cargo.admin_layout">
       <t t-set="page_title">Detail QR Tag</t>
-      <t t-set="active_menu">qr</t>
+      <t t-set="current_page" t-value="'qr'"/>
 
       <div class="agf-breadcrumb">
         <a href="/agf/admin/dashboard">Home</a>
@@ -363,7 +363,7 @@
   <template id="admin_qr_create" name="Admin — Buat QR Baru">
     <t t-call="agf_cargo.admin_layout">
       <t t-set="page_title">Buat QR Baru</t>
-      <t t-set="active_menu">qr</t>
+      <t t-set="current_page" t-value="'qr'"/>
 
       <div class="agf-breadcrumb">
         <a href="/agf/admin/dashboard">Home</a>

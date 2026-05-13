@@ -9,9 +9,10 @@
         'security/groups.xml',
         'security/ir.model.access.csv',
         'data/sequences.xml',
-        
-        'views/assets.xml',  
-        
+        # Customer views
+        'views/customer/customer_landing.xml',
+        'views/customer/customer_tracking.xml',
+        'views/customer/customer_form_kargo.xml',
         # Warehouse views (Hazim)
         'views/warehouse/wh_landing.xml',
         'views/warehouse/wh_daftar_pesanan.xml',
@@ -31,6 +32,14 @@
         'views/admin/admin_detail_pesanan_inactive.xml',
         'views/admin/admin_pengguna.xml',
     ],
+    'assets': {
+        'web.assets_frontend': [
+            'agf_cargo/static/src/scss/_variables.scss',
+            'agf_cargo/static/src/scss/portal_customer.scss',
+            'agf_cargo/static/src/scss/portal_warehouse.scss',
+            'agf_cargo/static/src/scss/portal_admin.scss',
+        ],
+    },
     'installable': True,
     'application': True,
     'license': 'LGPL-3',

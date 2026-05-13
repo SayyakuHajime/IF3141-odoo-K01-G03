@@ -7,7 +7,7 @@
   <template id="admin_detail_pesanan_aktif" name="Admin — Detail Pesanan">
     <t t-call="agf_cargo.admin_layout">
       <t t-set="page_title">Detail Pesanan</t>
-      <t t-set="active_menu">batch_aktif</t>
+      <t t-set="current_page" t-value="'pesanan'"/>
 
       <!-- Breadcrumb -->
       <div class="agf-admin-breadcrumb">
@@ -246,7 +246,7 @@
   <template id="admin_form_pesanan_baru" name="Admin — Form Pesanan Baru">
     <t t-call="agf_cargo.admin_layout">
       <t t-set="page_title">Pesanan Baru</t>
-      <t t-set="active_menu">batch_aktif</t>
+      <t t-set="current_page" t-value="'pesanan'"/>
 
       <div class="agf-admin-breadcrumb">
         <a href="/agf/admin/batch-aktif">Batch Aktif</a>
@@ -451,7 +451,7 @@
   <template id="admin_form_pesanan_edit" name="Admin — Form Edit Pesanan">
     <t t-call="agf_cargo.admin_layout">
       <t t-set="page_title">Edit Pesanan</t>
-      <t t-set="active_menu">batch_aktif</t>
+      <t t-set="current_page" t-value="'pesanan'"/>
 
       <div class="agf-admin-breadcrumb">
         <a href="/agf/admin/batch-aktif">Batch Aktif</a>

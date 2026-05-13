@@ -7,7 +7,7 @@
   <template id="admin_batch_aktif_page" name="Admin — Batch Aktif">
     <t t-call="agf_cargo.admin_layout">
       <t t-set="page_title">Manajemen Batch Aktif</t>
-      <t t-set="active_menu">batch_aktif</t>
+      <t t-set="current_page" t-value="'pesanan'"/>
 
       <div class="agf-breadcrumb">
         <a href="/agf/admin/dashboard">Home</a>
@@ -116,7 +116,7 @@
   <template id="admin_form_batch_baru" name="Admin — Form Batch Baru">
     <t t-call="agf_cargo.admin_layout">
       <t t-set="page_title">Batch Baru</t>
-      <t t-set="active_menu">batch_aktif</t>
+      <t t-set="current_page" t-value="'pesanan'"/>
 
       <div class="agf-breadcrumb">
         <a href="/agf/admin/batch-aktif">Batch Aktif</a>
@@ -198,7 +198,7 @@
   <template id="admin_form_batch_edit" name="Admin — Edit Batch">
     <t t-call="agf_cargo.admin_layout">
       <t t-set="page_title">Edit Batch</t>
-      <t t-set="active_menu">batch_aktif</t>
+      <t t-set="current_page" t-value="'pesanan'"/>
 
       <div class="agf-breadcrumb">
         <a href="/agf/admin/batch-aktif">Batch Aktif</a>
