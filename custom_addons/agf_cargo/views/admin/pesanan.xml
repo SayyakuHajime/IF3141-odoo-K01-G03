@@ -198,7 +198,7 @@
           </div>
 
         <!-- Riwayat Status -->
-            <div class="agf-admsin-card">
+            <div class="agf-admin-card">
             <div class="agf-admin-card-title">Riwayat Aktivitas</div>
             <t t-if="kargo.log_ids">
                 <div class="agf-admin-timeline">

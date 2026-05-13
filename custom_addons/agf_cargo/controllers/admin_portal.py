@@ -94,8 +94,24 @@ class AdminPortal(http.Controller):
         })
 
     @http.route('/agf/admin/pesanan', type='http', auth='user', website=True)
-    def batch_aktif(self, status=None, **kwargs):
-        return request.redirect('/agf/admin/batch-aktif' + (f'?status={status}' if status else ''))
+    def batch_aktif(self, status=None, search=None, **kwargs):
+        domain = []
+        batch = request.env['agf.batch'].sudo().search([('status', '=', 'aktif')], limit=1)
+        if batch:
+            domain.append(('batch_id', '=', batch.id))
+        if status:
+            domain.append(('status', '=', status))
+        if search:
+            domain += ['|', ('nomor_penitip', 'ilike', search), ('nama_penitip', 'ilike', search)]
+        kargo_list = request.env['agf.kargo'].sudo().search(domain)
+        return request.render('agf_cargo.admin_batch_aktif_page', {
+            **self._base_ctx(),
+            'batch': batch,
+            'kargo_list': kargo_list,
+            'current_status': status,
+            'search': search,
+            'user_initials': self._get_user_initials(),
+        })
 
     @http.route('/agf/admin/pesanan/baru', type='http', auth='user', website=True)
     def form_pesanan_baru(self, **kwargs):
@@ -210,14 +226,15 @@ class AdminPortal(http.Controller):
 
     @http.route('/agf/admin/pesanan/<int:kargo_id>', type='http', auth='user', website=True)
     def detail_pesanan(self, kargo_id, **kwargs):
-        kargo = request.env['agf.kargo'].sudo().browse(kargo_id)
+        kargo = request.env['agf.kargo'].browse(kargo_id)
         if not kargo.exists():
             return request.not_found()
-        return request.render('agf_cargo.admin_detail_pesanan_aktif', {
-            **self._base_ctx(),
+        
+        values = self._base_ctx()
+        values.update({
             'kargo': kargo,
-            'user_initials': self._get_user_initials(),
         })
+        return request.render('agf_cargo.admin_detail_pesanan_aktif', values)
 
     @http.route('/agf/admin/pesanan/<int:kargo_id>/edit', type='http', auth='user', website=True)
     def form_pesanan_edit(self, kargo_id, **kwargs):
@@ -339,6 +356,27 @@ class AdminPortal(http.Controller):
             ('Content-Disposition', f'inline; filename="{filename}"'),
         ])
 
+    @http.route('/agf/admin/qr', type='http', auth='user', website=True)
+    def qr_management(self, **kwargs):
+        tags = request.env['agf.qr.tag'].sudo().search([])
+        stats = {
+            'total': len(tags),
+            'aktif': len(tags.filtered(lambda t: t.status == 'aktif')),
+            'idle': len(tags.filtered(lambda t: t.status == 'idle')),
+            'rusak': len(tags.filtered(lambda t: t.status == 'rusak')),
+        }
+        return request.render('agf_cargo.admin_qr_code', {**self._base_ctx(), 'tags': tags, 'stats': stats, 'user_initials': self._get_user_initials(),})
+
+    @http.route('/agf/admin/qr/print', type='http', auth='user', website=True)
+    def print_qr_labels(self, **kwargs):
+        tags = request.env['agf.qr.tag'].search([('status', '=', 'aktif')])
+        
+        values = self._base_ctx()
+        values.update({
+            'tags': tags,
+        })
+        return request.render('agf_cargo.admin_qr_print', values)
+    
     @http.route('/agf/admin/batch-aktif', type='http', auth='user', website=True)
     def batch_aktif_page(self, status=None, **kwargs):
         batch = request.env['agf.batch'].search([('status', '=', 'aktif')], limit=1)
@@ -381,31 +419,17 @@ class AdminPortal(http.Controller):
             'total_tanaman_all': total_tanaman_all,
         })
 
-    @http.route('/agf/admin/batch/baru', type='json', auth='user', methods=['POST'], csrf=False)
-    def admin_buat_batch(self, tanggal_keberangkatan=None, catatan='', **kwargs):
-        env = request.env
-        existing = env['agf.batch'].sudo().search([('status', '=', 'aktif')], limit=1)
-        if existing:
-            return {
-                'success': False,
-                'error': f'Sudah ada batch aktif: {existing.name}. Tutup batch aktif dulu.',
-            }
-        if not tanggal_keberangkatan:
-            return {'success': False, 'error': 'Tanggal keberangkatan wajib diisi.'}
-        batch = env['agf.batch'].sudo().create({
-            'tanggal_keberangkatan': tanggal_keberangkatan,
-            'tanggal_mulai': date.today().isoformat(),
-            'catatan': catatan or '',
-            'status': 'aktif',
-        })
-        return {'success': True, 'batch_id': batch.id, 'batch_name': batch.name}
-
     @http.route('/agf/admin/batch/<int:batch_id>', type='http', auth='user', website=True)
     def detail_batch(self, batch_id, **kwargs):
-        batch = request.env['agf.batch'].sudo().browse(batch_id)
+        batch = request.env['agf.batch'].browse(batch_id)
         if not batch.exists():
             return request.not_found()
-        return request.render('agf_cargo.admin_detail_batch', {**self._base_ctx(), 'batch': batch, 'user_initials': self._get_user_initials(),})
+        
+        values = self._base_ctx()
+        values.update({
+            'batch': batch,
+        })
+        return request.render('agf_cargo.admin_detail_batch', values)
 
     @http.route('/agf/admin/pengguna', type='http', auth='user', website=True)
     def pengguna(self, **kwargs):

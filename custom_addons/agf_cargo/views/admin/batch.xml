@@ -2,194 +2,112 @@
 <odoo>
 
   <!-- ============================================================
-       1. BATCH AKTIF — halaman utama manajemen pesanan
+       1. BATCH AKTIF
        ============================================================ -->
   <template id="admin_batch_aktif_page" name="Admin — Batch Aktif">
     <t t-call="agf_cargo.admin_layout">
       <t t-set="page_title">Manajemen Batch Aktif</t>
       <t t-set="current_page" t-value="'pesanan'"/>
 
-      <!-- Breadcrumb -->
-      <div class="agf-admin-breadcrumb">
+      <div class="agf-breadcrumb">
         <a href="/agf/admin/dashboard">Home</a>
-        <span>›</span>
-        <span>Manajemen Pesanan</span>
+        <span class="agf-breadcrumb__sep">›</span>
+        <span class="agf-breadcrumb__active">Manajemen Pesanan</span>
       </div>
 
-      <!-- Page Header -->
-      <div class="agf-admin-page-header">
+      <div class="agf-page-header">
         <div>
-          <h1>Manajemen Batch Aktif</h1>
+          <h1 class="agf-page-header__title">Manajemen Batch Aktif</h1>
           <t t-if="batch">
-            <span style="font-size:12px; color:#888;">
+            <p class="agf-page-header__sub">
               Batch <strong><t t-esc="batch.name"/></strong> —
               Keberangkatan <strong><t t-esc="batch.tanggal_keberangkatan"/></strong>
-            </span>
+            </p>
             <t t-if="batch.catatan">
-              <div style="margin-top:4px; font-size:12px; color:#888;">
+              <p class="agf-page-header__sub">
                 <i class="fa fa-sticky-note" style="margin-right:4px; color:#00ACC1;"/>
                 <t t-esc="batch.catatan"/>
-              </div>
+              </p>
             </t>
           </t>
         </div>
         <div style="display:flex; gap:8px; align-items:center;">
           <t t-if="batch">
-            <a t-attf-href="/agf/admin/batch/#{batch.id}/edit"
-               class="agf-btn agf-btn-outline">Edit Batch</a>
-            <form t-attf-action="/agf/admin/batch/#{batch.id}/cancel"
-                  method="POST" style="display:inline; margin:0;">
+            <a t-attf-href="/agf/admin/batch/#{batch.id}/edit" class="agf-btn-secondary">Edit Batch</a>
+            <form t-attf-action="/agf/admin/batch/#{batch.id}/cancel" method="POST" style="display:inline; margin:0;">
               <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-              <button type="submit" class="agf-btn agf-btn-danger"
-                      onclick="return confirm('Batalkan batch ini?')">
-                Cancel Batch
-              </button>
+              <button type="submit" class="agf-btn-danger" onclick="return confirm('Batalkan batch ini?')">Cancel Batch</button>
             </form>
           </t>
           <t t-if="not batch">
-            <a href="/agf/admin/batch/baru" class="agf-btn agf-btn-primary">+ Buat Batch Baru</a>
+            <a href="/agf/admin/batch/baru" class="agf-btn-primary">+ Buat Batch Baru</a>
           </t>
         </div>
       </div>
 
-      <!-- Empty state -->
       <t t-if="not batch">
-        <div class="agf-admin-card" style="text-align:center; padding:80px 24px;">
-          <div style="font-size:48px; margin-bottom:16px;">📦</div>
-          <h3 style="font-size:16px; font-weight:500; color:#333; margin-bottom:8px;">
-            Tidak ada batch yang sedang berjalan
-          </h3>
-          <p style="color:#888; margin-bottom:24px;">
-            Buat batch baru untuk mulai menerima pesanan.
-          </p>
-          <a href="/agf/admin/batch/baru" class="agf-btn agf-btn-primary">+ Buat Batch Baru</a>
-        </div>
-      </t>
-
-      <!-- Konten jika ada batch aktif -->
-      <t t-if="batch">
-        <div class="agf-admin-table-wrapper">
-
-          <!-- Filter Tabs -->
-          <div class="agf-admin-filter-tabs">
-            <a t-attf-href="/agf/admin/batch-aktif"
-               t-attf-class="#{'' if current_status else 'active'}">
-              Semua (<t t-esc="len(kargo_list) if not current_status else (status_counts.get('hold',0) + status_counts.get('arrival',0) + status_counts.get('processing',0) + status_counts.get('shipped',0) + status_counts.get('done',0))"/>)
-            </a>
-            <a t-attf-href="/agf/admin/batch-aktif?status=hold"
-               t-attf-class="#{'active' if current_status == 'hold' else ''}">
-              Hold (<t t-esc="status_counts.get('hold', 0)"/>)
-            </a>
-            <a t-attf-href="/agf/admin/batch-aktif?status=arrival"
-               t-attf-class="#{'active' if current_status == 'arrival' else ''}">
-              Arrival (<t t-esc="status_counts.get('arrival', 0)"/>)
-            </a>
-            <a t-attf-href="/agf/admin/batch-aktif?status=processing"
-               t-attf-class="#{'active' if current_status == 'processing' else ''}">
-              Processing (<t t-esc="status_counts.get('processing', 0)"/>)
-            </a>
-            <a t-attf-href="/agf/admin/batch-aktif?status=shipped"
-               t-attf-class="#{'active' if current_status == 'shipped' else ''}">
-              Shipped (<t t-esc="status_counts.get('shipped', 0)"/>)
-            </a>
-            <a t-attf-href="/agf/admin/batch-aktif?status=done"
-               t-attf-class="#{'active' if current_status == 'done' else ''}">
-              Done (<t t-esc="status_counts.get('done', 0)"/>)
-            </a>
+        <div class="agf-card">
+          <div class="agf-empty-state agf-empty-state--lg">
+            <div style="font-size:48px;">📦</div>
+            <p>Tidak ada batch yang sedang berjalan.</p>
+            <a href="/agf/admin/batch/baru" class="agf-btn-primary">+ Buat Batch Baru</a>
           </div>
-
-          <!-- Table -->
-          <table class="agf-admin-table">
-            <thead>
-              <tr>
-                <th>Order ID</th>
-                <th>Tanggal</th>
-                <th>Penitip</th>
-                <th>QR ID</th>
-                <th>Status</th>
-                <th>Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-              <t t-foreach="kargo_list" t-as="kargo">
-                <tr>
-                  <td>
-                    <a t-attf-href="/agf/admin/pesanan/#{kargo.id}"
-                       style="color:#007A8A; text-decoration:none; font-weight:500;">
-                      <t t-esc="kargo.nomor_penitip"/>
-                    </a>
-                  </td>
-                  <td style="color:#888;">
-                    <t t-esc="kargo.tanggal_daftar and kargo.tanggal_daftar.strftime('%d %b') or '-'"/>
-                  </td>
-                  <td><t t-esc="kargo.nama_penitip"/></td>
-                  <td>
-                    <t t-if="kargo.qr_tag_id">
-                      <span style="background:rgba(0,172,193,0.08); color:#007A8A; border:1px solid rgba(0,172,193,0.2); border-radius:4px; padding:2px 8px; font-size:12px; font-family:monospace;">
-                        <t t-esc="kargo.qr_tag_id.tag_id"/>
-                      </span>
-                    </t>
-                    <t t-else="">
-                      <span style="color:#CCC;">—</span>
-                    </t>
-                  </td>
-                  <td>
-                    <t t-if="kargo.status == 'hold'">
-                      <span class="agf-pill hold">Hold</span>
-                    </t>
-                    <t t-elif="kargo.status == 'arrival'">
-                      <span class="agf-pill arrival">Arrival</span>
-                    </t>
-                    <t t-elif="kargo.status == 'processing'">
-                      <span class="agf-pill processing">Processing</span>
-                    </t>
-                    <t t-elif="kargo.status == 'shipped'">
-                      <span class="agf-pill shipped">Shipped</span>
-                    </t>
-                    <t t-elif="kargo.status == 'done'">
-                      <span class="agf-pill done">Done</span>
-                    </t>
-                  </td>
-                  <td>
-                    <a t-attf-href="/agf/admin/pesanan/#{kargo.id}"
-                       class="agf-btn agf-btn-primary agf-btn-sm">Detail</a>
-                  </td>
-                </tr>
-              </t>
-              <t t-if="not kargo_list">
-                <tr>
-                  <td colspan="6"
-                      style="text-align:center; color:#AAA; padding:40px; font-size:13px;">
-                    Tidak ada pesanan dengan filter ini.
-                  </td>
-                </tr>
-              </t>
-            </tbody>
-          </table>
-
-          <!-- Footer count -->
-          <div class="agf-admin-table-footer">
-            <t t-esc="len(kargo_list)"/> pesanan ditampilkan
-          </div>
-
         </div>
       </t>
 
       <t t-if="batch">
+        <div class="agf-card" style="overflow:hidden;">
+          <div class="agf-filter-tabs">
+            <a t-attf-href="/agf/admin/batch-aktif" t-attf-class="#{'' if current_status else 'active'}">
+              Semua (<t t-esc="status_counts.get('hold',0)+status_counts.get('arrival',0)+status_counts.get('processing',0)+status_counts.get('shipped',0)+status_counts.get('done',0)"/>)
+            </a>
+            <a t-attf-href="/agf/admin/batch-aktif?status=hold" t-attf-class="#{'active' if current_status=='hold' else ''}">Hold (<t t-esc="status_counts.get('hold',0)"/>)</a>
+            <a t-attf-href="/agf/admin/batch-aktif?status=arrival" t-attf-class="#{'active' if current_status=='arrival' else ''}">Arrival (<t t-esc="status_counts.get('arrival',0)"/>)</a>
+            <a t-attf-href="/agf/admin/batch-aktif?status=processing" t-attf-class="#{'active' if current_status=='processing' else ''}">Processing (<t t-esc="status_counts.get('processing',0)"/>)</a>
+            <a t-attf-href="/agf/admin/batch-aktif?status=shipped" t-attf-class="#{'active' if current_status=='shipped' else ''}">Shipped (<t t-esc="status_counts.get('shipped',0)"/>)</a>
+            <a t-attf-href="/agf/admin/batch-aktif?status=done" t-attf-class="#{'active' if current_status=='done' else ''}">Done (<t t-esc="status_counts.get('done',0)"/>)</a>
+          </div>
+          <div class="agf-table-wrap">
+            <table class="agf-table agf-table--hover">
+              <thead>
+                <tr>
+                  <th>Order ID</th><th>Tanggal</th><th>Penitip</th>
+                  <th>QR ID</th><th>Status</th><th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                <t t-foreach="kargo_list" t-as="kargo">
+                  <tr>
+                    <td>
+                      <a t-attf-href="/agf/admin/pesanan/#{kargo.id}" class="agf-link agf-table__primary"><t t-esc="kargo.nomor_penitip"/></a>
+                    </td>
+                    <td><span class="agf-table__sub"><t t-esc="kargo.tanggal_daftar and kargo.tanggal_daftar.strftime('%d %b') or '-'"/></span></td>
+                    <td><t t-esc="kargo.nama_penitip"/></td>
+                    <td>
+                      <t t-if="kargo.qr_tag_id">
+                        <span style="background:rgba(0,172,193,0.08);color:#007A8A;border:1px solid rgba(0,172,193,0.2);border-radius:4px;padding:2px 8px;font-size:12px;font-family:monospace;"><t t-esc="kargo.qr_tag_id.tag_id"/></span>
+                      </t>
+                      <t t-else=""><span style="color:#CCC;">—</span></t>
+                    </td>
+                    <td><span t-attf-class="agf-badge-status status-#{kargo.status}"><t t-esc="kargo.status.capitalize()"/></span></td>
+                    <td><a t-attf-href="/agf/admin/pesanan/#{kargo.id}" class="agf-btn-sm">Detail</a></td>
+                  </tr>
+                </t>
+                <t t-if="not kargo_list">
+                  <tr><td colspan="6"><div class="agf-empty-state"><p>Tidak ada pesanan dengan filter ini.</p></div></td></tr>
+                </t>
+              </tbody>
+            </table>
+          </div>
+          <div class="agf-table-footer"><t t-esc="len(kargo_list)"/> pesanan ditampilkan</div>
+        </div>
+
         <a href="/agf/admin/pesanan/baru"
-           style="position:fixed; bottom:32px; right:32px; z-index:100;
-                  width:56px; height:56px; border-radius:50%;
-                  background:#00ACC1; color:white;
-                  display:flex; align-items:center; justify-content:center;
-                  font-size:28px; text-decoration:none;
-                  box-shadow: 0 4px 16px rgba(0,172,193,0.4);"
+           style="position:fixed;bottom:32px;right:32px;z-index:100;width:56px;height:56px;border-radius:50%;background:#00ACC1;color:#1A1A1A;display:flex;align-items:center;justify-content:center;font-size:28px;text-decoration:none;line-height:1;box-shadow:0 4px 16px rgba(0,172,193,0.4);"
            title="Buat Pesanan Baru">+</a>
       </t>
     </t>
   </template>
-
-
-
 
 
   <!-- ============================================================
@@ -200,88 +118,75 @@
       <t t-set="page_title">Batch Baru</t>
       <t t-set="current_page" t-value="'pesanan'"/>
 
-      <div class="agf-admin-breadcrumb">
+      <div class="agf-breadcrumb">
         <a href="/agf/admin/batch-aktif">Batch Aktif</a>
-        <span>›</span>
-        <span>Batch Baru</span>
+        <span class="agf-breadcrumb__sep">›</span>
+        <span class="agf-breadcrumb__active">Batch Baru</span>
+      </div>
+      <div class="agf-page-header">
+        <h1 class="agf-page-header__title">Buat Batch Baru</h1>
       </div>
 
-      <div class="agf-admin-page-header">
-        <h1>Buat Batch Baru</h1>
-      </div>
-
-      <!-- Error alert -->
       <t t-if="errors">
-        <div style="background:#FFEDED; border:1px solid #f5c6cb; border-radius:4px; padding:12px 16px; margin-bottom:16px; font-size:13px; color:#A83030;">
-          <strong>Gagal menyimpan:</strong>
-          <ul style="margin:6px 0 0 0; padding-left:18px;">
-            <t t-foreach="errors" t-as="err">
-              <li><t t-esc="err"/></li>
-            </t>
-          </ul>
+        <div class="agf-alert agf-alert--danger">
+          <div>
+            <strong>Gagal menyimpan:</strong>
+            <ul style="margin:4px 0 0;padding-left:16px;">
+              <t t-foreach="errors" t-as="err"><li><t t-esc="err"/></li></t>
+            </ul>
+          </div>
         </div>
       </t>
 
       <form action="/agf/admin/batch/baru/submit" method="POST">
         <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-
-        <div class="agf-admin-form-grid">
-
-          <!-- Kolom kiri -->
-          <div class="agf-admin-card">
-            <div class="agf-admin-card-title">Informasi Batch</div>
-
-            <div class="agf-admin-form-group" style="margin-bottom:12px;">
-              <label>Tanggal Buka Pendaftaran <span style="color:#A83030;">*</span></label>
-              <input type="date" name="tanggal_mulai" required="1"
-                     t-att-value="post.get('tanggal_mulai', '') if post else ''"/>
-            </div>
-
-            <div class="agf-admin-form-group" style="margin-bottom:12px;">
-              <label>Tanggal Keberangkatan <span style="color:#A83030;">*</span></label>
-              <input type="date" name="tanggal_keberangkatan" required="1"
-                     t-att-value="post.get('tanggal_keberangkatan', '') if post else ''"/>
-            </div>
-
-            <div class="agf-admin-form-group">
-              <label>Tanggal Tutup Pendaftaran</label>
-              <input type="date" name="tanggal_selesai"
-                     t-att-value="post.get('tanggal_selesai', '') if post else ''"/>
-              <span class="field-hint">Kosongkan jika belum ditentukan</span>
+        <div class="agf-form-grid">
+          <div class="agf-card">
+            <div class="agf-card__header"><span class="agf-card__title">Informasi Batch</span></div>
+            <div style="padding:16px;display:flex;flex-direction:column;gap:12px;">
+              <div class="agf-form-group">
+                <label>Tanggal Buka Pendaftaran <span style="color:#A83030;">*</span></label>
+                <input type="date" name="tanggal_mulai" required="1"
+                       t-att-value="post.get('tanggal_mulai','') if post else ''"/>
+              </div>
+              <div class="agf-form-group">
+                <label>Tanggal Keberangkatan <span style="color:#A83030;">*</span></label>
+                <input type="date" name="tanggal_keberangkatan" required="1"
+                       t-att-value="post.get('tanggal_keberangkatan','') if post else ''"/>
+              </div>
+              <div class="agf-form-group">
+                <label>Tanggal Tutup Pendaftaran</label>
+                <input type="date" name="tanggal_selesai"
+                       t-att-value="post.get('tanggal_selesai','') if post else ''"/>
+                <span class="agf-form-hint">Kosongkan jika belum ditentukan</span>
+              </div>
             </div>
           </div>
-
-          <!-- Kolom kanan -->
-          <div class="agf-admin-card">
-            <div class="agf-admin-card-title">Detail Pengiriman</div>
-
-            <div class="agf-admin-form-group" style="margin-bottom:12px;">
-              <label>Negara Tujuan</label>
-              <input type="text" name="negara_tujuan" placeholder="United States"
-                     t-att-value="post.get('negara_tujuan', 'United States') if post else 'United States'"/>
-            </div>
-
-            <div class="agf-admin-form-group" style="margin-bottom:12px;">
-              <label>Kapasitas Maksimal (tanaman)</label>
-              <input type="number" name="kapasitas_maks" min="0" placeholder="0"
-                     t-att-value="post.get('kapasitas_maks', '0') if post else '0'"/>
-              <span class="field-hint">Isi 0 jika tidak dibatasi</span>
-            </div>
-
-            <div class="agf-admin-form-group">
-              <label>Catatan Internal</label>
-              <textarea name="catatan" rows="4" placeholder="Instruksi atau catatan untuk tim..."><t t-if="post"><t t-esc="post.get('catatan', '')"/></t></textarea>
+          <div class="agf-card">
+            <div class="agf-card__header"><span class="agf-card__title">Detail Pengiriman</span></div>
+            <div style="padding:16px;display:flex;flex-direction:column;gap:12px;">
+              <div class="agf-form-group">
+                <label>Negara Tujuan</label>
+                <input type="text" name="negara_tujuan" placeholder="United States"
+                       t-att-value="post.get('negara_tujuan','United States') if post else 'United States'"/>
+              </div>
+              <div class="agf-form-group">
+                <label>Kapasitas Maksimal (tanaman)</label>
+                <input type="number" name="kapasitas_maks" min="0" placeholder="0"
+                       t-att-value="post.get('kapasitas_maks','0') if post else '0'"/>
+                <span class="agf-form-hint">Isi 0 jika tidak dibatasi</span>
+              </div>
+              <div class="agf-form-group">
+                <label>Catatan Internal</label>
+                <textarea name="catatan" rows="4" placeholder="Instruksi atau catatan untuk tim..."><t t-if="post"><t t-esc="post.get('catatan','')"/></t></textarea>
+              </div>
             </div>
           </div>
-
         </div>
-
-        <!-- Actions -->
-        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px;">
-          <a href="/agf/admin/batch-aktif" class="agf-btn agf-btn-outline">Batal</a>
-          <button type="submit" class="agf-btn agf-btn-primary">Simpan &amp; Buat Batch</button>
+        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px;">
+          <a href="/agf/admin/batch-aktif" class="agf-btn-secondary">Batal</a>
+          <button type="submit" class="agf-btn-primary">Simpan &amp; Buat Batch</button>
         </div>
-
       </form>
     </t>
   </template>
@@ -295,115 +200,200 @@
       <t t-set="page_title">Edit Batch</t>
       <t t-set="current_page" t-value="'pesanan'"/>
 
-      <div class="agf-admin-breadcrumb">
+      <div class="agf-breadcrumb">
         <a href="/agf/admin/batch-aktif">Batch Aktif</a>
-        <span>›</span>
-        <span>Edit Batch</span>
+        <span class="agf-breadcrumb__sep">›</span>
+        <span class="agf-breadcrumb__active">Edit Batch</span>
+      </div>
+      <div class="agf-page-header">
+        <h1 class="agf-page-header__title">Edit Batch — <t t-esc="batch.name"/></h1>
       </div>
 
-      <div class="agf-admin-page-header">
-        <h1>Edit Batch — <t t-esc="batch.name"/></h1>
-      </div>
-
-      <!-- Error alert -->
       <t t-if="error">
-        <div style="background:#FFEDED; border:1px solid #f5c6cb; border-radius:4px; padding:12px 16px; margin-bottom:16px; font-size:13px; color:#A83030;">
-          <strong>Gagal menyimpan:</strong> <t t-esc="error"/>
-        </div>
+        <div class="agf-alert agf-alert--danger"><strong>Gagal menyimpan:</strong> <t t-esc="error"/></div>
       </t>
 
       <form t-attf-action="/agf/admin/batch/#{batch.id}/edit/submit" method="POST">
         <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-
-        <div class="agf-admin-form-grid">
-
-          <!-- Kolom kiri -->
-          <div class="agf-admin-card">
-            <div class="agf-admin-card-title">Informasi Batch</div>
-
-            <div class="agf-admin-form-group" style="margin-bottom:12px;">
-              <label>Batch ID</label>
-              <input type="text" t-att-value="batch.name" disabled="1"/>
-              <span class="field-hint">Tidak dapat diubah</span>
-            </div>
-
-            <div class="agf-admin-form-group" style="margin-bottom:12px;">
-              <label>Tanggal Buka Pendaftaran</label>
-              <input type="text" t-att-value="batch.tanggal_mulai" disabled="1"/>
-              <span class="field-hint">Tidak dapat diubah setelah dibuat</span>
-            </div>
-
-            <div class="agf-admin-form-group" style="margin-bottom:12px;">
-              <label>Tanggal Keberangkatan <span style="color:#A83030;">*</span></label>
-              <input type="date" name="tanggal_keberangkatan" required="1"
-                     t-att-value="batch.tanggal_keberangkatan"/>
-            </div>
-
-            <div class="agf-admin-form-group">
-              <label>Tanggal Tutup Pendaftaran</label>
-              <input type="date" name="tanggal_selesai"
-                     t-att-value="batch.tanggal_selesai or ''"/>
+        <div class="agf-form-grid">
+          <div class="agf-card">
+            <div class="agf-card__header"><span class="agf-card__title">Informasi Batch</span></div>
+            <div style="padding:16px;display:flex;flex-direction:column;gap:12px;">
+              <div class="agf-form-group">
+                <label>Batch ID</label>
+                <input type="text" t-att-value="batch.name" disabled="1"/>
+                <span class="agf-form-hint">Tidak dapat diubah</span>
+              </div>
+              <div class="agf-form-group">
+                <label>Tanggal Buka Pendaftaran</label>
+                <input type="text" t-att-value="batch.tanggal_mulai" disabled="1"/>
+                <span class="agf-form-hint">Tidak dapat diubah setelah dibuat</span>
+              </div>
+              <div class="agf-form-group">
+                <label>Tanggal Keberangkatan <span style="color:#A83030;">*</span></label>
+                <input type="date" name="tanggal_keberangkatan" required="1" t-att-value="batch.tanggal_keberangkatan"/>
+              </div>
+              <div class="agf-form-group">
+                <label>Tanggal Tutup Pendaftaran</label>
+                <input type="date" name="tanggal_selesai" t-att-value="batch.tanggal_selesai or ''"/>
+              </div>
             </div>
           </div>
-
-          <!-- Kolom kanan -->
-          <div class="agf-admin-card">
-            <div class="agf-admin-card-title">Detail Pengiriman</div>
-
-            <div class="agf-admin-form-group" style="margin-bottom:12px;">
-              <label>Negara Tujuan</label>
-              <input type="text" name="negara_tujuan"
-                     t-att-value="batch.negara_tujuan or 'United States'"/>
-            </div>
-
-            <div class="agf-admin-form-group" style="margin-bottom:12px;">
-              <label>Kapasitas Maksimal (tanaman)</label>
-              <input type="number" name="kapasitas_maks" min="0"
-                     t-att-value="batch.kapasitas_maks"/>
-              <span class="field-hint">Isi 0 jika tidak dibatasi</span>
-            </div>
-
-            <div class="agf-admin-form-group" style="margin-bottom:12px;">
-              <label>Status Batch</label>
-              <select name="status">
-                <option value="aktif"
-                        t-att-selected="'selected' if batch.status == 'aktif' else None">
-                  Aktif
-                </option>
-                <option value="selesai"
-                        t-att-selected="'selected' if batch.status == 'selesai' else None">
-                  Selesai
-                </option>
-                <option value="terkirim"
-                        t-att-selected="'selected' if batch.status == 'terkirim' else None">
-                  Terkirim
-                </option>
-                <option value="dibatalkan"
-                        t-att-selected="'selected' if batch.status == 'dibatalkan' else None">
-                  Dibatalkan
-                </option>
-              </select>
-            </div>
-
-            <div class="agf-admin-form-group">
-              <label>Catatan Internal</label>
-              <textarea name="catatan" rows="4"><t t-esc="batch.catatan or ''"/></textarea>
+          <div class="agf-card">
+            <div class="agf-card__header"><span class="agf-card__title">Detail Pengiriman</span></div>
+            <div style="padding:16px;display:flex;flex-direction:column;gap:12px;">
+              <div class="agf-form-group">
+                <label>Negara Tujuan</label>
+                <input type="text" name="negara_tujuan" t-att-value="batch.negara_tujuan or 'United States'"/>
+              </div>
+              <div class="agf-form-group">
+                <label>Kapasitas Maksimal (tanaman)</label>
+                <input type="number" name="kapasitas_maks" min="0" t-att-value="batch.kapasitas_maks"/>
+                <span class="agf-form-hint">Isi 0 jika tidak dibatasi</span>
+              </div>
+              <div class="agf-form-group">
+                <label>Status Batch</label>
+                <select name="status">
+                  <option value="aktif" t-att-selected="'selected' if batch.status=='aktif' else ''">Aktif</option>
+                  <option value="selesai" t-att-selected="'selected' if batch.status=='selesai' else ''">Selesai</option>
+                  <option value="terkirim" t-att-selected="'selected' if batch.status=='terkirim' else ''">Terkirim</option>
+                  <option value="dibatalkan" t-att-selected="'selected' if batch.status=='dibatalkan' else ''">Dibatalkan</option>
+                </select>
+              </div>
+              <div class="agf-form-group">
+                <label>Catatan Internal</label>
+                <textarea name="catatan" rows="4"><t t-esc="batch.catatan or ''"/></textarea>
+              </div>
             </div>
           </div>
-
         </div>
-
-        <!-- Actions -->
-        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px;">
-          <a href="/agf/admin/batch-aktif" class="agf-btn agf-btn-outline">Batal</a>
-          <button type="submit" class="agf-btn agf-btn-primary">Simpan Perubahan</button>
+        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px;">
+          <a href="/agf/admin/batch-aktif" class="agf-btn-secondary">Batal</a>
+          <button type="submit" class="agf-btn-primary">Simpan Perubahan</button>
         </div>
-
       </form>
     </t>
   </template>
 
 
+  <!-- ============================================================
+       5. DETAIL BATCH
+       ============================================================ -->
+  <template id="admin_detail_batch" name="Admin — Detail Batch">
+    <t t-call="agf_cargo.admin_layout">
+      <t t-set="page_title">Detail Batch</t>
+      <t t-set="active_menu">riwayat_batch</t>
 
+      <div class="agf-breadcrumb">
+        <a href="/agf/admin/riwayat-batch">Riwayat Batch</a>
+        <span class="agf-breadcrumb__sep">›</span>
+        <span class="agf-breadcrumb__active"><t t-esc="batch.name"/></span>
+      </div>
+      <div class="agf-page-header">
+        <h1 class="agf-page-header__title">Detail Batch — <t t-esc="batch.name"/></h1>
+        <a t-attf-href="/agf/admin/batch/#{batch.id}/edit" class="agf-btn-secondary">Edit Batch</a>
+      </div>
+
+      <div class="agf-form-grid">
+        <div class="agf-card">
+          <div class="agf-card__header"><span class="agf-card__title">Informasi Batch</span></div>
+          <div class="agf-info-rows">
+            <div class="agf-info-row">
+              <span class="agf-info-row__label">Batch ID</span>
+              <span class="agf-info-row__value agf-info-row__value--mono"><t t-esc="batch.name"/></span>
+            </div>
+            <div class="agf-info-row">
+              <span class="agf-info-row__label">Status</span>
+              <span class="agf-info-row__value">
+                <span t-attf-class="agf-pill #{batch.status}">
+                  <t t-esc="dict(aktif='Aktif',selesai='Selesai',terkirim='Terkirim',dibatalkan='Dibatalkan').get(batch.status,batch.status)"/>
+                </span>
+              </span>
+            </div>
+            <div class="agf-info-row">
+              <span class="agf-info-row__label">Tanggal Mulai</span>
+              <span class="agf-info-row__value"><t t-esc="batch.tanggal_mulai"/></span>
+            </div>
+            <div class="agf-info-row">
+              <span class="agf-info-row__label">Keberangkatan</span>
+              <span class="agf-info-row__value"><t t-esc="batch.tanggal_keberangkatan"/></span>
+            </div>
+            <div class="agf-info-row">
+              <span class="agf-info-row__label">Tutup Pendaftaran</span>
+              <span class="agf-info-row__value"><t t-esc="batch.tanggal_selesai or '—'"/></span>
+            </div>
+            <div class="agf-info-row">
+              <span class="agf-info-row__label">Negara Tujuan</span>
+              <span class="agf-info-row__value"><t t-esc="batch.negara_tujuan or '—'"/></span>
+            </div>
+            <t t-if="batch.catatan">
+              <div class="agf-info-row">
+                <span class="agf-info-row__label">Catatan</span>
+                <span class="agf-info-row__value"><t t-esc="batch.catatan"/></span>
+              </div>
+            </t>
+          </div>
+        </div>
+        <div class="agf-card">
+          <div class="agf-card__header"><span class="agf-card__title">Statistik</span></div>
+          <div style="padding:16px;">
+            <div class="agf-stat-grid" style="grid-template-columns:repeat(2,1fr);gap:12px;">
+              <div class="agf-stat-card">
+                <div class="agf-stat-card__body">
+                  <div class="agf-stat-card__value agf-stat-card__value--sm"><t t-esc="batch.total_pesanan"/></div>
+                  <div class="agf-stat-card__label">Total Pesanan</div>
+                </div>
+              </div>
+              <div class="agf-stat-card">
+                <div class="agf-stat-card__body">
+                  <div class="agf-stat-card__value agf-stat-card__value--sm"><t t-esc="batch.total_tanaman"/></div>
+                  <div class="agf-stat-card__label">Total Tanaman</div>
+                </div>
+              </div>
+              <div class="agf-stat-card">
+                <div class="agf-stat-card__body">
+                  <div class="agf-stat-card__value agf-stat-card__value--sm"><t t-esc="batch.pesanan_selesai"/></div>
+                  <div class="agf-stat-card__label">Selesai</div>
+                </div>
+              </div>
+              <div class="agf-stat-card">
+                <div class="agf-stat-card__body">
+                  <div class="agf-stat-card__value agf-stat-card__value--sm">
+                    <t t-esc="batch.kapasitas_maks if batch.kapasitas_maks else '∞'"/>
+                  </div>
+                  <div class="agf-stat-card__label">Kapasitas</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="agf-card" style="overflow:hidden;">
+        <div class="agf-card__header"><span class="agf-card__title">Daftar Pesanan</span></div>
+        <div class="agf-table-wrap">
+          <table class="agf-table agf-table--hover">
+            <thead>
+              <tr><th>Nomor Penitip</th><th>Nama Penitip</th><th>Status</th><th>Total Tanaman</th><th>Aksi</th></tr>
+            </thead>
+            <tbody>
+              <t t-foreach="batch.kargo_ids" t-as="kargo">
+                <tr>
+                  <td class="agf-table__primary" style="color:#007A8A;"><t t-esc="kargo.nomor_penitip"/></td>
+                  <td><t t-esc="kargo.nama_penitip"/></td>
+                  <td><span t-attf-class="agf-badge-status status-#{kargo.status}"><t t-esc="kargo.status.capitalize()"/></span></td>
+                  <td><t t-esc="kargo.total_tanaman"/></td>
+                  <td><a t-attf-href="/agf/admin/pesanan/#{kargo.id}" class="agf-btn-sm">Detail</a></td>
+                </tr>
+              </t>
+              <t t-if="not batch.kargo_ids">
+                <tr><td colspan="5"><div class="agf-empty-state"><p>Belum ada pesanan dalam batch ini.</p></div></td></tr>
+              </t>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </t>
+  </template>
 
 </odoo>
