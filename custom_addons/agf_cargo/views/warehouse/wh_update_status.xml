@@ -29,8 +29,8 @@
                                 <t t-esc="kargo.nama_penerima"/>
                             </div>
                         </div>
-                        <span t-attf-class="agf-wh-pill agf-wh-pill--#{kargo.status}">
-                            <t t-esc="kargo.status.capitalize()"/>
+                        <span t-attf-class="agf-wh-pill agf-wh-pill--#{kargo.status_pill_class}">
+                            <t t-esc="kargo.status_label"/>
                         </span>
                     </div>
                 </div>
@@ -50,28 +50,42 @@
                                         <i data-lucide="list-ordered" style="width:13px;height:13px;vertical-align:middle"/>
                                         Tahapan *
                                     </label>
-                                    <select name="tahap" id="tahap" class="agf-wh-form__select" required="required">
-                                        <option value="">— Pilih tahapan —</option>
-                                        <t t-foreach="tahapan_steps" t-as="step">
-                                            <option t-att-value="step[0]"><t t-esc="step[1]"/></option>
-                                        </t>
-                                    </select>
+                                    <t t-if="in_prep_phase">
+                                        <!-- Dalam fase persiapan: pilih sub-tahap -->
+                                        <input type="hidden" name="tahap" value="05_gudang_asal"/>
+                                        <select name="prep_substep" id="tahap" class="agf-wh-form__select">
+                                            <option value="">— Pilih sub-tahap —</option>
+                                            <t t-foreach="prep_substeps" t-as="step">
+                                                <option t-att-value="step[0]"><t t-esc="step[1]"/></option>
+                                            </t>
+                                        </select>
+                                    </t>
+                                    <t t-else="">
+                                        <!-- Di luar fase persiapan: tahap dikunci sesuai status kargo -->
+                                        <input type="hidden" name="tahap" t-att-value="kargo.status"/>
+                                        <div class="agf-wh-form__input" style="background:#F3F4F6; color:#6B7280;">
+                                            <t t-esc="kargo.status_label"/>
+                                            <span style="font-size:11px; margin-left:4px;">(otomatis)</span>
+                                        </div>
+                                    </t>
                                 </div>
-                                <div>
-                                    <label class="agf-wh-form__label" for="status_baru">
-                                        <i data-lucide="refresh-cw" style="width:13px;height:13px;vertical-align:middle"/>
-                                        Ubah Status Pipeline
-                                    </label>
-                                    <select name="status_baru" id="status_baru" class="agf-wh-form__select">
-                                        <option value="">— Tidak ubah status —</option>
-                                        <t t-foreach="status_choices" t-as="sc">
-                                            <option t-att-value="sc[0]"
-                                                    t-att-selected="'selected' if sc[0] == kargo.status else None">
-                                                <t t-esc="sc[1]"/>
-                                            </option>
-                                        </t>
-                                    </select>
-                                </div>
+                                <t t-if="in_prep_phase">
+                                    <div>
+                                        <label class="agf-wh-form__label" for="status_baru">
+                                            <i data-lucide="refresh-cw" style="width:13px;height:13px;vertical-align:middle"/>
+                                            Selesaikan Fase Persiapan
+                                        </label>
+                                        <select name="status_baru" id="status_baru" class="agf-wh-form__select">
+                                            <option value="">— Belum selesai —</option>
+                                            <t t-foreach="status_choices" t-as="sc">
+                                                <option t-att-value="sc[0]"><t t-esc="sc[1]"/></option>
+                                            </t>
+                                        </select>
+                                        <div style="font-size:11px; color:#9CA3AF; margin-top:4px;">
+                                            Pilih "Terminal Asal" untuk menandai persiapan selesai dan lanjut ke pengiriman.
+                                        </div>
+                                    </div>
+                                </t>
                             </div>
                         </div>
 

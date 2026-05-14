@@ -15,8 +15,8 @@
                     <span class="agf-wh-nav__title">
                         <t t-esc="kargo.nomor_penitip"/>
                     </span>
-                    <span t-attf-class="agf-wh-pill agf-wh-pill--#{kargo.status}">
-                        <t t-esc="kargo.status.capitalize()"/>
+                    <span t-attf-class="agf-wh-pill agf-wh-pill--#{kargo.status_pill_class}">
+                        <t t-esc="kargo.status_label"/>
                     </span>
                 </nav>
 
@@ -163,7 +163,7 @@
                 </div>
 
                 <!-- Sticky CTA -->
-                <t t-if="kargo.status != 'done'">
+                <t t-if="kargo.status in ['05_gudang_asal', '06_terminal_asal']">
                     <div class="agf-wh-footer-cta">
                         <a t-attf-href="/agf/warehouse/update/#{kargo.id}" class="agf-wh-btn-cta">
                             <i data-lucide="clipboard-edit" style="width:18px;height:18px"/>

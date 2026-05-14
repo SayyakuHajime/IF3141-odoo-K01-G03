@@ -1,4 +1,7 @@
 from odoo import models, fields, api
+import qrcode
+import base64
+from io import BytesIO
 
 
 class AgfQrTag(models.Model):
@@ -42,16 +45,21 @@ class AgfQrTag(models.Model):
 
     catatan = fields.Text(string='Catatan')
     tanggal_cetak = fields.Date(string='Tanggal Cetak', default=fields.Date.today)
+    qr_image = fields.Binary(
+        string='QR Image',
+        attachment=True,
+        readonly=True,
+    )
 
-    @api.model_create_multi
-    def create(self, vals_list):
-        for vals in vals_list:
-            if not vals.get('tag_id'):
-                batch = self.env['agf.batch'].browse(vals.get('batch_id'))
-                seq = self.env['ir.sequence'].next_by_code('agf.qr.tag') or '0000'
-                prefix = batch.batch_id if batch and batch.batch_id else 'AGF'
-                vals['tag_id'] = f'QR-{prefix}-{seq}'
-        return super().create(vals_list)
+    # @api.model_create_multi
+    # def create(self, vals_list):
+    #     for vals in vals_list:
+    #         if not vals.get('tag_id'):
+    #             batch = self.env['agf.batch'].browse(vals.get('batch_id'))
+    #             seq = self.env['ir.sequence'].next_by_code('agf.qr.tag') or '0000'
+    #             prefix = batch.batch_id if batch and batch.batch_id else 'AGF'
+    #             vals['tag_id'] = f'QR-{prefix}-{seq}'
+    #     return super().create(vals_list)
 
     def action_assign(self, kargo_id):
         """Assign tag ke pesanan kargo; set status aktif."""
@@ -64,3 +72,31 @@ class AgfQrTag(models.Model):
 
     def action_mark_rusak(self):
         self.write({'status': 'rusak'})
+
+    def _generate_qr_image(self):
+        """Generate QR image dari tag_id dan simpan ke field qr_image."""
+        for tag in self:
+            qr = qrcode.QRCode(version=1, box_size=10, border=4)
+            # Yang di-encode adalah tag_id — warehouse scan ini untuk lookup ke kargo
+            qr.add_data(tag.tag_id)
+            qr.make(fit=True)
+            img = qr.make_image(fill_color='black', back_color='white')
+            buffer = BytesIO()
+            img.save(buffer, 'PNG')
+            tag.qr_image = base64.b64encode(buffer.getvalue()).decode()
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if not vals.get('tag_id'):
+                seq = self.env['ir.sequence'].next_by_code('agf.qr.tag') or '0000'
+                batch_id = vals.get('batch_id')
+                if batch_id:
+                    batch = self.env['agf.batch'].browse(batch_id)
+                    prefix = batch.batch_id if batch.exists() and batch.batch_id else 'AGF'
+                else:
+                    prefix = 'AGF'
+                vals['tag_id'] = f'QR-{prefix}-{seq}'
+        records = super().create(vals_list)
+        records._generate_qr_image()
+        return records

@@ -16,6 +16,18 @@ TAHAPAN_STEPS = [
     ('12_selesai',          'Selesai'),
 ]
 
+PREP_SUBSTEPS = [
+    ('pengecekan_awal',  'Pengecekan Awal'),
+    ('pencucian',        'Pencucian'),
+    ('pengemasan',       'Pengemasan'),
+    ('pengecekan_akhir', 'Pengecekan Akhir'),
+]
+
+WAREHOUSE_ALLOWED_STATUS = [
+    '05_gudang_asal',
+    '06_terminal_asal',
+]
+
 
 class AgfTahapan(models.Model):
     _name = 'agf.tahapan'
@@ -34,6 +46,12 @@ class AgfTahapan(models.Model):
         selection=TAHAPAN_STEPS,
         string='Tahapan',
         required=True,
+    )
+    
+    prep_substep = fields.Selection(
+        selection=PREP_SUBSTEPS,
+        string='Sub-tahap Persiapan',
+        help='Diisi oleh tim warehouse saat kargo dalam tahap persiapan (05_gudang_asal).',
     )
 
     # is_internal=True → hanya terlihat di admin, tidak muncul di customer tracking.

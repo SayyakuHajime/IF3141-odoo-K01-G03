@@ -1,7 +1,7 @@
 import base64
 from odoo import http
 from odoo.http import request
-
+from odoo.addons.agf_cargo.models.agf_tahapan import PREP_SUBSTEPS, WAREHOUSE_ALLOWED_STATUS
 
 def _kargo_search_domain(search_text):
     """
@@ -97,8 +97,13 @@ class WarehousePortal(http.Controller):
             return request.not_found()
         return request.render('agf_cargo.warehouse_update_status', {
             'kargo': kargo,
-            'tahapan_steps': request.env['agf.tahapan']._fields['tahap'].selection,
-            'status_choices': request.env['agf.kargo']._fields['status'].selection,
+            'prep_substeps': PREP_SUBSTEPS,
+            'warehouse_allowed_status': WAREHOUSE_ALLOWED_STATUS,
+            'status_choices': [
+                s for s in request.env['agf.kargo']._fields['status'].selection
+                if s[0] in WAREHOUSE_ALLOWED_STATUS
+            ],
+            'in_prep_phase': kargo.status == '05_gudang_asal',
         })
 
     @http.route(
@@ -110,26 +115,34 @@ class WarehousePortal(http.Controller):
         if not kargo.exists():
             return request.not_found()
 
-        tahap      = post.get('tahap')
-        lokasi     = post.get('lokasi', '')
-        catatan    = post.get('catatan', '')
+        tahap       = post.get('tahap')
+        lokasi      = post.get('lokasi', '')
+        catatan     = post.get('catatan', '')
         status_baru = post.get('status_baru') or None
-        cek_daun   = bool(post.get('cek_daun'))
-        cek_akar   = bool(post.get('cek_akar'))
-        cek_hama   = bool(post.get('cek_hama'))
+        prep_substep = post.get('prep_substep') or None
+        cek_daun    = bool(post.get('cek_daun'))
+        cek_akar    = bool(post.get('cek_akar'))
+        cek_hama    = bool(post.get('cek_hama'))
 
-        # Create tahapan log entry first (need its ID for attachment res_id)
-        tahapan = request.env['agf.tahapan'].create({
-            'kargo_id':   kargo.id,
-            'tahap':      tahap,
-            'lokasi':     lokasi,
-            'catatan':    catatan,
-            'status_baru': status_baru,
-            'cek_daun':   cek_daun,
-            'cek_akar':   cek_akar,
-            'cek_hama':   cek_hama,
-            'petugas_id': request.env.user.id,
-        })
+        # Guard: warehouse hanya boleh set status dalam WAREHOUSE_ALLOWED_STATUS
+        if status_baru and status_baru not in WAREHOUSE_ALLOWED_STATUS:
+            status_baru = None
+
+        tahapan_vals = {
+            'kargo_id':    kargo.id,
+            'tahap':       tahap,
+            'lokasi':      lokasi,
+            'catatan':     catatan,
+            'cek_daun':    cek_daun,
+            'cek_akar':    cek_akar,
+            'cek_hama':    cek_hama,
+            'petugas_id':  request.env.user.id,
+            'is_internal': False,
+        }
+        if prep_substep:
+            tahapan_vals['prep_substep'] = prep_substep
+
+        tahapan = request.env['agf.tahapan'].create(tahapan_vals)
 
         # Handle up to 4 photo uploads
         foto_ids = []
@@ -138,18 +151,21 @@ class WarehousePortal(http.Controller):
             if file and file.filename:
                 data = base64.b64encode(file.read()).decode()
                 att = request.env['ir.attachment'].sudo().create({
-                    'name':     file.filename,
-                    'datas':    data,
+                    'name':      file.filename,
+                    'datas':     data,
                     'res_model': 'agf.tahapan',
-                    'res_id':   tahapan.id,
-                    'mimetype': file.content_type or 'image/jpeg',
+                    'res_id':    tahapan.id,
+                    'mimetype':  file.content_type or 'image/jpeg',
                 })
                 foto_ids.append(att.id)
-
         if foto_ids:
             tahapan.foto_ids = [(6, 0, foto_ids)]
 
-        # Update kargo pipeline status if changed
+        # Update status_persiapan semua tanaman dalam pesanan ini
+        if prep_substep and kargo.tanaman_ids:
+            kargo.tanaman_ids.write({'status_persiapan': prep_substep})
+
+        # Update status kargo, hanya kalau dalam scope warehouse
         if status_baru and status_baru != kargo.status:
             kargo.write({'status': status_baru})
 

@@ -162,10 +162,22 @@
           <!-- QR Preview Card -->
           <div class="agf-card" style="text-align:center; padding:32px 24px;">
             <div style="width:160px; height:160px; margin:0 auto 16px; border:2px solid #E5E7EB; border-radius:12px; display:flex; align-items:center; justify-content:center; background:#FAFAFA;">
-              <div style="display:grid; grid-template-columns:repeat(7,1fr); gap:3px; padding:12px;">
-                <t t-foreach="[1,1,1,1,1,1,1, 1,0,0,0,0,0,1, 1,0,1,1,1,0,1, 1,0,1,0,1,0,1, 1,0,1,1,1,0,1, 1,0,0,0,0,0,1, 1,1,1,1,1,1,1]" t-as="cell">
-                  <div t-attf-style="width:10px;height:10px;background:#{cell and '#222' or '#FFF'};border-radius:1px;"/>
-                </t>
+              <div class="agf-qr-preview">
+                  <t t-if="tag.qr_image">
+                      <img t-attf-src="data:image/png;base64,#{tag.qr_image}"
+                          style="width:200px;height:200px;"
+                          t-att-alt="tag.tag_id"/>
+                  </t>
+                  <t t-else="">
+                      <div style="width:200px;height:200px;display:flex;align-items:center;
+                                  justify-content:center;background:#F3F4F6;color:#9CA3AF;">
+                          QR belum di-generate
+                      </div>
+                  </t>
+                  <div style="margin-top:8px;font-size:13px;font-weight:600;
+                              letter-spacing:1px;text-align:center;">
+                      <t t-esc="tag.tag_id"/>
+                  </div>
               </div>
             </div>
             <div style="font-family:monospace; font-size:18px; font-weight:700; color:#111827; letter-spacing:1px;"><t t-esc="tag.tag_id"/></div>
@@ -383,10 +395,21 @@
           <div style="margin-bottom:24px;">
             <div style="font-size:12px; color:#9CA3AF; margin-bottom:8px; text-transform:uppercase; letter-spacing:0.5px;">Preview QR Tag</div>
             <div style="width:180px; height:180px; margin:0 auto 16px; border:2px dashed #E5E7EB; border-radius:12px; display:flex; align-items:center; justify-content:center; background:#FAFAFA;">
-              <div style="display:grid; grid-template-columns:repeat(7,1fr); gap:3px; padding:16px;">
-                <t t-foreach="[1,1,1,1,1,1,1, 1,0,0,0,0,0,1, 1,0,1,1,1,0,1, 1,0,1,0,1,0,1, 1,0,1,1,1,0,1, 1,0,0,0,0,0,1, 1,1,1,1,1,1,1]" t-as="cell">
-                  <div t-attf-style="width:12px;height:12px;background:#{cell and '#1A1A1A' or '#FAFAFA'};border-radius:1px;"/>
-                </t>
+              <div class="agf-qr-label" style="text-align:center;padding:16px;">
+                  <t t-if="tag and tag.qr_image">
+                      <div style="width:150px;height:150px;background:#F3F4F6;display:flex;
+                                  align-items:center;justify-content:center;color:#9CA3AF;font-size:12px;">
+                          QR akan dibuat setelah disimpan
+                      </div>
+                  </t>
+                  <t t-else="">
+                      <div style="width:150px;height:150px;background:#F3F4F6;"/>
+                  </t>
+                  <div style="font-size:12px;font-weight:700;margin-top:6px;
+                              letter-spacing:1px;">
+                      <t t-esc="preview_id"/>
+                  </div>
+                  <div style="font-size:10px;color:#6B7280;">AGF Cargo</div>
               </div>
             </div>
             <div style="font-family:monospace; font-size:22px; font-weight:700; color:#007A8A; letter-spacing:2px;">

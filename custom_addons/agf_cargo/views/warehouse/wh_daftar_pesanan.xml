@@ -99,7 +99,7 @@
                            t-attf-class="agf-wh-filter__pill #{'' if current_status else 'agf-wh-filter__pill--active'}">
                             Semua
                         </a>
-                        <t t-foreach="[('hold','Hold'),('arrival','Arrival'),('processing','Processing'),('shipped','Shipped'),('done','Done')]" t-as="s">
+                        <t t-foreach="[('05_gudang_asal','Di Gudang'),('06_terminal_asal','Terminal Asal')]" t-as="s">
                             <a t-attf-href="/agf/warehouse/pesanan?status=#{s[0]}&amp;search=#{search or ''}"
                                t-attf-class="agf-wh-filter__pill #{'agf-wh-filter__pill--active' if current_status == s[0] else ''}">
                                 <t t-esc="s[1]"/>
@@ -125,8 +125,8 @@
                                                 <t t-esc="kargo.nama_penerima"/>
                                             </div>
                                         </div>
-                                        <span t-attf-class="agf-wh-pill agf-wh-pill--#{kargo.status}">
-                                            <t t-esc="kargo.status.capitalize()"/>
+                                        <span t-attf-class="agf-wh-pill agf-wh-pill--#{kargo.status_pill_class}">
+                                            <t t-esc="kargo.status_label"/>
                                         </span>
                                     </div>
                                     <div class="agf-wh-card__foot">
