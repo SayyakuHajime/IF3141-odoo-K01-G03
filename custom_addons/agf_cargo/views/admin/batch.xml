@@ -58,14 +58,25 @@
       <t t-if="batch">
         <div class="agf-card" style="overflow:hidden;">
           <div class="agf-admin-filter-tabs">
-            <a t-attf-href="/agf/admin/batch-aktif" t-attf-class="#{'' if current_status else 'active'}">
-              Semua (<t t-esc="status_counts.get('hold',0)+status_counts.get('arrival',0)+status_counts.get('processing',0)+status_counts.get('shipped',0)+status_counts.get('done',0)"/>)
-            </a>
-            <a t-attf-href="/agf/admin/batch-aktif?status=hold" t-attf-class="#{'active' if current_status=='hold' else ''}">Hold (<t t-esc="status_counts.get('hold',0)"/>)</a>
-            <a t-attf-href="/agf/admin/batch-aktif?status=arrival" t-attf-class="#{'active' if current_status=='arrival' else ''}">Arrival (<t t-esc="status_counts.get('arrival',0)"/>)</a>
-            <a t-attf-href="/agf/admin/batch-aktif?status=processing" t-attf-class="#{'active' if current_status=='processing' else ''}">Processing (<t t-esc="status_counts.get('processing',0)"/>)</a>
-            <a t-attf-href="/agf/admin/batch-aktif?status=shipped" t-attf-class="#{'active' if current_status=='shipped' else ''}">Shipped (<t t-esc="status_counts.get('shipped',0)"/>)</a>
-            <a t-attf-href="/agf/admin/batch-aktif?status=done" t-attf-class="#{'active' if current_status=='done' else ''}">Done (<t t-esc="status_counts.get('done',0)"/>)</a>
+            <!-- GANTI seluruh filter tab status dengan yang baru: -->
+            <a t-attf-href="?status=" 
+              t-attf-class="#{' active' if not current_status else ''}">Semua</a>
+            <a t-attf-href="?status=01_registrasi"
+              t-attf-class="#{' active' if current_status == '01_registrasi' else ''}">Registrasi</a>
+            <a t-attf-href="?status=02_menunggu_bayar"
+              t-attf-class="#{' active' if current_status == '02_menunggu_bayar' else ''}">Menunggu Bayar</a>
+            <a t-attf-href="?status=03_bayar_verified"
+              t-attf-class="#{' active' if current_status == '03_bayar_verified' else ''}">Bayar Verified</a>
+            <a t-attf-href="?status=04_penjemputan"
+              t-attf-class="#{' active' if current_status == '04_penjemputan' else ''}">Penjemputan</a>
+            <a t-attf-href="?status=05_gudang_asal"
+              t-attf-class="#{' active' if current_status == '05_gudang_asal' else ''}">Di Gudang</a>
+            <a t-attf-href="?status=07_transit"
+              t-attf-class="#{' active' if current_status == '07_transit' else ''}">Transit</a>
+            <a t-attf-href="?status=10_pengiriman_lokal"
+              t-attf-class="#{' active' if current_status == '10_pengiriman_lokal' else ''}">Pengiriman</a>
+            <a t-attf-href="?status=12_selesai"
+              t-attf-class="#{' active' if current_status == '12_selesai' else ''}">Selesai</a>
           </div>
           <div class="agf-table-wrap">
             <table class="agf-table agf-table--hover">
@@ -89,7 +100,11 @@
                       </t>
                       <t t-else=""><span style="color:#CCC;">—</span></t>
                     </td>
-                    <td><span t-attf-class="agf-badge-status status-#{kargo.status}"><t t-esc="kargo.status.capitalize()"/></span></td>
+                    <td>
+                      <span t-attf-class="agf-pill #{kargo.status_pill_class}">
+                        <t t-esc="kargo.status_label"/>
+                      </span>
+                    </td>
                     <td><a t-attf-href="/agf/admin/pesanan/#{kargo.id}" class="agf-btn-sm">Detail</a></td>
                   </tr>
                 </t>
@@ -381,7 +396,11 @@
                 <tr>
                   <td class="agf-table__primary" style="color:#007A8A;"><t t-esc="kargo.nomor_penitip"/></td>
                   <td><t t-esc="kargo.nama_penitip"/></td>
-                  <td><span t-attf-class="agf-badge-status status-#{kargo.status}"><t t-esc="kargo.status.capitalize()"/></span></td>
+                  <td>
+                  <span t-attf-class="agf-pill #{kargo.status_pill_class}">
+                   <t t-esc="kargo.status_label"/>
+                  </span>
+                  </td>
                   <td><t t-esc="kargo.total_tanaman"/></td>
                   <td><a t-attf-href="/agf/admin/pesanan/#{kargo.id}" class="agf-btn-sm">Detail</a></td>
                 </tr>

@@ -22,11 +22,9 @@
       <div class="agf-page-header">
         <div style="display:flex; align-items:center; gap:12px;">
           <h1>Detail Pesanan</h1>
-          <t t-if="kargo.status == 'hold'"><span class="agf-pill hold">Hold</span></t>
-          <t t-elif="kargo.status == 'arrival'"><span class="agf-pill arrival">Arrival</span></t>
-          <t t-elif="kargo.status == 'processing'"><span class="agf-pill processing">Processing</span></t>
-          <t t-elif="kargo.status == 'shipped'"><span class="agf-pill shipped">Shipped</span></t>
-          <t t-elif="kargo.status == 'done'"><span class="agf-pill done">Done</span></t>
+          <span t-attf-class="agf-pill #{kargo.status_pill_class}">
+              <t t-esc="kargo.status_label"/>
+          </span>
         </div>
       </div>
 
@@ -70,11 +68,9 @@
               <tr style="border-bottom:1px solid #F5F5F5;">
                 <td style="padding:8px 0; color:#888;">Status Saat Ini</td>
                 <td style="padding:8px 0;">
-                  <t t-if="kargo.status == 'hold'"><span class="agf-pill hold">Hold</span></t>
-                  <t t-elif="kargo.status == 'arrival'"><span class="agf-pill arrival">Arrival</span></t>
-                  <t t-elif="kargo.status == 'processing'"><span class="agf-pill processing">Processing</span></t>
-                  <t t-elif="kargo.status == 'shipped'"><span class="agf-pill shipped">Shipped</span></t>
-                  <t t-elif="kargo.status == 'done'"><span class="agf-pill done">Done</span></t>
+                  <span t-attf-class="agf-pill #{kargo.status_pill_class}">
+                      <t t-esc="kargo.status_label"/>
+                  </span>
                 </td>
               </tr>
               <t t-if="kargo.qr_tag_id">
@@ -122,22 +118,21 @@
                 </tr>
               </t>
               <tr>
-                <td style="padding:8px 0; color:#888;">Bukti Transaksi</td>
+                <td style="padding:8px 0; color:#888;">Bukti Pembayaran</td>
                 <td style="padding:8px 0;">
-                  <t t-if="kargo.bukti_transaksi">
-                    <a t-attf-href="/agf/admin/pesanan/#{kargo.id}/bukti"
-                       target="_blank"
-                       style="color:#007A8A; text-decoration:none; font-size:13px;"
-                       t-att-title="kargo.bukti_transaksi_nama or 'Bukti Transaksi'">
-                      <i class="fa fa-file" style="margin-right:4px;"/>
-                      <t t-esc="(kargo.bukti_transaksi_nama or 'Bukti Transaksi')[:30] + ('...' if len(kargo.bukti_transaksi_nama or '') > 30 else '')"/>
-                    </a>
-                  </t>
-                  <t t-else="">
-                    <span style="color:#AAA; font-size:13px;">Belum diupload</span>
-                  </t>
+                    <t t-if="kargo.bukti_pembayaran">
+                        <a t-attf-href="/web/image/ir.attachment/#{kargo.bukti_pembayaran.id}/datas"
+                          target="_blank"
+                          style="color:#007A8A; text-decoration:none; font-size:13px;">
+                            <i class="fa fa-file" style="margin-right:4px;"/>
+                            Lihat Bukti Pembayaran
+                        </a>
+                    </t>
+                    <t t-else="">
+                        <span style="color:#AAA; font-size:13px;">Belum diupload customer</span>
+                    </t>
                 </td>
-              </tr>
+            </tr>
             </table>
             </div>
           </div>
@@ -195,56 +190,90 @@
 
           <!-- Aksi Admin -->
           <div class="agf-card">
-            <div class="agf-card__header">
-            <span class="agf-card__title">Aksi Admin</span>
-            </div>
-            <div class="agf-card__body">
-            <div class="agf-admin-action-panel">
-                <a t-attf-href="/agf/admin/pesanan/#{kargo.id}/edit"
-                    class="agf-admin-action-btn">Edit dan Ubah Status Pesanan</a>
-                <a href="#" class="agf-admin-action-btn">Cetak &amp; Assign Label QR</a>
-            </div>
-            </div>
-          </div>
+              <div class="agf-card__header">
+                  <span class="agf-card__title">Aksi Admin</span>
+              </div>
+              <div class="agf-card__body">
+                  <div class="agf-admin-action-panel">
+                      <!-- Tombol update status DIPISAH dari edit data -->
+                      <a t-attf-href="/agf/admin/pesanan/#{kargo.id}/update-tahapan"
+                        class="agf-admin-action-btn"
+                        style="border-left:3px solid #00ACC1; background:#F0FAFE;">
+                          <i data-lucide="activity" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;"/>
+                          Update Status / Tahapan
+                      </a>
+                      <a t-attf-href="/agf/admin/pesanan/#{kargo.id}/edit"
+                        class="agf-admin-action-btn">
+                          <i data-lucide="pencil" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;"/>
+                          Edit Data Pesanan
+                      </a>
+                      <a href="#" class="agf-admin-action-btn">
+                          <i data-lucide="qr-code" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;"/>
+                          Cetak &amp; Assign Label QR
+                      </a>
+                  </div>
+              </div>
+</div>
 
-        <!-- Riwayat Status -->
+            <!-- Riwayat Status -->
             <div class="agf-card">
-            <div class="agf-card__header">
-            <span class="agf-card__title">Riwayat Aktivitas</span>
-            </div>
-            <div class="agf-card__body">
-            <t t-if="kargo.log_ids">
-                <div class="agf-admin-timeline">
-                <t t-foreach="kargo.log_ids" t-as="log">
-                    <div class="agf-admin-timeline-item" style="padding-bottom:16px;">
-                    <div t-attf-class="agf-admin-timeline-dot #{'pending' if log.jenis == 'detail' else ''}"/>
-                    <div class="agf-admin-timeline-body">
-                        <div style="display:flex; align-items:center; gap:8px; margin-bottom:2px;">
-                        <t t-if="log.jenis == 'status'">
-                            <span style="font-size:11px; background:#E8F5EE; color:#2A7A45; padding:1px 8px; border-radius:20px; font-weight:500;">
-                            Status
-                            </span>
-                        </t>
-                        <t t-else="">
-                            <span style="font-size:11px; background:#E6EEF9; color:#1A4A8A; padding:1px 8px; border-radius:20px; font-weight:500;">
-                            Detail
-                            </span>
-                        </t>
-                        <span class="timeline-label"><t t-esc="log.deskripsi"/></span>
-                        </div>
-                        <div class="timeline-time">
-                        <t t-esc="log.timestamp and log.timestamp.strftime('%d %b %Y, %H:%M') or ''"/>
-                        <t t-if="log.user_id"> — <t t-esc="log.user_id.name"/></t>
-                        </div>
-                    </div>
-                    </div>
-                </t>
+                <div class="agf-card__header">
+                    <span class="agf-card__title">Riwayat Tahapan</span>
                 </div>
-            </t>
-            <t t-else="">
-                <p style="font-size:13px; color:#AAA;">Belum ada riwayat aktivitas.</p>
-            </t>
-            </div>
+                <div class="agf-card__body">
+                    <t t-if="kargo.tahapan_ids">
+                        <div class="agf-admin-timeline">
+                            <t t-foreach="kargo.tahapan_ids" t-as="log">
+                                <div class="agf-admin-timeline-item" style="padding-bottom:16px;">
+                                    <div t-attf-class="agf-admin-timeline-dot #{'pending' if log.is_internal else ''}"/>
+                                    <div class="agf-admin-timeline-body">
+
+                                        <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-bottom:2px;">
+                                            <span style="font-size:11px; background:#E6EEF9; color:#1A4A8A; padding:1px 8px; border-radius:20px; font-weight:500;">
+                                                <t t-esc="dict(kargo.tahapan_ids._fields['tahap'].selection).get(log.tahap, log.tahap)"/>
+                                            </span>
+                                            <t t-if="log.is_internal">
+                                                <span style="font-size:11px; background:#F5F3FF; color:#4B3FA0; padding:1px 8px; border-radius:20px;">
+                                                    Internal
+                                                </span>
+                                            </t>
+                                        </div>
+
+                                        <div class="timeline-time">
+                                            <t t-esc="log.timestamp and log.timestamp.strftime('%d %b %Y, %H:%M') or ''"/>
+                                            <t t-if="log.petugas_id"> — <t t-esc="log.petugas_id.name"/></t>
+                                            <t t-if="log.lokasi"> · <t t-esc="log.lokasi"/></t>
+                                        </div>
+
+                                        <t t-if="log.catatan">
+                                            <p style="font-size:12px; color:#555; margin-top:3px;">
+                                                <t t-esc="log.catatan"/>
+                                            </p>
+                                        </t>
+
+                                        <!-- Foto kondisi inline -->
+                                        <t t-if="log.foto_ids">
+                                            <div style="display:flex; gap:5px; flex-wrap:wrap; margin-top:6px;">
+                                                <t t-foreach="log.foto_ids" t-as="foto">
+                                                    <a t-attf-href="/web/image/ir.attachment/#{foto.id}/datas"
+                                                      target="_blank"
+                                                      style="width:56px;height:56px;display:block;border-radius:4px;overflow:hidden;border:1px solid #E5E7EB;">
+                                                        <img t-attf-src="/web/image/ir.attachment/#{foto.id}/datas"
+                                                            style="width:100%;height:100%;object-fit:cover;" alt="foto"/>
+                                                    </a>
+                                                </t>
+                                            </div>
+                                        </t>
+
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <p style="font-size:13px; color:#AAA;">Belum ada riwayat tahapan.</p>
+                    </t>
+                </div>
             </div>
 
         </div>
@@ -532,30 +561,6 @@
       <form t-attf-action="/agf/admin/pesanan/#{kargo.id}/edit/submit"
             method="POST" enctype="multipart/form-data">
         <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-
-        <!-- Status -->
-        <div class="agf-card" style="margin-bottom:16px;">
-            <div class="agf-card__header">
-            <span class="agf-card__title">Status Pesanan</span>
-            </div>
-            <div class="agf-card__body"> 
-          <div class="agf-admin-form-group" style="max-width:280px;">
-            <label>Status</label>
-            <select name="status">
-            <option value="hold"
-                    t-att-selected="'selected' if kargo.status == 'hold' else None">Hold</option>
-            <option value="arrival"
-                    t-att-selected="'selected' if kargo.status == 'arrival' else None">Arrival</option>
-            <option value="processing"
-                    t-att-selected="'selected' if kargo.status == 'processing' else None">Processing</option>
-            <option value="shipped"
-                    t-att-selected="'selected' if kargo.status == 'shipped' else None">Shipped</option>
-            <option value="done"
-                    t-att-selected="'selected' if kargo.status == 'done' else None">Done</option>
-            </select>
-          </div>
-          </div>
-        </div>
 
         <div class="agf-admin-form-grid">
 

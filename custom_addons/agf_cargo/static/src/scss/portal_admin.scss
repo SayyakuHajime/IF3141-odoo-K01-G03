@@ -1518,3 +1518,172 @@ body.website_page {
     padding-right: $spacing-md;
 }
 .agf-card > table { padding: 0 $spacing-md; }
+
+
+// ══════════════════════════════════════════
+// UPDATE TAHAPAN PAGE
+// ══════════════════════════════════════════
+
+// Progress stepper horizontal
+.agf-tahapan-progress {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+
+    @media (min-width: $bp-desktop) {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0;
+    }
+}
+
+.agf-tahapan-step {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    padding: $spacing-xs $spacing-sm;
+    flex: 1;
+    min-width: 0;
+
+    &__dot {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #E5E7EB;
+        border: 2px solid #D1D5DB;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #FFFFFF;
+        font-size: 10px;
+    }
+
+    &__label {
+        font-size: 11px;
+        color: #9CA3AF;
+        line-height: 1.3;
+    }
+
+    &--done {
+        .agf-tahapan-step__dot {
+            background: $color-success;
+            border-color: $color-success;
+        }
+        .agf-tahapan-step__label { color: $color-success; }
+    }
+
+    &--current {
+        .agf-tahapan-step__dot {
+            background: $admin-accent;
+            border-color: $admin-accent;
+            box-shadow: 0 0 0 3px rgba($admin-accent, 0.25);
+        }
+        .agf-tahapan-step__label {
+            color: $admin-accent-dark;
+            font-weight: $font-weight-medium;
+        }
+    }
+}
+
+// Foto upload grid (3 slot)
+.agf-foto-upload-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: $spacing-sm;
+    margin-top: $spacing-xs;
+}
+
+.agf-foto-upload-slot {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: $admin-radius;
+    overflow: hidden;
+}
+
+.agf-foto-upload-input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 2;
+    // Override agf-admin-form-group input[type=file] style
+    border: none !important;
+    padding: 0 !important;
+    background: transparent !important;
+}
+
+.agf-foto-upload-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: $spacing-xs;
+    height: 100%;
+    min-height: 80px;
+    background: #F9FAFB;
+    border: 2px dashed #D1D5DB;
+    border-radius: $admin-radius;
+    cursor: pointer;
+    font-size: 11px;
+    color: #9CA3AF;
+    transition: border-color 0.15s, background 0.15s;
+
+    &:hover {
+        border-color: $admin-accent;
+        background: rgba($admin-accent, 0.04);
+    }
+}
+
+.agf-foto-preview {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: $admin-radius;
+        border: 1px solid #E5E7EB;
+    }
+}
+
+.agf-foto-remove {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.55);
+    border: none;
+    color: #FFFFFF;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+    transition: background 0.15s;
+
+    &:hover { background: $color-danger; }
+}
+
+// Status pill — extended untuk 12 nilai tahapan
+// Dikelompokkan secara visual ke 6 bucket warna
+.agf-pill {
+    &.pill-registrasi   { background: $color-info-bg;     color: $color-info; }
+    &.pill-menunggu     { background: $pill-hold-bg;       color: $pill-hold-text; }
+    &.pill-verified     { background: $color-success-bg;   color: $color-success; }
+    &.pill-penjemputan  { background: $pill-hold-bg;       color: $pill-hold-text; }
+    &.pill-gudang       { background: $pill-arrival-bg;    color: $pill-arrival-text; }
+    &.pill-transit      { background: $pill-processing-bg; color: $pill-processing-text; }
+    &.pill-shipped      { background: $pill-shipped-bg;    color: $pill-shipped-text; }
+    &.pill-done         { background: $pill-done-bg;       color: $pill-done-text; }
+}

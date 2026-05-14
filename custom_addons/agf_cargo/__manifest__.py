@@ -29,7 +29,8 @@
         'views/admin/qr.xml',
         'views/admin/admin_riwayat_batch.xml',
         'views/admin/admin_detail_batch.xml',
-        'views/admin/admin_detail_pesanan_inactive.xml',
+        'views/admin/admin_detail_pesanan_inactive.xml', 
+        'views/admin/admin_update_tahapan.xml',           
         'views/admin/admin_pengguna.xml',
     ],
     'assets': {

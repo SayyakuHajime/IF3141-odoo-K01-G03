@@ -154,8 +154,8 @@
                         <div class="agf-info-row">
                             <span class="agf-info-row__label">Status</span>
                             <span class="agf-info-row__value">
-                                <span t-attf-class="agf-badge-status status-#{kargo.status}">
-                                    <t t-esc="kargo.status.capitalize()"/>
+                                <span t-attf-class="agf-badge-status #{kargo.status_pill_class}">
+                                    <t t-esc="kargo.status_label"/>
                                 </span>
                             </span>
                         </div>

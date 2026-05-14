@@ -257,9 +257,6 @@ class AdminPortal(http.Controller):
             return request.not_found()
 
         try:
-            # Simpan status lama sebelum write
-            status_lama = kargo.status
-            status_baru = post.get('status', kargo.status)
 
             kargo.write({
                 'nama_penitip': post.get('nama_penitip', kargo.nama_penitip),
@@ -275,7 +272,6 @@ class AdminPortal(http.Controller):
                 'additional_packaging': post.get('additional_packaging', kargo.additional_packaging),
                 'winter_packaging': post.get('winter_packaging', kargo.winter_packaging),
                 'catatan': post.get('catatan', ''),
-                'status': status_baru,
             })
 
             # Update tanaman
@@ -306,24 +302,6 @@ class AdminPortal(http.Controller):
                     'bukti_transaksi_nama': bukti.filename,
                 })
 
-            # Catat log
-            status_labels = {
-                'hold': 'Hold', 'arrival': 'Arrival', 'processing': 'Processing',
-                'shipped': 'Shipped', 'done': 'Done',
-            }
-            if status_baru != status_lama:
-                request.env['agf.kargo.log'].create({
-                    'kargo_id': kargo.id,
-                    'jenis': 'status',
-                    'deskripsi': f"Status diubah dari {status_labels.get(status_lama, status_lama)} menjadi {status_labels.get(status_baru, status_baru)}",
-                })
-            else:
-                request.env['agf.kargo.log'].create({
-                    'kargo_id': kargo.id,
-                    'jenis': 'detail',
-                    'deskripsi': 'Detail pesanan diperbarui',
-                })
-
             return request.redirect(f'/agf/admin/pesanan/{kargo_id}')
 
         except Exception as e:
@@ -342,20 +320,6 @@ class AdminPortal(http.Controller):
             return request.not_found()
         kargo.unlink()
         return request.redirect('/agf/admin/batch-aktif')
-
-    @http.route('/agf/admin/pesanan/<int:kargo_id>/bukti', type='http', auth='user', website=True)
-    def lihat_bukti(self, kargo_id, **kwargs):
-        kargo = request.env['agf.kargo'].browse(kargo_id)
-        if not kargo.exists() or not kargo.bukti_transaksi:
-            return request.not_found()
-        import base64
-        data = base64.b64decode(kargo.bukti_transaksi)
-        filename = kargo.bukti_transaksi_nama or 'bukti_transaksi'
-        mime = 'application/pdf' if filename.endswith('.pdf') else 'image/jpeg'
-        return request.make_response(data, headers=[
-            ('Content-Type', mime),
-            ('Content-Disposition', f'inline; filename="{filename}"'),
-        ])
 
     @http.route('/agf/admin/qr', type='http', auth='user', website=True)
     def qr_management(self, **kwargs):
@@ -741,4 +705,78 @@ class AdminPortal(http.Controller):
         if kargo.qr_tag_id:
             kargo.qr_tag_id.action_release()
             kargo.qr_tag_id = False
+        return request.redirect(f'/agf/admin/pesanan/{kargo_id}')
+    
+    # ─── TAMBAHAN: Update Tahapan / Status ────────────────────────────────────────
+
+    @http.route('/agf/admin/pesanan/<int:kargo_id>/update-tahapan', type='http', auth='user', website=True)
+    def form_update_tahapan(self, kargo_id, **kwargs):
+        """Halaman terpisah untuk membuat tahapan baru (update status + foto + catatan)."""
+        kargo = request.env['agf.kargo'].sudo().browse(kargo_id)
+        if not kargo.exists():
+            return request.not_found()
+
+        from odoo.addons.agf_cargo.models.agf_tahapan import TAHAPAN_STEPS
+
+        # Ambil tahapan yang sudah pernah dibuat untuk kargo ini (public saja)
+        existing_tahap_keys = set(
+            kargo.tahapan_ids.filtered(lambda t: not t.is_internal).mapped('tahap')
+        )
+
+        return request.render('agf_cargo.admin_update_tahapan', {
+            **self._base_ctx(),
+            'kargo': kargo,
+            'tahapan_steps': TAHAPAN_STEPS,
+            'existing_tahap_keys': existing_tahap_keys,
+            'user_initials': self._get_user_initials(),
+        })
+
+
+    @http.route('/agf/admin/pesanan/<int:kargo_id>/update-tahapan/submit',
+                type='http', auth='user', methods=['POST'], website=True, csrf=True)
+    def form_update_tahapan_submit(self, kargo_id, **post):
+        import base64, logging
+        _logger = logging.getLogger(__name__)
+
+        kargo = request.env['agf.kargo'].sudo().browse(kargo_id)
+        if not kargo.exists():
+            return request.not_found()
+
+        tahap = post.get('tahap', '').strip()
+        if not tahap:
+            return request.redirect(f'/agf/admin/pesanan/{kargo_id}/update-tahapan')
+
+        is_internal = bool(post.get('is_internal'))
+
+        tahapan = request.env['agf.tahapan'].sudo().create({
+            'kargo_id':    kargo_id,
+            'tahap':       tahap,
+            'lokasi':      post.get('lokasi', '').strip() or False,
+            'catatan':     post.get('catatan', '').strip() or False,
+            'is_internal': is_internal,
+            'cek_daun':    bool(post.get('cek_daun')),
+            'cek_akar':    bool(post.get('cek_akar')),
+            'cek_hama':    bool(post.get('cek_hama')),
+        })
+
+        # Proses upload foto (maks 3)
+        foto_ids = []
+        for i in range(1, 4):
+            f = request.httprequest.files.get(f'foto_{i}')
+            if f and f.filename:
+                try:
+                    att = request.env['ir.attachment'].sudo().create({
+                        'name':      f.filename,
+                        'datas':     base64.b64encode(f.read()).decode(),
+                        'res_model': 'agf.tahapan',
+                        'res_id':    tahapan.id,
+                        'mimetype':  f.content_type or 'image/jpeg',
+                    })
+                    foto_ids.append(att.id)
+                except Exception as e:
+                    _logger.warning(f'Upload foto gagal: {e}')
+
+        if foto_ids:
+            tahapan.write({'foto_ids': [(4, fid) for fid in foto_ids]})
+
         return request.redirect(f'/agf/admin/pesanan/{kargo_id}')

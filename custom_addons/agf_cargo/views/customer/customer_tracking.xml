@@ -58,9 +58,9 @@
                t-value="nomor and nomor.upper().startswith('AGF-')"/>
 
             <t t-set="verifikasi_bayar_done"
-               t-value="bool(kargo.tahapan_ids.filtered(
-                   lambda t: t.tahap == '04_cek_dokumen'
-               ))"/>
+                t-value="bool(kargo.tahapan_ids.filtered(
+                    lambda t: t.tahap == '03_bayar_verified'
+                ))"/>
 
             <div class="agf-tracking__result">
 
@@ -87,27 +87,30 @@
                 <div class="agf-tracking__timeline">
 
                     <t t-set="all_steps" t-value="[
-                        ('01_registrasi',     'Pendaftaran kargo berhasil masuk ke sistem'),
-                        ('02_penjemputan',    'Tanaman diambil dari anda oleh pihak AGF Cargo'),
-                        ('03_gudang_asal',    'Tanaman telah tiba di gudang AGF Cargo'),
-                        ('04_cek_dokumen',    'Bukti pembayaran telah diverifikasi oleh admin'),
-                        ('05_terminal_asal',  'Tanaman sedang dalam proses persiapan'),
-                        ('06_transit',        'Tanaman telah diserahkan ke pihak imigrasi untuk proses pengiriman'),
-                        ('07_terminal_tujuan','Tanaman telah tiba di negara tujuan'),
-                        ('08_bea_cukai',      'Tanaman telah diserahkan ke pihak UPS lokal'),
-                        ('09_gudang_tujuan',  'Tanaman telah tiba di alamat penerima'),
-                        ('10_pengiriman',     'Penerima telah mengonfirmasi penerimaan tanaman'),
+                        ('01_registrasi',       'Pendaftaran kargo berhasil masuk ke sistem'),
+                        ('02_menunggu_bayar',   'Menunggu verifikasi pembayaran oleh admin'),
+                        ('03_bayar_verified',   'Bukti pembayaran telah diverifikasi oleh admin'),
+                        ('04_penjemputan',      'Tanaman diambil dari anda oleh pihak AGF Cargo'),
+                        ('05_gudang_asal',      'Tanaman telah tiba di gudang AGF Cargo'),
+                        ('06_terminal_asal',    'Tanaman sedang dalam proses persiapan'),
+                        ('07_transit',          'Tanaman telah diserahkan ke pihak pengiriman internasional'),
+                        ('08_terminal_tujuan',  'Tanaman telah tiba di negara tujuan'),
+                        ('09_bea_cukai',        'Proses bea cukai'),
+                        ('10_pengiriman_lokal', 'Diserahkan ke kurir lokal'),
+                        ('11_tiba',             'Tiba di alamat penerima'),
+                        ('12_selesai',          'Penerima telah mengonfirmasi penerimaan tanaman'),
                     ]"/>
 
+
                     <t t-set="steps_with_kondisi" t-value="[
-                        '03_gudang_asal',
-                        '04_cek_dokumen',
-                        '05_terminal_asal',
-                        '06_transit',
-                        '07_terminal_tujuan',
-                        '08_bea_cukai',
-                        '09_gudang_tujuan',
-                        '10_pengiriman',
+                        '05_gudang_asal',
+                        '06_terminal_asal',
+                        '07_transit',
+                        '08_terminal_tujuan',
+                        '09_bea_cukai',
+                        '10_pengiriman_lokal',
+                        '11_tiba',
+                        '12_selesai',
                     ]"/>
 
                     <t t-foreach="all_steps" t-as="step">
@@ -334,34 +337,34 @@
                                     </t>
                                     <!-- END tahap 01 -->
 
-                                    <!-- Tahap 02 — konfirmasi penjemputan -->
-                                    <t t-if="step_key == '02_penjemputan'
-                                             and is_active
-                                             and not kargo.konfirmasi_penjemputan">
-                                        <form
-                                            t-attf-action="/agf/customer/konfirmasi_jemput/#{kargo.id}"
+                                    <!-- Step 02: info menunggu verifikasi admin (tidak ada aksi customer) -->
+                                    <t t-if="step_key == '02_menunggu_bayar' and is_done">
+                                        <div class="agf-timeline__action">
+                                            <i data-lucide="clock" style="width:13px;height:13px"/>
+                                            Bukti pembayaran sedang diverifikasi oleh admin.
+                                        </div>
+                                    </t>
+
+                                    <!-- Tahap 04 — konfirmasi penjemputan -->
+                                    <t t-if="step_key == '04_penjemputan'
+                                            and is_active
+                                            and not kargo.konfirmasi_penjemputan">
+                                        <form t-attf-action="/agf/customer/konfirmasi_jemput/#{kargo.id}"
                                             method="POST">
-                                            <input type="hidden"
-                                                   name="csrf_token"
-                                                   t-att-value="request.csrf_token()"/>
-                                            <input type="hidden"
-                                                   name="nomor"
-                                                   t-att-value="nomor"/>
-                                            <button type="submit"
-                                                    class="agf-timeline__confirm-btn">
-                                                <i data-lucide="check"
-                                                   style="width:14px;height:14px"/>
+                                            <input type="hidden" name="csrf_token"
+                                                t-att-value="request.csrf_token()"/>
+                                            <input type="hidden" name="nomor" t-att-value="nomor"/>
+                                            <button type="submit" class="agf-timeline__confirm-btn">
+                                                <i data-lucide="check" style="width:14px;height:14px"/>
                                                 Konfirmasi Tanaman Telah Diambil
                                             </button>
                                         </form>
                                     </t>
 
-                                    <t t-if="step_key == '02_penjemputan'
-                                             and kargo.konfirmasi_penjemputan">
-                                        <div class="agf-timeline__action
-                                                    agf-timeline__action--done">
-                                            <i data-lucide="check-circle"
-                                               style="width:14px;height:14px"/>
+                                    <t t-if="step_key == '04_penjemputan'
+                                            and kargo.konfirmasi_penjemputan">
+                                        <div class="agf-timeline__action agf-timeline__action--done">
+                                            <i data-lucide="check-circle" style="width:14px;height:14px"/>
                                             Tanaman telah dikonfirmasi diambil
                                         </div>
                                     </t>

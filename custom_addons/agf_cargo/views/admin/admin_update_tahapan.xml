@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="admin_update_tahapan" name="Admin — Update Tahapan Pesanan">
+<t t-call="agf_cargo.admin_layout">
+    <t t-set="page_title">Update Status Pengiriman</t>
+    <t t-set="current_page" t-value="'pesanan'"/>
+
+    <div class="agf-breadcrumb">
+        <a href="/agf/admin/dashboard">Home</a>
+        <span>›</span>
+        <a href="/agf/admin/batch-aktif">Pesanan</a>
+        <span>›</span>
+        <a t-attf-href="/agf/admin/pesanan/#{kargo.id}">
+            <t t-esc="kargo.nomor_penitip"/>
+        </a>
+        <span>›</span>
+        <span>Update Status</span>
+    </div>
+
+    <div class="agf-page-header">
+        <div>
+            <h1>Update Status Pengiriman</h1>
+            <p style="font-size:13px; color:#888; margin-top:4px;">
+                <t t-esc="kargo.nama_penitip"/> —
+                <t t-esc="kargo.nomor_penitip"/>
+            </p>
+        </div>
+        <a t-attf-href="/agf/admin/pesanan/#{kargo.id}" class="agf-btn agf-btn-outline">
+            <i data-lucide="arrow-left" style="width:14px;height:14px"/> Kembali
+        </a>
+    </div>
+
+    <!-- Progress Bar Status Saat Ini -->
+    <div class="agf-card" style="margin-bottom:16px;">
+        <div class="agf-card__header">
+            <span class="agf-card__title">Progress Pengiriman</span>
+        </div>
+        <div class="agf-card__body" style="padding:16px;">
+            <div class="agf-tahapan-progress">
+                <t t-foreach="tahapan_steps" t-as="step">
+                    <t t-set="step_key"   t-value="step[0]"/>
+                    <t t-set="step_label" t-value="step[1]"/>
+                    <t t-set="is_done"    t-value="step_key in existing_tahap_keys"/>
+                    <t t-set="is_current" t-value="step_key == kargo.status"/>
+                    <div t-attf-class="agf-tahapan-step
+                        #{'agf-tahapan-step--done' if is_done else ''}
+                        #{'agf-tahapan-step--current' if is_current else ''}">
+                        <div class="agf-tahapan-step__dot">
+                            <t t-if="is_done">
+                                <i data-lucide="check" style="width:10px;height:10px;"/>
+                            </t>
+                        </div>
+                        <span class="agf-tahapan-step__label">
+                            <t t-esc="step_label"/>
+                        </span>
+                    </div>
+                </t>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form Update Tahapan -->
+    <div class="agf-admin-detail-grid">
+
+        <!-- Kolom kiri: form input -->
+        <div>
+            <div class="agf-card">
+                <div class="agf-card__header">
+                    <span class="agf-card__title">Tambah Tahapan Baru</span>
+                </div>
+                <div class="agf-card__body" style="padding:16px;">
+
+                    <form t-attf-action="/agf/admin/pesanan/#{kargo.id}/update-tahapan/submit"
+                          method="POST" enctype="multipart/form-data">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                        <!-- Pilih Tahapan -->
+                        <div class="agf-admin-form-group">
+                            <label>Tahapan <span style="color:#A83030">*</span></label>
+                            <select name="tahap" id="tahap-select" required="1">
+                                <option value="">— Pilih tahapan —</option>
+                                <t t-foreach="tahapan_steps" t-as="step">
+                                    <t t-set="step_key"   t-value="step[0]"/>
+                                    <t t-set="step_label" t-value="step[1]"/>
+                                    <t t-set="is_done"    t-value="step_key in existing_tahap_keys"/>
+                                    <option t-att-value="step_key"
+                                            t-att-disabled="'disabled' if is_done else None"
+                                            t-attf-style="#{' color:#AAA;' if is_done else ''}">
+                                        <t t-esc="step_label"/>
+                                        <t t-if="is_done"> ✓ (sudah dibuat)</t>
+                                    </option>
+                                </t>
+                            </select>
+                            <span class="field-hint">
+                                Tahap yang sudah pernah dibuat tidak dapat dibuat ulang.
+                            </span>
+                        </div>
+
+                        <!-- Lokasi -->
+                        <div class="agf-admin-form-group">
+                            <label>Lokasi</label>
+                            <input type="text" name="lokasi"
+                                   placeholder="Contoh: Gudang Bandung, Bandara Soekarno-Hatta"/>
+                        </div>
+
+                        <!-- Catatan -->
+                        <div class="agf-admin-form-group">
+                            <label>Catatan</label>
+                            <textarea name="catatan" rows="3"
+                                      placeholder="Keterangan kondisi atau informasi tambahan..."/>
+                        </div>
+
+                        <!-- Checklist Kondisi Tanaman -->
+                        <div class="agf-admin-form-group" id="checklist-section" style="display:none;">
+                            <label>Checklist Kondisi Tanaman</label>
+                            <div style="display:flex; flex-direction:column; gap:8px; padding:12px; background:#FAFAFA; border:1px solid #E5E7EB; border-radius:4px;">
+                                <label style="display:flex; align-items:center; gap:8px; font-weight:400; cursor:pointer;">
+                                    <input type="checkbox" name="cek_daun" value="1"/>
+                                    <span style="font-size:13px;">Daun dalam kondisi baik</span>
+                                </label>
+                                <label style="display:flex; align-items:center; gap:8px; font-weight:400; cursor:pointer;">
+                                    <input type="checkbox" name="cek_akar" value="1"/>
+                                    <span style="font-size:13px;">Akar dalam kondisi baik</span>
+                                </label>
+                                <label style="display:flex; align-items:center; gap:8px; font-weight:400; cursor:pointer;">
+                                    <input type="checkbox" name="cek_hama" value="1"/>
+                                    <span style="font-size:13px;">Bebas hama / penyakit</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Upload Foto (maks 3) -->
+                        <div class="agf-admin-form-group">
+                            <label>Foto Kondisi</label>
+                            <div class="agf-foto-upload-grid">
+                                <t t-foreach="[1,2,3]" t-as="n">
+                                    <div class="agf-foto-upload-slot" t-attf-id="slot-#{n}">
+                                        <input type="file"
+                                               t-attf-name="foto_#{n}"
+                                               t-attf-id="foto-input-#{n}"
+                                               accept="image/*"
+                                               class="agf-foto-upload-input"/>
+                                        <label t-attf-for="foto-input-#{n}"
+                                               class="agf-foto-upload-label">
+                                            <i data-lucide="camera" style="width:20px;height:20px;color:#9CA3AF;"/>
+                                            <span>Foto <t t-esc="n"/></span>
+                                        </label>
+                                        <div t-attf-id="foto-preview-#{n}"
+                                             class="agf-foto-preview" style="display:none;">
+                                            <img t-attf-id="foto-img-#{n}" src="" alt="preview"/>
+                                            <button type="button"
+                                                    t-attf-onclick="clearFoto(#{n})"
+                                                    class="agf-foto-remove">
+                                                <i data-lucide="x" style="width:12px;height:12px;"/>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                            <span class="field-hint">Maksimal 3 foto, format JPG/PNG</span>
+                        </div>
+
+                        <!-- Internal flag -->
+                        <div class="agf-admin-form-group" style="margin-bottom:20px;">
+                            <label style="display:flex; align-items:center; gap:8px; font-weight:400; cursor:pointer;">
+                                <input type="checkbox" name="is_internal" value="1"/>
+                                <span style="font-size:13px;">Log internal (tidak terlihat oleh customer)</span>
+                            </label>
+                        </div>
+
+                        <div style="display:flex; justify-content:flex-end; gap:8px; padding-top:8px; border-top:1px solid #F0F0F0;">
+                            <a t-attf-href="/agf/admin/pesanan/#{kargo.id}"
+                               class="agf-btn agf-btn-outline">Batal</a>
+                            <button type="submit" class="agf-btn agf-btn-primary">
+                                <i data-lucide="check-circle" style="width:14px;height:14px;"/>
+                                Simpan Tahapan
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kolom kanan: riwayat semua tahapan (termasuk internal) -->
+        <div>
+            <div class="agf-card">
+                <div class="agf-card__header">
+                    <span class="agf-card__title">Riwayat Tahapan</span>
+                </div>
+                <div class="agf-card__body" style="padding:16px;">
+                    <t t-if="kargo.tahapan_ids">
+                        <div class="agf-admin-timeline">
+                            <t t-foreach="kargo.tahapan_ids" t-as="log">
+                                <div class="agf-admin-timeline-item" style="padding-bottom:16px;">
+                                    <div t-attf-class="agf-admin-timeline-dot #{'pending' if log.is_internal else ''}"/>
+                                    <div class="agf-admin-timeline-body">
+
+                                        <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-bottom:3px;">
+                                            <!-- Badge tahap -->
+                                            <span style="font-size:11px; background:#E6EEF9; color:#1A4A8A; padding:1px 8px; border-radius:20px; font-weight:500;">
+                                                <t t-esc="dict(kargo.tahapan_ids._fields['tahap'].selection).get(log.tahap, log.tahap)"/>
+                                            </span>
+                                            <!-- Badge internal -->
+                                            <t t-if="log.is_internal">
+                                                <span style="font-size:11px; background:#F5F3FF; color:#4B3FA0; padding:1px 8px; border-radius:20px;">
+                                                    Internal
+                                                </span>
+                                            </t>
+                                        </div>
+
+                                        <div style="font-size:11px; color:#AAA; margin-bottom:4px;">
+                                            <t t-esc="log.timestamp and log.timestamp.strftime('%d %b %Y, %H:%M') or ''"/>
+                                            <t t-if="log.petugas_id"> — <t t-esc="log.petugas_id.name"/></t>
+                                            <t t-if="log.lokasi"> · <t t-esc="log.lokasi"/></t>
+                                        </div>
+
+                                        <t t-if="log.catatan">
+                                            <p style="font-size:12px; color:#555; margin-bottom:6px;">
+                                                <t t-esc="log.catatan"/>
+                                            </p>
+                                        </t>
+
+                                        <!-- Checklist kondisi -->
+                                        <t t-if="log.cek_daun or log.cek_akar or log.cek_hama">
+                                            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:6px;">
+                                                <t t-if="log.cek_daun">
+                                                    <span style="font-size:11px; background:#E8F5EE; color:#2A7A45; padding:1px 7px; border-radius:20px;">✓ Daun OK</span>
+                                                </t>
+                                                <t t-if="log.cek_akar">
+                                                    <span style="font-size:11px; background:#E8F5EE; color:#2A7A45; padding:1px 7px; border-radius:20px;">✓ Akar OK</span>
+                                                </t>
+                                                <t t-if="log.cek_hama">
+                                                    <span style="font-size:11px; background:#E8F5EE; color:#2A7A45; padding:1px 7px; border-radius:20px;">✓ Bebas Hama</span>
+                                                </t>
+                                            </div>
+                                        </t>
+
+                                        <!-- Foto-foto -->
+                                        <t t-if="log.foto_ids">
+                                            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:6px;">
+                                                <t t-foreach="log.foto_ids" t-as="foto">
+                                                    <a t-attf-href="/web/image/ir.attachment/#{foto.id}/datas"
+                                                       target="_blank"
+                                                       style="display:block; width:64px; height:64px; border-radius:4px; overflow:hidden; border:1px solid #E5E7EB;">
+                                                        <img t-attf-src="/web/image/ir.attachment/#{foto.id}/datas"
+                                                             style="width:100%; height:100%; object-fit:cover;"
+                                                             alt="foto kondisi"/>
+                                                    </a>
+                                                </t>
+                                            </div>
+                                        </t>
+
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <div class="agf-empty-state">
+                            <i data-lucide="inbox" style="width:28px;height:28px;color:#D1D5DB"/>
+                            <p>Belum ada riwayat tahapan.</p>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.462.0/dist/umd/lucide.min.js"/>
+    <script>
+    //<![CDATA[
+    lucide.createIcons();
+
+    // Tampilkan/sembunyikan checklist kondisi berdasarkan tahap yang dipilih
+    var tahapDenganChecklist = [
+        '04_penjemputan', '05_gudang_asal', '06_terminal_asal',
+        '07_transit', '08_terminal_tujuan', '09_bea_cukai',
+        '10_pengiriman_lokal', '11_tiba', '12_selesai'
+    ];
+    document.getElementById('tahap-select').addEventListener('change', function() {
+        var section = document.getElementById('checklist-section');
+        section.style.display = tahapDenganChecklist.indexOf(this.value) !== -1 ? 'block' : 'none';
+    });
+
+    // Preview foto sebelum upload
+    function setupFotoPreview(n) {
+        var input = document.getElementById('foto-input-' + n);
+        var preview = document.getElementById('foto-preview-' + n);
+        var img = document.getElementById('foto-img-' + n);
+        var label = document.querySelector('[for="foto-input-' + n + '"]');
+
+        input.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    img.src = e.target.result;
+                    preview.style.display = 'flex';
+                    label.style.display = 'none';
+                };
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+    }
+
+    function clearFoto(n) {
+        document.getElementById('foto-input-' + n).value = '';
+        document.getElementById('foto-preview-' + n).style.display = 'none';
+        document.querySelector('[for="foto-input-' + n + '"]').style.display = 'flex';
+        lucide.createIcons();
+    }
+
+    setupFotoPreview(1);
+    setupFotoPreview(2);
+    setupFotoPreview(3);
+    //]]>
+    </script>
+
+</t>
+</template>
+</odoo>

@@ -36,16 +36,25 @@ class AgfKargo(models.Model):
         index=True,
     )
 
+    # Status sekarang identik dengan key tahapan — single source of truth.
+    # Nilai diupdate otomatis oleh agf.tahapan.create(), bukan diisi manual.
     status = fields.Selection(
         selection=[
-            ('hold', 'Hold'),
-            ('arrival', 'Arrival'),
-            ('processing', 'Processing'),
-            ('shipped', 'Shipped'),
-            ('done', 'Done'),
+            ('01_registrasi',       'Pendaftaran Kargo'),
+            ('02_menunggu_bayar',   'Menunggu Pembayaran'),
+            ('03_bayar_verified',   'Pembayaran Terverifikasi'),
+            ('04_penjemputan',      'Penjemputan Tanaman'),
+            ('05_gudang_asal',      'Di Gudang Asal'),
+            ('06_terminal_asal',    'Terminal Asal'),
+            ('07_transit',          'Dalam Perjalanan'),
+            ('08_terminal_tujuan',  'Terminal Tujuan'),
+            ('09_bea_cukai',        'Bea Cukai'),
+            ('10_pengiriman_lokal', 'Pengiriman Lokal'),
+            ('11_tiba',             'Tiba di Tujuan'),
+            ('12_selesai',          'Selesai'),
         ],
         string='Status',
-        default='hold',
+        default='01_registrasi',
         required=True,
         index=True,
     )
@@ -69,7 +78,6 @@ class AgfKargo(models.Model):
     negara_tujuan = fields.Char(string='Negara Tujuan')
 
     # --- Pengiriman ---
-    # Computed dari batch — tidak perlu diisi customer, otomatis ikut batch aktif saat pendaftaran
     tanggal_keberangkatan = fields.Date(
         string='Tanggal Keberangkatan',
         compute='_compute_tanggal_keberangkatan',
@@ -112,20 +120,23 @@ class AgfKargo(models.Model):
     )
 
     catatan = fields.Text(string='Catatan')
+
+    # Bukti pembayaran — satu field, diupload customer lewat tracking page
     bukti_pembayaran = fields.Many2one(
         'ir.attachment',
         string='Bukti Pembayaran',
         ondelete='set null',
+        help='Diupload oleh customer. Admin verifikasi dengan membuat tahapan 03_bayar_verified.',
     )
+
     konfirmasi_penjemputan = fields.Boolean(
-        string='Tanaman Sudah Diambil',
+        string='Tanaman Sudah Diambil (Konfirmasi Customer)',
         default=False,
     )
-    bukti_transaksi = fields.Binary(
-        string='Bukti Transaksi',
-        attachment=True,
-    )
-    bukti_transaksi_nama = fields.Char(string='Nama File Bukti Transaksi')
+
+    # bukti_transaksi dihapus — digabung ke bukti_pembayaran.
+    # Kalau admin perlu attach file, gunakan foto_ids di tahapan 03_bayar_verified.
+
     tanggal_daftar = fields.Datetime(
         string='Tanggal Pendaftaran',
         default=fields.Datetime.now,
@@ -153,11 +164,15 @@ class AgfKargo(models.Model):
         string='Tahapan Terakhir',
         compute='_compute_tahapan_terakhir',
     )
-    
-    log_ids = fields.One2many(
-        'agf.kargo.log',
-        'kargo_id',
-        string='Log Aktivitas',
+
+    # Helper computed untuk template — CSS class pill sesuai status
+    status_pill_class = fields.Char(
+        string='CSS Pill Class',
+        compute='_compute_status_pill',
+    )
+    status_label = fields.Char(
+        string='Label Status',
+        compute='_compute_status_pill',
     )
 
     @api.depends('batch_id', 'batch_id.tanggal_keberangkatan')
@@ -173,7 +188,31 @@ class AgfKargo(models.Model):
     @api.depends('tahapan_ids')
     def _compute_tahapan_terakhir(self):
         for kargo in self:
-            kargo.tahapan_terakhir = kargo.tahapan_ids[:1]
+            # Hanya tahapan publik yang dihitung sebagai "terakhir" untuk customer
+            publik = kargo.tahapan_ids.filtered(lambda t: not t.is_internal)
+            kargo.tahapan_terakhir = publik[:1] if publik else kargo.tahapan_ids[:1]
+
+    @api.depends('status')
+    def _compute_status_pill(self):
+        # Grouping status ke dalam 5 visual bucket untuk pill color
+        bucket_map = {
+            '01_registrasi':       ('pill-registrasi', 'Pendaftaran'),
+            '02_menunggu_bayar':   ('pill-menunggu',   'Menunggu Bayar'),
+            '03_bayar_verified':   ('pill-verified',   'Bayar Verified'),
+            '04_penjemputan':      ('pill-penjemputan','Penjemputan'),
+            '05_gudang_asal':      ('pill-gudang',     'Di Gudang'),
+            '06_terminal_asal':    ('pill-transit',    'Terminal Asal'),
+            '07_transit':          ('pill-transit',    'Dalam Perjalanan'),
+            '08_terminal_tujuan':  ('pill-transit',    'Terminal Tujuan'),
+            '09_bea_cukai':        ('pill-transit',    'Bea Cukai'),
+            '10_pengiriman_lokal': ('pill-shipped',    'Pengiriman Lokal'),
+            '11_tiba':             ('pill-shipped',    'Tiba di Tujuan'),
+            '12_selesai':          ('pill-done',       'Selesai'),
+        }
+        for kargo in self:
+            cls, label = bucket_map.get(kargo.status, ('pill-registrasi', kargo.status))
+            kargo.status_pill_class = cls
+            kargo.status_label = label
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -188,9 +227,12 @@ class AgfKargo(models.Model):
                 )
             if vals.get('name', 'New') == 'New':
                 vals['name'] = vals.get('nomor_penitip', 'New')
-        
+            # Status awal selalu registrasi
+            if not vals.get('status'):
+                vals['status'] = '01_registrasi'
+
         records = super().create(vals_list)
-        
+
         # Auto-assign QR tag idle ke setiap kargo baru
         for kargo in records:
             qr_idle = self.env['agf.qr.tag'].search(
@@ -199,12 +241,13 @@ class AgfKargo(models.Model):
             if qr_idle:
                 qr_idle.action_assign(kargo.id)
                 kargo.qr_tag_id = qr_idle.id
-        
+
         return records
-    
+
     def write(self, vals):
         result = super().write(vals)
-        if vals.get('status') == 'done':
+        # Saat status mencapai selesai, lepas QR tag
+        if vals.get('status') == '12_selesai':
             for kargo in self:
                 if kargo.qr_tag_id:
                     kargo.qr_tag_id.action_release()
