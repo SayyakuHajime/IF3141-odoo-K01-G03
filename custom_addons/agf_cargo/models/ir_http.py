@@ -40,4 +40,4 @@ class IrHttp(models.AbstractModel):
                 return
             if not (user.has_group('agf_cargo.group_agf_gudang') or
                     user.has_group('agf_cargo.group_agf_admin')):
-                _raise_redirect('/agf/warehouse')
+                _raise_redirect('/web/login')

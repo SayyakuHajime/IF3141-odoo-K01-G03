@@ -31,10 +31,13 @@ class WarehousePortal(http.Controller):
 
     @http.route('/agf/warehouse', type='http', auth='public', website=True)
     def landing(self, **kwargs):
-        # Public landing — login button points to Odoo auth with redirect back here
-        if request.env.user and request.env.user._is_public():
-            return request.render('agf_cargo.warehouse_landing', {})
-        return request.redirect('/agf/warehouse/pesanan')
+        user = request.env.user
+        if user and not user._is_public():
+            if (user._is_superuser() or
+                    user.has_group('agf_cargo.group_agf_gudang') or
+                    user.has_group('agf_cargo.group_agf_admin')):
+                return request.redirect('/agf/warehouse/pesanan')
+        return request.render('agf_cargo.warehouse_landing', {})
 
     @http.route('/agf/warehouse/pesanan', type='http', auth='user', website=True)
     def daftar_pesanan(self, tab='pesanan', status=None, search=None, **kwargs):
