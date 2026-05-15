@@ -7,25 +7,25 @@
 
             <!-- Tahapan labels dict -->
             <t t-set="tahapan_labels" t-value="{
-                '01_registrasi':     'Pendaftaran Kargo',
-                '02_penjemputan':    'Penjemputan',
-                '03_gudang_asal':    'Penerimaan di Gudang Asal',
-                '04_cek_dokumen':    'Pemeriksaan Dokumen',
-                '05_terminal_asal':  'Terminal Kargo Asal',
-                '06_transit':        'Dalam Perjalanan',
-                '07_terminal_tujuan':'Terminal Kargo Tujuan',
-                '08_bea_cukai':      'Pemeriksaan Bea Cukai',
-                '09_gudang_tujuan':  'Gudang Tujuan',
-                '10_pengiriman':     'Dalam Pengiriman',
-                '11_tiba':           'Tiba di Alamat',
-                '12_selesai':        'Selesai',
+                '01_registrasi':       'Pendaftaran Kargo',
+                '02_menunggu_bayar':   'Menunggu Pembayaran',
+                '03_bayar_verified':   'Pembayaran Terverifikasi',
+                '04_penjemputan':      'Penjemputan Tanaman',
+                '05_gudang_asal':      'Penerimaan di Gudang Asal',
+                '06_terminal_asal':    'Persiapan Pengiriman Internasional',
+                '07_transit':          'Dalam Perjalanan ke Negara Tujuan',
+                '08_terminal_tujuan':  'Tiba di Negara Tujuan',
+                '09_bea_cukai':        'Proses Bea Cukai',
+                '10_pengiriman_lokal': 'Diserahkan ke Kurir Lokal',
+                '11_tiba':             'Tiba di Alamat Penerima',
+                '12_selesai':          'Selesai',
             }"/>
 
             <!-- Breadcrumb -->
             <nav class="agf-breadcrumb">
                 <a href="/agf/admin/dashboard">Home</a>
                 <span class="agf-breadcrumb__sep">/</span>
-                <a href="/agf/admin/batch">Riwayat Batch</a>
+                <a href="/agf/admin/riwayat-batch">Riwayat Batch</a>
                 <span class="agf-breadcrumb__sep">/</span>
                 <t t-if="kargo.batch_id">
                     <a t-attf-href="/agf/admin/batch/#{kargo.batch_id.id}">
@@ -53,7 +53,7 @@
                     </a>
                 </t>
                 <t t-else="">
-                    <a href="/agf/admin/batch" class="agf-btn-secondary">
+                    <a href="/agf/admin/riwayat-batch" class="agf-btn-secondary">
                         <i data-lucide="arrow-left" style="width:15px;height:15px"/>
                         Kembali
                     </a>
@@ -275,11 +275,6 @@
                                         <span class="agf-timeline__tahap">
                                             <t t-esc="tahapan_labels.get(tahapan.tahap, tahapan.tahap)"/>
                                         </span>
-                                        <t t-if="tahapan.status_baru">
-                                            <span t-attf-class="agf-badge-status status-#{tahapan.status_baru}">
-                                                <t t-esc="tahapan.status_baru.capitalize()"/>
-                                            </span>
-                                        </t>
                                     </div>
                                     <div class="agf-timeline__meta">
                                         <span>

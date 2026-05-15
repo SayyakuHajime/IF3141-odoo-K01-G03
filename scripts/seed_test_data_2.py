@@ -85,9 +85,10 @@ def get_agf_group_ids(models, uid):
     return result
 
 
-def tambah_tahapan(models, uid, kargo_id, tahapan_list):
+def tambah_tahapan(models, uid, kargo_id, tahapan_list, final_status=None):
     """
     tahapan_list: list of (tahap_code, catatan, lokasi)
+    final_status: jika diset, paksa status kargo ke nilai ini setelah semua tahapan dibuat
     """
     for tahap_code, catatan, lokasi in tahapan_list:
         create(models, uid, 'agf.tahapan', {
@@ -96,6 +97,8 @@ def tambah_tahapan(models, uid, kargo_id, tahapan_list):
             'catatan':  catatan,
             'lokasi':   lokasi,
         })
+    if final_status:
+        call(models, uid, 'agf.kargo', 'write', [[kargo_id], {'status': final_status}])
 
 
 def tambah_tanaman(models, uid, kargo_id, tanaman_list):
@@ -112,8 +115,12 @@ def tambah_tanaman(models, uid, kargo_id, tanaman_list):
         })
 
 
-def buat_kargo(models, uid, batch_id, data):
-    """Buat kargo + tanaman + tahapan sekaligus."""
+def buat_kargo(models, uid, batch_id, data, final_status=None):
+    """Buat kargo + tanaman + tahapan sekaligus.
+
+    final_status: jika diset, paksa status akhir kargo (berguna untuk kargo historis
+                  agar tidak bergantung urutan tahapan).
+    """
     tanaman_list = data.pop('_tanaman', [])
     tahapan_list = data.pop('_tahapan', [])
     data['batch_id'] = batch_id
@@ -126,7 +133,7 @@ def buat_kargo(models, uid, batch_id, data):
     nomor_r  = kinfo[0]['nomor_penerima']
 
     tambah_tanaman(models, uid, kargo_id, tanaman_list)
-    tambah_tahapan(models, uid, kargo_id, tahapan_list)
+    tambah_tahapan(models, uid, kargo_id, tahapan_list, final_status=final_status)
 
     # Kembalikan data supaya fixture bisa dipakai ulang
     data['_tanaman'] = tanaman_list
@@ -518,8 +525,18 @@ def seed_historical_batches(models, uid):
         print(f'   {spec["name"]}  (status={spec["status"]}, berangkat={departure})')
 
         for fixture in get_hist_kargo(spec['offset_days']):
-            kargo_id, nomor_p, nomor_r = buat_kargo(models, uid, batch_id, fixture)
+            kargo_id, nomor_p, nomor_r = buat_kargo(
+                models, uid, batch_id, fixture, final_status='12_selesai'
+            )
             print(f'      {nomor_p} / {nomor_r}  (selesai)')
+
+        # Trigger recompute pesanan_selesai dengan write kosong pada batch
+        call(models, uid, 'agf.batch', 'write', [[batch_id], {'catatan': spec['catatan']}])
+        binfo = search_read(models, uid, 'agf.batch',
+                            [('id', '=', batch_id)],
+                            ['pesanan_selesai', 'total_pesanan'])
+        b = binfo[0]
+        print(f'   Progress: {b["pesanan_selesai"]}/{b["total_pesanan"]} pesanan selesai')
 
         hist_batch_ids.append(batch_id)
 

@@ -35,7 +35,7 @@ class AdminPortal(http.Controller):
         qr_aktif = env['agf.qr.tag'].sudo().search_count([('status', '=', 'aktif')])
         pesanan_selesai = (
             env['agf.kargo'].sudo().search_count([
-                ('status', '=', 'done'), ('batch_id', '=', batch.id)
+                ('status', '=', '12_selesai'), ('batch_id', '=', batch.id)
             ]) if batch else 0
         )
 
@@ -226,22 +226,26 @@ class AdminPortal(http.Controller):
 
     @http.route('/agf/admin/pesanan/<int:kargo_id>', type='http', auth='user', website=True)
     def detail_pesanan(self, kargo_id, **kwargs):
-        kargo = request.env['agf.kargo'].sudo().browse(kargo_id)  
+        kargo = request.env['agf.kargo'].sudo().browse(kargo_id)
         if not kargo.exists():
             return request.not_found()
-        
+
         values = self._base_ctx()
         values.update({
             'kargo': kargo,
-            'user_initials': self._get_user_initials(),  
+            'user_initials': self._get_user_initials(),
         })
-        return request.render('agf_cargo.admin_detail_pesanan_aktif', values)
+        batch_aktif = kargo.batch_id and kargo.batch_id.status == 'aktif'
+        template = 'agf_cargo.admin_detail_pesanan_aktif' if batch_aktif else 'agf_cargo.admin_detail_pesanan_inactive'
+        return request.render(template, values)
 
     @http.route('/agf/admin/pesanan/<int:kargo_id>/edit', type='http', auth='user', website=True)
     def form_pesanan_edit(self, kargo_id, **kwargs):
         kargo = request.env['agf.kargo'].browse(kargo_id)
         if not kargo.exists():
             return request.not_found()
+        if kargo.batch_id and kargo.batch_id.status != 'aktif':
+            return request.redirect(f'/agf/admin/pesanan/{kargo_id}')
         return request.render('agf_cargo.admin_form_pesanan_edit', {
             **self._base_ctx(),
             'kargo': kargo,
@@ -545,6 +549,8 @@ class AdminPortal(http.Controller):
         batch = request.env['agf.batch'].browse(batch_id)
         if not batch.exists():
             return request.not_found()
+        if batch.status != 'aktif':
+            return request.redirect(f'/agf/admin/batch/{batch_id}')
         return request.render('agf_cargo.admin_form_batch_edit', {
             **self._base_ctx(),
             'batch': batch,
@@ -556,6 +562,8 @@ class AdminPortal(http.Controller):
         batch = request.env['agf.batch'].browse(batch_id)
         if not batch.exists():
             return request.not_found()
+        if batch.status != 'aktif':
+            return request.redirect(f'/agf/admin/batch/{batch_id}')
         
         try:
             batch.write({

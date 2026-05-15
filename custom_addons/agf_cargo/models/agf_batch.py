@@ -79,7 +79,7 @@ class AgfBatch(models.Model):
         for batch in self:
             batch.total_pesanan = len(batch.kargo_ids)
             batch.total_tanaman = sum(batch.kargo_ids.mapped('tanaman_ids').mapped('jumlah'))
-            batch.pesanan_selesai = len(batch.kargo_ids.filtered(lambda k: k.status == 'done'))
+            batch.pesanan_selesai = len(batch.kargo_ids.filtered(lambda k: k.status == '12_selesai'))
 
     @api.constrains('status')
     def _check_single_aktif(self):
