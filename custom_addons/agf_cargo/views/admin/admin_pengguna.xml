@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="admin_pengguna" name="AGF Admin — Manajemen Pengguna">
+        <t t-call="agf_cargo.admin_layout">
+            <t t-set="current_page" t-value="'pengguna'"/>
+            <t t-set="page_title" t-value="'Manajemen Pengguna'"/>
+
+            <!-- Header -->
+            <div class="agf-page-header">
+                <div>
+                    <h1 class="agf-page-header__title">Manajemen Pengguna &amp; Role</h1>
+                    <p class="agf-page-header__sub">Kelola akses pengguna ke sistem AGF Cargo</p>
+                </div>
+                <button class="agf-btn-primary" type="button" id="btnTambahUser">
+                    <i data-lucide="user-plus" style="width:15px;height:15px"/>
+                    Tambah User
+                </button>
+            </div>
+
+            <!-- Tabel User -->
+            <div class="agf-card">
+                <t t-if="users">
+                    <div class="agf-table-wrap">
+                        <table class="agf-table agf-table--hover">
+                            <thead>
+                                <tr>
+                                    <th>Nama</th>
+                                    <th>Email / Login</th>
+                                    <th>Role</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="users" t-as="u">
+                                    <!-- Tentukan role AGF user -->
+                                    <t t-set="u_role" t-value="'gudang'"/>
+                                    <t t-if="group_admin_id and group_admin_id in u.groups_id.ids">
+                                        <t t-set="u_role" t-value="'admin'"/>
+                                    </t>
+                                    <t t-elif="group_manajer_id and group_manajer_id in u.groups_id.ids">
+                                        <t t-set="u_role" t-value="'manajer'"/>
+                                    </t>
+                                    <tr>
+                                        <td>
+                                            <div class="agf-user-cell">
+                                                <div class="agf-user-cell__avatar">
+                                                    <t t-esc="u.name[0].upper()"/>
+                                                </div>
+                                                <div>
+                                                    <div class="agf-table__primary"><t t-esc="u.name"/></div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div><t t-esc="u.email or u.login"/></div>
+                                        </td>
+                                        <td>
+                                            <t t-if="u_role == 'admin'">
+                                                <span class="agf-badge-role agf-badge-role--admin">Admin AGF</span>
+                                            </t>
+                                            <t t-elif="u_role == 'manajer'">
+                                                <span class="agf-badge-role agf-badge-role--manajer">Manajer Operasional</span>
+                                            </t>
+                                            <t t-else="">
+                                                <span class="agf-badge-role agf-badge-role--gudang">Petugas Gudang</span>
+                                            </t>
+                                        </td>
+                                        <td>
+                                            <button class="agf-btn-sm agf-btn-sm--outline"
+                                                    type="button"
+                                                    data-action="edit-role"
+                                                    t-att-data-user-id="u.id"
+                                                    t-att-data-user-name="u.name"
+                                                    t-att-data-current-role="u_role">
+                                                <i data-lucide="pencil" style="width:12px;height:12px"/>
+                                                Edit Role
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+                <t t-else="">
+                    <div class="agf-empty-state agf-empty-state--lg">
+                        <i data-lucide="users" style="width:48px;height:48px;color:#D1D5DB"/>
+                        <p>Belum ada pengguna terdaftar di sistem AGF Cargo.</p>
+                        <button class="agf-btn-primary" type="button" id="btnTambahUserEmpty">
+                            <i data-lucide="user-plus" style="width:15px;height:15px"/>
+                            Tambah User Pertama
+                        </button>
+                    </div>
+                </t>
+            </div>
+
+            <!-- ══ MODAL: TAMBAH USER ══ -->
+        <div class="agf-modal-backdrop" id="modalTambahUser">
+            <div class="agf-modal">
+                <div class="agf-modal__header">
+                    <span class="agf-modal__title">Tambah Pengguna AGF</span>
+                    <button class="agf-modal__close" type="button" data-close-modal="modalTambahUser">
+                        <i data-lucide="x" style="width:18px;height:18px"/>
+                    </button>
+                </div>
+                <div class="agf-modal__body">
+                    <div class="agf-form-group">
+                        <label class="agf-form-label" for="selectUser">
+                            Pilih User <span style="color:#A83030">*</span>
+                        </label>
+                        <select id="selectUser" class="agf-form-input agf-form-select">
+                            <option value="">— Pilih pengguna —</option>
+                            <t t-foreach="all_users" t-as="u">
+                                <option t-att-value="u.id">
+                                    <t t-esc="u.name"/> (<t t-esc="u.email or u.login"/>)
+                                </option>
+                            </t>
+                        </select>
+                        <t t-if="not all_users">
+                            <div class="agf-form-hint">Semua user Odoo sudah terdaftar di AGF Cargo.</div>
+                        </t>
+                    </div>
+                    <div class="agf-form-group">
+                        <label class="agf-form-label" for="selectRoleTambah">
+                            Role <span style="color:#A83030">*</span>
+                        </label>
+                        <select id="selectRoleTambah" class="agf-form-input agf-form-select">
+                            <option value="agf_cargo.group_agf_admin">Admin AGF</option>
+                            <option value="agf_cargo.group_agf_manajer" selected="1">Manajer Operasional</option>
+                            <option value="agf_cargo.group_agf_gudang">Petugas Gudang</option>
+                        </select>
+                    </div>
+                    <div id="tambahUserError" class="agf-alert agf-alert--danger" style="display:none"/>
+                </div>
+                <div class="agf-modal__footer">
+                    <button class="agf-btn-secondary" type="button" data-close-modal="modalTambahUser">Batal</button>
+                    <button class="agf-btn-primary" type="button" id="btnSimpanUser">
+                        <i data-lucide="save" style="width:15px;height:15px"/>
+                        Simpan
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ MODAL: EDIT ROLE ══ -->
+        <div class="agf-modal-backdrop" id="modalEditRole">
+            <div class="agf-modal">
+                <div class="agf-modal__header">
+                    <span class="agf-modal__title">Edit Role Pengguna</span>
+                    <button class="agf-modal__close" type="button" data-close-modal="modalEditRole">
+                        <i data-lucide="x" style="width:18px;height:18px"/>
+                    </button>
+                </div>
+                <div class="agf-modal__body">
+                    <div class="agf-form-group">
+                        <label class="agf-form-label">Pengguna</label>
+                        <div class="agf-form-static" id="editRoleNama">—</div>
+                        <input type="hidden" id="editRoleUserId"/>
+                    </div>
+                    <div class="agf-form-group">
+                        <label class="agf-form-label" for="selectRoleEdit">Role Baru</label>
+                        <select id="selectRoleEdit" class="agf-form-input agf-form-select">
+                            <option value="agf_cargo.group_agf_admin">Admin AGF</option>
+                            <option value="agf_cargo.group_agf_manajer">Manajer Operasional</option>
+                            <option value="agf_cargo.group_agf_gudang">Petugas Gudang</option>
+                        </select>
+                    </div>
+                    <div id="editRoleError" class="agf-alert agf-alert--danger" style="display:none"/>
+                </div>
+                <div class="agf-modal__footer">
+                    <button class="agf-btn-secondary" type="button" data-close-modal="modalEditRole">Batal</button>
+                    <button class="agf-btn-primary" type="button" id="btnSimpanRole">
+                        <i data-lucide="save" style="width:15px;height:15px"/>
+                        Simpan Role
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            (function () {
+                // Move modals to body so they're never inside a flex/overflow/transform ancestor
+                ['modalTambahUser', 'modalEditRole'].forEach(function (id) {
+                    var el = document.getElementById(id);
+                    if (el) { el.style.display = 'none'; document.body.appendChild(el); }
+                });
+
+                function openModal(id) {
+                    var bd = document.getElementById(id);
+                    if (!bd) return;
+                    // Backdrop: full-screen flex centering container
+                    bd.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.45);z-index:9998;display:flex;align-items:center;justify-content:center;padding:16px;box-sizing:border-box;';
+                    // Modal: width only — backdrop flex handles centering;
+                    // position/layout overridden by portal_admin.scss !important rules
+                    var modal = bd.querySelector('.agf-modal');
+                    if (modal) {
+                        modal.style.cssText = 'width:90%;max-width:480px;max-height:90vh;overflow-y:auto;';
+                    }
+                }
+
+                function closeModal(id) {
+                    var bd = document.getElementById(id);
+                    if (!bd) return;
+                    bd.style.cssText = 'display:none;';
+                    var modal = bd.querySelector('.agf-modal');
+                    if (modal) modal.style.cssText = '';
+                }
+
+                document.querySelectorAll('[data-close-modal]').forEach(function (el) {
+                    el.addEventListener('click', function () { closeModal(el.dataset.closeModal); });
+                });
+
+                // Open tambah user
+                ['btnTambahUser', 'btnTambahUserEmpty'].forEach(function (id) {
+                    var btn = document.getElementById(id);
+                    if (btn) btn.addEventListener('click', function () { openModal('modalTambahUser'); });
+                });
+
+                // Open edit role — set user info
+                document.querySelectorAll('[data-action="edit-role"]').forEach(function (btn) {
+                    btn.addEventListener('click', function () {
+                        document.getElementById('editRoleUserId').value = btn.dataset.userId;
+                        document.getElementById('editRoleNama').textContent = btn.dataset.userName;
+                        var roleMap = { admin: 'agf_cargo.group_agf_admin', manajer: 'agf_cargo.group_agf_manajer', gudang: 'agf_cargo.group_agf_gudang' };
+                        document.getElementById('selectRoleEdit').value = roleMap[btn.dataset.currentRole] || 'agf_cargo.group_agf_gudang';
+                        document.getElementById('editRoleError').style.display = 'none';
+                        openModal('modalEditRole');
+                    });
+                });
+
+                // Simpan tambah user
+                var btnSimpanUser = document.getElementById('btnSimpanUser');
+                if (btnSimpanUser) {
+                    btnSimpanUser.addEventListener('click', function () {
+                        var userId = document.getElementById('selectUser').value;
+                        var groupXmlId = document.getElementById('selectRoleTambah').value;
+                        var errEl = document.getElementById('tambahUserError');
+
+                        if (!userId) {
+                            errEl.textContent = 'Pilih pengguna terlebih dahulu.';
+                            errEl.style.display = 'flex';
+                            return;
+                        }
+
+                        btnSimpanUser.disabled = true;
+                        fetch('/agf/admin/pengguna/tambah', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                jsonrpc: '2.0', method: 'call', id: 1,
+                                params: { user_id: parseInt(userId), group_xml_id: groupXmlId }
+                            })
+                        })
+                        .then(function (r) { return r.json(); })
+                        .then(function (data) {
+                            var res = data.result;
+                            if (res &amp;&amp; res.success) {
+                                window.location.reload();
+                            } else {
+                                errEl.textContent = (res &amp;&amp; res.error) || 'Terjadi kesalahan.';
+                                errEl.style.display = 'flex';
+                                btnSimpanUser.disabled = false;
+                            }
+                        })
+                        .catch(function () {
+                            errEl.textContent = 'Gagal menghubungi server.';
+                            errEl.style.display = 'flex';
+                            btnSimpanUser.disabled = false;
+                        });
+                    });
+                }
+
+                // Simpan edit role
+                var btnSimpanRole = document.getElementById('btnSimpanRole');
+                if (btnSimpanRole) {
+                    btnSimpanRole.addEventListener('click', function () {
+                        var userId = document.getElementById('editRoleUserId').value;
+                        var groupXmlId = document.getElementById('selectRoleEdit').value;
+                        var errEl = document.getElementById('editRoleError');
+
+                        btnSimpanRole.disabled = true;
+                        fetch('/agf/admin/pengguna/' + userId + '/edit', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                jsonrpc: '2.0', method: 'call', id: 1,
+                                params: { group_xml_id: groupXmlId }
+                            })
+                        })
+                        .then(function (r) { return r.json(); })
+                        .then(function (data) {
+                            var res = data.result;
+                            if (res &amp;&amp; res.success) {
+                                window.location.reload();
+                            } else {
+                                errEl.textContent = (res &amp;&amp; res.error) || 'Terjadi kesalahan.';
+                                errEl.style.display = 'flex';
+                                btnSimpanRole.disabled = false;
+                            }
+                        })
+                        .catch(function () {
+                            errEl.textContent = 'Gagal menghubungi server.';
+                            errEl.style.display = 'flex';
+                            btnSimpanRole.disabled = false;
+                        });
+                    });
+                }
+            })();
+        </script>
+        </t>
+    </template>
+</odoo>

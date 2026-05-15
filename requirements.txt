@@ -38,5 +38,6 @@ xlwt
 zeep
 black
 isort
+qrcode[pil]
 pylint
 pylint-odoo

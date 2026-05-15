@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="admin_riwayat_batch" name="AGF Admin — Riwayat Batch">
+        <t t-call="agf_cargo.admin_layout">
+            <t t-set="current_page" t-value="'batch'"/>
+            <t t-set="page_title" t-value="'Riwayat Batch'"/>
+
+            <!-- Header -->
+            <div class="agf-page-header">
+                <div>
+                    <h1 class="agf-page-header__title">Riwayat Batch</h1>
+                    <p class="agf-page-header__sub">Semua batch pengiriman AGF Cargo</p>
+                </div>
+                <button class="agf-btn-primary" id="btnBatchBaru" type="button">
+                    <i data-lucide="plus" style="width:15px;height:15px"/>
+                    Batch Baru
+                </button>
+            </div>
+
+            <!-- Stat summary -->
+            <div class="agf-stat-grid agf-stat-grid--3">
+                <div class="agf-stat-card">
+                    <div class="agf-stat-card__icon" style="background:#E6EEF9">
+                        <i data-lucide="layers" style="width:20px;height:20px;color:#1A4A8A"/>
+                    </div>
+                    <div class="agf-stat-card__body">
+                        <div class="agf-stat-card__value"><t t-esc="total_batch"/></div>
+                        <div class="agf-stat-card__label">Total Batch</div>
+                    </div>
+                </div>
+                <div class="agf-stat-card">
+                    <div class="agf-stat-card__icon" style="background:#E8F5EE">
+                        <i data-lucide="package" style="width:20px;height:20px;color:#2A7A45"/>
+                    </div>
+                    <div class="agf-stat-card__body">
+                        <div class="agf-stat-card__value"><t t-esc="total_pesanan_all"/></div>
+                        <div class="agf-stat-card__label">Total Pesanan</div>
+                    </div>
+                </div>
+                <div class="agf-stat-card">
+                    <div class="agf-stat-card__icon" style="background:#FFF6E8">
+                        <i data-lucide="leaf" style="width:20px;height:20px;color:#C97A00"/>
+                    </div>
+                    <div class="agf-stat-card__body">
+                        <div class="agf-stat-card__value"><t t-esc="total_tanaman_all"/></div>
+                        <div class="agf-stat-card__label">Total Tanaman</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabel Batch -->
+            <div class="agf-card" style="margin-top:0">
+                <t t-if="batches">
+                    <div class="agf-table-wrap">
+                        <table class="agf-table agf-table--hover">
+                            <thead>
+                                <tr>
+                                    <th>Nama Batch</th>
+                                    <th>Tgl Keberangkatan</th>
+                                    <th>Status</th>
+                                    <th>Pesanan</th>
+                                    <th>Tanaman</th>
+                                    <th>Progress</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="batches" t-as="b">
+                                    <t t-set="pct" t-value="int(b.pesanan_selesai * 100 / b.total_pesanan) if b.total_pesanan else 0"/>
+                                    <tr>
+                                        <td>
+                                            <span class="agf-table__primary">
+                                                <t t-esc="b.name"/>
+                                            </span>
+                                            <t t-if="b.catatan">
+                                                <div class="agf-table__sub"><t t-esc="b.catatan"/></div>
+                                            </t>
+                                        </td>
+                                        <td><t t-esc="b.tanggal_keberangkatan"/></td>
+                                        <td>
+                                            <span t-attf-class="agf-badge-batch status-#{b.status}">
+                                                <t t-esc="dict(aktif='Aktif', selesai='Selesai', terkirim='Terkirim').get(b.status, b.status)"/>
+                                            </span>
+                                        </td>
+                                        <td><t t-esc="b.total_pesanan"/></td>
+                                        <td><t t-esc="b.total_tanaman"/></td>
+                                        <td style="min-width:120px">
+                                            <div class="agf-progress">
+                                                <div t-attf-class="agf-progress__bar #{' agf-progress__bar--done' if pct == 100 else ''}"
+                                                     t-attf-style="width:#{pct}%"/>
+                                            </div>
+                                            <small style="color:#6B7280"><t t-esc="pct"/>%</small>
+                                        </td>
+                                        <td>
+                                            <a t-attf-href="/agf/admin/batch/#{b.id}"
+                                               class="agf-btn-sm">
+                                                Lihat Detail
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+                <t t-else="">
+                    <div class="agf-empty-state agf-empty-state--lg">
+                        <i data-lucide="inbox" style="width:48px;height:48px;color:#D1D5DB"/>
+                        <p>Belum ada batch pengiriman.</p>
+                        <button class="agf-btn-primary" id="btnBatchBaruEmpty" type="button">
+                            <i data-lucide="plus" style="width:15px;height:15px"/>
+                            Buat Batch Pertama
+                        </button>
+                    </div>
+                </t>
+            </div>
+
+            <!-- ══ MODAL: BATCH BARU ══ -->
+        <div class="agf-modal-backdrop" id="modalBatchBaru">
+            <div class="agf-modal">
+                <div class="agf-modal__header">
+                    <span class="agf-modal__title">Batch Baru</span>
+                    <button class="agf-modal__close" type="button" data-close-modal="modalBatchBaru">
+                        <i data-lucide="x" style="width:18px;height:18px"/>
+                    </button>
+                </div>
+
+                <!-- Warning: ada batch aktif -->
+                <t t-if="has_active_batch">
+                    <div class="agf-alert agf-alert--warning" style="margin-bottom:16px">
+                        <i data-lucide="alert-triangle" style="width:16px;height:16px"/>
+                        <span>
+                            Sudah ada batch aktif: <b><t t-esc="active_batch.name"/></b>.
+                            Tutup batch aktif dulu sebelum membuat yang baru.
+                        </span>
+                    </div>
+                    <div class="agf-modal__footer">
+                        <button class="agf-btn-secondary" type="button" data-close-modal="modalBatchBaru">
+                            Tutup
+                        </button>
+                    </div>
+                </t>
+
+                <t t-else="">
+                    <div class="agf-modal__body">
+                        <div class="agf-form-group">
+                            <label class="agf-form-label" for="inputTanggalBerangkat">
+                                Tanggal Keberangkatan <span style="color:#A83030">*</span>
+                            </label>
+                            <input type="date" id="inputTanggalBerangkat" class="agf-form-input" required="1"/>
+                        </div>
+                        <div class="agf-form-group">
+                            <label class="agf-form-label" for="inputCatatan">Catatan (opsional)</label>
+                            <textarea id="inputCatatan" class="agf-form-input" rows="3"
+                                      placeholder="Catatan untuk batch ini..."/>
+                        </div>
+                        <div id="batchBaruError" class="agf-alert agf-alert--danger" style="display:none"/>
+                    </div>
+                    <div class="agf-modal__footer">
+                        <button class="agf-btn-secondary" type="button" data-close-modal="modalBatchBaru">
+                            Batal
+                        </button>
+                        <button class="agf-btn-primary" type="button" id="btnSimpanBatch">
+                            <i data-lucide="save" style="width:15px;height:15px"/>
+                            Simpan Batch
+                        </button>
+                    </div>
+                </t>
+            </div>
+        </div>
+
+        <script>
+            (function () {
+                function openModal(id) { document.getElementById(id).classList.add('agf-modal-backdrop--show'); }
+                function closeModal(id) { document.getElementById(id).classList.remove('agf-modal-backdrop--show'); }
+
+                document.querySelectorAll('[data-close-modal]').forEach(function (el) {
+                    el.addEventListener('click', function () { closeModal(el.dataset.closeModal); });
+                });
+
+                var btnOpen = document.getElementById('btnBatchBaru');
+                if (btnOpen) btnOpen.addEventListener('click', function () { openModal('modalBatchBaru'); });
+
+                var btnOpenEmpty = document.getElementById('btnBatchBaruEmpty');
+                if (btnOpenEmpty) btnOpenEmpty.addEventListener('click', function () { openModal('modalBatchBaru'); });
+
+                var btnSimpan = document.getElementById('btnSimpanBatch');
+                if (btnSimpan) {
+                    btnSimpan.addEventListener('click', function () {
+                        var tgl = document.getElementById('inputTanggalBerangkat').value;
+                        var catatan = document.getElementById('inputCatatan') ? document.getElementById('inputCatatan').value : '';
+                        var errEl = document.getElementById('batchBaruError');
+
+                        if (!tgl) {
+                            errEl.textContent = 'Tanggal keberangkatan wajib diisi.';
+                            errEl.style.display = 'flex';
+                            return;
+                        }
+
+                        btnSimpan.disabled = true;
+                        btnSimpan.textContent = 'Menyimpan...';
+
+                        fetch('/agf/admin/batch/baru', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                jsonrpc: '2.0', method: 'call', id: 1,
+                                params: { tanggal_keberangkatan: tgl, catatan: catatan }
+                            })
+                        })
+                        .then(function (r) { return r.json(); })
+                        .then(function (data) {
+                            var res = data.result;
+                            if (res &amp;&amp; res.success) {
+                                window.location.reload();
+                            } else {
+                                errEl.textContent = (res &amp;&amp; res.error) || 'Terjadi kesalahan.';
+                                errEl.style.display = 'flex';
+                                btnSimpan.disabled = false;
+                                btnSimpan.textContent = 'Simpan Batch';
+                            }
+                        })
+                        .catch(function () {
+                            errEl.textContent = 'Gagal menghubungi server.';
+                            errEl.style.display = 'flex';
+                            btnSimpan.disabled = false;
+                            btnSimpan.textContent = 'Simpan Batch';
+                        });
+                    });
+                }
+            })();
+        </script>
+        </t>
+    </template>
+</odoo>

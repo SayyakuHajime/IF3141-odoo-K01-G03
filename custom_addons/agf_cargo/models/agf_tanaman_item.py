@@ -36,6 +36,18 @@ class AgfTanamanItem(models.Model):
         default='belum_dicek',
         required=True,
     )
+    status_persiapan = fields.Selection(
+        selection=[
+            ('belum_mulai',      'Belum Mulai'),
+            ('pengecekan_awal',  'Pengecekan Awal'),
+            ('pencucian',        'Pencucian'),
+            ('pengemasan',       'Pengemasan'),
+            ('pengecekan_akhir', 'Pengecekan Akhir'),
+            ('siap_kirim',       'Siap Kirim'),
+        ],
+        string='Status Persiapan',
+        default='belum_mulai',
+    )
 
     # Checklist kondisi detail (diisi saat warehouse update)
     cek_daun = fields.Boolean(string='Daun OK')

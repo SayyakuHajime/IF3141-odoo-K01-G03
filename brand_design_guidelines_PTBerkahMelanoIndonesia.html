@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brand Design Guidelines — PT Berkah Melano Indonesia</title>
+<style>
+:root {
+  --font: 'Inter', system-ui, sans-serif;
+  --font-mono: 'SF Mono', 'Fira Code', monospace;
+  --text-primary:   #1a1a1a;
+  --text-secondary: #444;
+  --text-muted:     #888;
+  --bg-page:        #f5f5f5;
+  --bg-card:        #ffffff;
+  --bg-secondary:   #f0f0f0;
+  --border:         #e4e4e4;
+  --border-strong:  #ccc;
+  --radius-card:    8px;
+  --radius-sm:      4px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font);
+  font-size: 13px;
+  color: var(--text-primary);
+  background: var(--bg-page);
+  padding: 32px;
+  max-width: 900px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+/* ── PAGE HEADER ── */
+.page-header {
+  margin-bottom: 36px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+.page-header h1 { font-size: 20px; font-weight: 600; letter-spacing: -.02em; margin-bottom: 3px; }
+.page-header p  { font-size: 12px; color: var(--text-muted); }
+.chips { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+.chip {
+  font-size: 10px; font-weight: 500; padding: 3px 10px;
+  border-radius: 100px; border: 1px solid currentColor;
+}
+
+/* ── SECTIONS ── */
+.section { margin-bottom: 36px; }
+.section-title {
+  font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--text-muted); font-weight: 600; margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.section-title::after { content:''; flex:1; height:.5px; background:var(--border); }
+
+/* ── CARDS ── */
+.card {
+  background: var(--bg-card); border: .5px solid var(--border);
+  border-radius: var(--radius-card); padding: 20px; margin-bottom: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.04);
+}
+.card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
+.dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+.card-title { font-size: 14px; font-weight: 600; }
+.tag {
+  font-size: 10px; font-weight: 500; padding: 2px 9px;
+  border-radius: 100px; margin-left: auto;
+}
+
+/* ── 60/30/10 BARS ── */
+.ratio-bar {
+  display: flex; height: 28px; border-radius: var(--radius-sm);
+  overflow: hidden; margin-bottom: 8px; border: .5px solid var(--border);
+}
+.ratio-seg { display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; }
+.ratio-legend { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+.ratio-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-secondary); }
+.ratio-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+
+/* ── COLOR SWATCHES ── */
+.swatch-row { display: flex; gap: 7px; margin-bottom: 10px; flex-wrap: wrap; }
+.swatch {
+  border-radius: var(--radius-sm); padding: 10px 11px;
+  flex: 1; min-width: 100px;
+}
+.swatch-hex  { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: .04em; margin-bottom: 3px; }
+.swatch-name { font-size: 10px; line-height: 1.4; }
+.swatch-ratio{ font-size: 9px; margin-top: 4px; opacity: .85; font-family: var(--font-mono); }
+
+/* ── RULES GRID ── */
+.rules { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+.rule {
+  background: var(--bg-secondary); border-radius: var(--radius-sm); padding: 9px 11px;
+}
+.rule-label { font-size: 9.5px; color: var(--text-muted); margin-bottom: 3px; text-transform: uppercase; letter-spacing: .08em; font-weight: 600; }
+.rule-val   { font-size: 11.5px; font-weight: 500; }
+
+/* ── STATUS PILLS ── */
+.pills { display: flex; gap: 6px; flex-wrap: wrap; }
+.pill { font-size: 10px; font-weight: 600; padding: 3px 10px; border-radius: 100px; }
+
+/* ── DIVIDER ── */
+.divider { height: .5px; background: var(--border); margin: 16px 0; }
+
+/* ── LABEL ── */
+.sub-label { font-size: 11.5px; font-weight: 600; margin-bottom: 8px; color: var(--text-secondary); }
+
+/* ── CONTRAST TABLE ── */
+.contrast-table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+.contrast-table th {
+  text-align: left; font-size: 9.5px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: .07em; color: var(--text-muted); padding: 7px 10px;
+  border-bottom: 1px solid var(--border); background: var(--bg-secondary);
+}
+.contrast-table td { padding: 7px 10px; border-bottom: .5px solid var(--border); vertical-align: middle; }
+.contrast-table tr:last-child td { border-bottom: none; }
+.swatch-inline {
+  display: inline-block; width: 12px; height: 12px; border-radius: 2px;
+  vertical-align: middle; margin-right: 5px; border: .5px solid rgba(0,0,0,.1);
+}
+.badge-pass  { background:#E8F5EE; color:#1C4731; font-size:9px; font-weight:700; padding:2px 7px; border-radius:100px; }
+.badge-aaa   { background:#E8F5EE; color:#1C4731; font-size:9px; font-weight:700; padding:2px 7px; border-radius:100px; }
+.badge-large { background:#FFF8E0; color:#7A5200; font-size:9px; font-weight:700; padding:2px 7px; border-radius:100px; }
+.badge-fail  { background:#FFEDED; color:#A83030; font-size:9px; font-weight:700; padding:2px 7px; border-radius:100px; }
+
+/* ── DO / DON'T ── */
+.do-dont { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }
+.do-box, .dont-box {
+  border-radius: var(--radius-sm); padding: 12px 14px; font-size: 11.5px; line-height: 1.6;
+}
+.do-box   { background: #E8F5EE; border-left: 3px solid #2A7A45; }
+.dont-box { background: #FFEDED; border-left: 3px solid #A83030; }
+.do-box strong   { color: #1C4731; }
+.dont-box strong { color: #A83030; }
+.do-box ul, .dont-box ul { padding-left: 14px; margin-top: 4px; }
+.do-box li, .dont-box li { margin-bottom: 3px; }
+
+/* ── NOTE BOX ── */
+.note {
+  background: #FFFBEB; border: .5px solid #F5D77A; border-radius: var(--radius-sm);
+  padding: 10px 13px; font-size: 11px; color: #7A5200; margin-top: 10px; line-height: 1.6;
+}
+.note code { font-family: var(--font-mono); font-size: 10px; background: rgba(0,0,0,.06); padding: 1px 4px; border-radius: 3px; }
+
+/* ── COMPARE TABLE ── */
+.cmp-table { width:100%; border-collapse: collapse; font-size: 11.5px; }
+.cmp-table th {
+  text-align: left; font-size: 9.5px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: .07em; color: var(--text-muted); padding: 7px 10px;
+  border-bottom: 1px solid var(--border); background: var(--bg-secondary);
+}
+.cmp-table td { padding: 8px 10px; border-bottom: .5px solid var(--border); vertical-align: middle; }
+.cmp-table tr:last-child td { border-bottom: none; }
+.cmp-table .attr { color: var(--text-muted); font-weight: 500; width: 20%; font-size: 11px; }
+.badge-new { font-size:9px; font-weight:700; padding:1px 6px; border-radius:100px; background:#FFF6E8; color:#855008; margin-left:4px; vertical-align:middle; }
+
+/* ── TYPO BLOCKS ── */
+.type-row { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+.type-block { background: var(--bg-secondary); border-radius: var(--radius-sm); padding: 11px 13px; flex: 1; min-width: 140px; }
+
+@media (max-width: 600px) {
+  body { padding: 16px; }
+  .rules { grid-template-columns: 1fr; }
+  .swatch-row { flex-direction: column; }
+  .do-dont { grid-template-columns: 1fr; }
+}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <h1>Brand Design Guidelines</h1>
+  <p>PT Berkah Melano Indonesia · IF3141 Sistem Informasi · K01 · G03 · Rev. 3 — WCAG-validated</p>
+  <div class="chips">
+    <span class="chip" style="color:#1C4731;border-color:#1C4731">Customer Portal (AGF Cargo)</span>
+    <span class="chip" style="color:#1C7A6A;border-color:#3DB89A">Warehouse Web App</span>
+    <span class="chip" style="color:#007A8A;border-color:#00ACC1">Admin Dashboard</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     1. CUSTOMER PORTAL
+═══════════════════════════════════════════════════════ -->
+<div class="section">
+<div class="section-title">1 — Customer Portal (AGF Cargo)</div>
+<div class="card">
+  <div class="card-header">
+    <div class="dot" style="background:#1C4731"></div>
+    <div class="card-title">AGF Cargo Customer Portal</div>
+    <div class="tag" style="background:#E8F5EE;color:#1C4731">Tracking · Pendaftaran · Mobile 402px</div>
+  </div>
+
+  <!-- 60:30:10 -->
+  <div class="sub-label">Komposisi warna — 60 : 30 : 10</div>
+  <div class="ratio-bar">
+    <div class="ratio-seg" style="width:60%;background:#FFFFFF;color:#888;border-right:.5px solid #e0e0e0">60%</div>
+    <div class="ratio-seg" style="width:30%;background:#1C4731;color:#7EC9A0">30%</div>
+    <div class="ratio-seg" style="width:10%;background:#2A7A45;color:#A8DDB5">10%</div>
+  </div>
+  <div class="ratio-legend">
+    <div class="ratio-item"><div class="ratio-dot" style="background:#FFFFFF;border:.5px solid #ccc"></div>60% White + Mint — semua background, card, konten utama</div>
+    <div class="ratio-item"><div class="ratio-dot" style="background:#1C4731"></div>30% Forest Green — header, nav bar</div>
+    <div class="ratio-item"><div class="ratio-dot" style="background:#2A7A45"></div>10% Leaf Green + Sage — CTA, link aktif, highlight dekoratif</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- COLOR PALETTE -->
+  <div class="sub-label">Palet warna</div>
+  <div class="swatch-row">
+    <div class="swatch" style="background:#1C4731">
+      <div class="swatch-hex" style="color:#7EC9A0">#1C4731</div>
+      <div class="swatch-name" style="color:#7EC9A0">Forest Green</div>
+      <div class="swatch-name" style="color:#7EC9A0">Primary · Header/Nav</div>
+      <div class="swatch-ratio" style="color:#7EC9A0">✦ 30% area</div>
+    </div>
+    <div class="swatch" style="background:#2A7A45">
+      <div class="swatch-hex" style="color:#E8F5EE">#2A7A45</div>
+      <div class="swatch-name" style="color:#E8F5EE">Leaf Green</div>
+      <div class="swatch-name" style="color:#E8F5EE">CTA Button · Link</div>
+      <div class="swatch-ratio" style="color:#A8DDB5">White: 5.29:1 AA ✅</div>
+    </div>
+    <div class="swatch" style="background:#7EC9A0">
+      <div class="swatch-hex" style="color:#1C4731">#7EC9A0</div>
+      <div class="swatch-name" style="color:#1C4731">Sage</div>
+      <div class="swatch-name" style="color:#1C4731">Dekoratif · Tab underline</div>
+      <div class="swatch-ratio" style="color:#1C4731">Dekoratif only ⚠️</div>
+    </div>
+    <div class="swatch" style="background:#E8F5EE;border:.5px solid #C0DBC8">
+      <div class="swatch-hex" style="color:#1C4731">#E8F5EE</div>
+      <div class="swatch-name" style="color:#2A7A45">Mint</div>
+      <div class="swatch-name" style="color:#2A7A45">Card Background</div>
+      <div class="swatch-ratio" style="color:#1C4731">#1C4731 text: 9.39:1 ✅</div>
+    </div>
+    <div class="swatch" style="background:#FFFFFF;border:.5px solid #ddd">
+      <div class="swatch-hex" style="color:#333">#FFFFFF</div>
+      <div class="swatch-name" style="color:#555">White</div>
+      <div class="swatch-name" style="color:#555">Page Background</div>
+      <div class="swatch-ratio" style="color:#555">#1A1A1A text: 17.4:1 ✅</div>
+    </div>
+  </div>
+
+  <!-- TEXT RULE -->
+  <div class="note">
+    <strong>Aturan teks:</strong> Body text gunakan <code>#1A1A1A</code> di atas putih/mint (17.4:1 / 15.5:1 AAA). Link/label aksen gunakan <code>#2A7A45</code> (5.29:1 AA). Sage <code>#7EC9A0</code> <strong>hanya untuk dekoratif</strong> (border, icon, underline) — tidak boleh dipakai sebagai teks karena kontras 2.46:1 ❌ di atas putih.
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- SEMANTIC -->
+  <div class="sub-label">Warna semantik</div>
+  <div class="swatch-row">
+    <div class="swatch" style="background:#2A7A45">
+      <div class="swatch-hex" style="color:#E8F5EE">#2A7A45</div>
+      <div class="swatch-name" style="color:#A8DDB5">Success</div>
+      <div class="swatch-ratio" style="color:#A8DDB5">White: 5.29:1 ✅</div>
+    </div>
+    <div class="swatch" style="background:#C97A00">
+      <div class="swatch-hex" style="color:#FFF6E8">#C97A00</div>
+      <div class="swatch-name" style="color:#FFD590">Warning</div>
+      <div class="swatch-ratio" style="color:#FFD590">White: 4.73:1 ✅</div>
+    </div>
+    <div class="swatch" style="background:#A83030">
+      <div class="swatch-hex" style="color:#FFEDED">#A83030</div>
+      <div class="swatch-name" style="color:#FFAAAA">Danger</div>
+      <div class="swatch-ratio" style="color:#FFAAAA">White: 5.94:1 ✅</div>
+    </div>
+    <div class="swatch" style="background:#1C4731">
+      <div class="swatch-hex" style="color:#7EC9A0">#1C4731</div>
+      <div class="swatch-name" style="color:#7EC9A0">Info</div>
+      <div class="swatch-ratio" style="color:#7EC9A0">White: 10.5:1 ✅</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- STATUS PILLS -->
+  <div class="sub-label">Status pills — semua kombinasi WCAG-validated</div>
+  <div class="pills" style="margin-bottom:8px">
+    <span class="pill" style="background:#FFF6E8;color:#855008">Hold</span>
+    <span class="pill" style="background:#E8F5EE;color:#1C4731">Arrival</span>
+    <span class="pill" style="background:#F5F3FF;color:#4B3FA0">Processing</span>
+    <span class="pill" style="background:#FFF8E0;color:#7A5200">Shipped</span>
+    <span class="pill" style="background:#E8F5EE;color:#1C4731">Done</span>
+  </div>
+  <div class="pills">
+    <span class="pill" style="background:#E8F5EE;color:#1C4731">Healthy / Sehat</span>
+    <span class="pill" style="background:#FFF6E8;color:#855008">Kurang Sehat</span>
+    <span class="pill" style="background:#FFEDED;color:#A83030">Bermasalah</span>
+    <span class="pill" style="background:#F0F0F0;color:#555">Belum Dicek</span>
+  </div>
+
+  <div class="divider"></div>
+  <div class="rules">
+    <div class="rule"><div class="rule-label">Platform</div><div class="rule-val">Mobile web — 402px</div></div>
+    <div class="rule"><div class="rule-label">Typography</div><div class="rule-val">Inter 400 / 500</div></div>
+    <div class="rule"><div class="rule-label">Body text</div><div class="rule-val">#1A1A1A — selalu</div></div>
+    <div class="rule"><div class="rule-label">Card radius</div><div class="rule-val">4px universal</div></div>
+    <div class="rule"><div class="rule-label">Header bg</div><div class="rule-val">#1C4731 · teks putih</div></div>
+    <div class="rule"><div class="rule-label">Tab aktif</div><div class="rule-val">Underline #2A7A45 · 2px</div></div>
+    <div class="rule"><div class="rule-label">Letter case</div><div class="rule-val">Sentence case — selalu</div></div>
+    <div class="rule"><div class="rule-label">Mode</div><div class="rule-val">Light only</div></div>
+  </div>
+</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     2. WAREHOUSE WEB APP
+═══════════════════════════════════════════════════════ -->
+<div class="section">
+<div class="section-title">2 — Warehouse Web App <span class="badge-new">BARU</span></div>
+<div class="card">
+  <div class="card-header">
+    <div class="dot" style="background:#1C4731;outline:2px dashed #3DB89A;outline-offset:2px"></div>
+    <div class="card-title">Warehouse Ops</div>
+    <div class="tag" style="background:#E6F7F4;color:#1C7A6A">Scan QR · Update Status · Mobile 402px</div>
+  </div>
+
+  <!-- 60:30:10 -->
+  <div class="sub-label">Komposisi warna — 60 : 30 : 10</div>
+  <div class="ratio-bar">
+    <div class="ratio-seg" style="width:60%;background:#E6F7F4;color:#1C7A6A;border-right:.5px solid #9DD4C8">60%</div>
+    <div class="ratio-seg" style="width:30%;background:#1C4731;color:#3DB89A">30%</div>
+    <div class="ratio-seg" style="width:10%;background:#E8820C;color:#1A1A1A">10%</div>
+  </div>
+  <div class="ratio-legend">
+    <div class="ratio-item"><div class="ratio-dot" style="background:#E6F7F4;border:.5px solid #9DD4C8"></div>60% White + Teal Mist — semua background, card, konten utama</div>
+    <div class="ratio-item"><div class="ratio-dot" style="background:#1C4731"></div>30% Forest Green — header, nav bar (sama dg Customer Portal)</div>
+    <div class="ratio-item"><div class="ratio-dot" style="background:#E8820C"></div>10% Amber — primary CTA saja (scan, update, konfirmasi)</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- COLOR PALETTE -->
+  <div class="sub-label">Palet warna</div>
+  <div class="swatch-row">
+    <div class="swatch" style="background:#1C4731">
+      <div class="swatch-hex" style="color:#3DB89A">#1C4731</div>
+      <div class="swatch-name" style="color:#3DB89A">Forest Green</div>
+      <div class="swatch-name" style="color:#3DB89A">Primary · Header/Nav</div>
+      <div class="swatch-ratio" style="color:#3DB89A">sama Customer Portal</div>
+    </div>
+    <div class="swatch" style="background:#3DB89A">
+      <div class="swatch-hex" style="color:#E6F7F4">#3DB89A</div>
+      <div class="swatch-name" style="color:#E6F7F4">Teal</div>
+      <div class="swatch-name" style="color:#E6F7F4">Dekoratif · Tab underline</div>
+      <div class="swatch-ratio" style="color:#E6F7F4">Dekoratif only ⚠️</div>
+    </div>
+    <div class="swatch" style="background:#E8820C">
+      <div class="swatch-hex" style="color:#1A1A1A">#E8820C</div>
+      <div class="swatch-name" style="color:#1A1A1A">Amber</div>
+      <div class="swatch-name" style="color:#1A1A1A">CTA Kritis saja</div>
+      <div class="swatch-ratio" style="color:#1A1A1A">#1A1A1A text: 6.32:1 ✅</div>
+    </div>
+    <div class="swatch" style="background:#E6F7F4;border:.5px solid #9DD4C8">
+      <div class="swatch-hex" style="color:#1C7A6A">#E6F7F4</div>
+      <div class="swatch-name" style="color:#1C7A6A">Teal Mist</div>
+      <div class="swatch-name" style="color:#1C7A6A">Card Background</div>
+      <div class="swatch-ratio" style="color:#1C4731">#1C4731 text: 9.51:1 ✅</div>
+    </div>
+    <div class="swatch" style="background:#FFFFFF;border:.5px solid #ddd">
+      <div class="swatch-hex" style="color:#333">#FFFFFF</div>
+      <div class="swatch-name" style="color:#555">White</div>
+      <div class="swatch-name" style="color:#555">Page Background</div>
+      <div class="swatch-ratio" style="color:#555">#1A1A1A text: 17.4:1 ✅</div>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>Aturan teks:</strong> Body text gunakan <code>#1A1A1A</code> di atas putih/teal mist. Teal <code>#3DB89A</code> <strong>tidak boleh dipakai sebagai teks</strong> (kontras 2.46:1 ❌ pada putih, 4.27:1 ⚠️ pada hijau). Gunakan hanya sebagai underline tab, border, atau ikon. Tombol Amber harus memakai teks <code>#1A1A1A</code> — bukan putih (putih pada amber hanya 2.75:1 ❌).
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sub-label">Warna semantik</div>
+  <div class="swatch-row">
+    <div class="swatch" style="background:#2A7A45">
+      <div class="swatch-hex" style="color:#E8F5EE">#2A7A45</div>
+      <div class="swatch-name" style="color:#A8DDB5">Success</div>
+      <div class="swatch-ratio" style="color:#A8DDB5">White: 5.29:1 ✅</div>
+    </div>
+    <div class="swatch" style="background:#C97A00">
+      <div class="swatch-hex" style="color:#FFF6E8">#C97A00</div>
+      <div class="swatch-name" style="color:#FFD590">Warning</div>
+      <div class="swatch-ratio" style="color:#FFD590">White: 4.73:1 ✅</div>
+    </div>
+    <div class="swatch" style="background:#A83030">
+      <div class="swatch-hex" style="color:#FFEDED">#A83030</div>
+      <div class="swatch-name" style="color:#FFAAAA">Danger</div>
+      <div class="swatch-ratio" style="color:#FFAAAA">White: 5.94:1 ✅</div>
+    </div>
+    <div class="swatch" style="background:#1C7A6A">
+      <div class="swatch-hex" style="color:#E6F7F4">#1C7A6A</div>
+      <div class="swatch-name" style="color:#9DD4C8">Info (Teal Dark)</div>
+      <div class="swatch-ratio" style="color:#9DD4C8">White: 7.08:1 ✅</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sub-label">Status pills</div>
+  <div class="pills" style="margin-bottom:8px">
+    <span class="pill" style="background:#E8F5EE;color:#1C4731">Sehat / Healthy</span>
+    <span class="pill" style="background:#FFF6E8;color:#855008">Kurang Sehat</span>
+    <span class="pill" style="background:#FFEDED;color:#A83030">Bermasalah</span>
+    <span class="pill" style="background:#F0F0F0;color:#555">Belum Dicek</span>
+  </div>
+  <div class="pills">
+    <span class="pill" style="background:#FFF3E8;color:#8A4A00">Prioritas</span>
+    <span class="pill" style="background:#FFF6E8;color:#855008">Pending</span>
+    <span class="pill" style="background:#E6F7F4;color:#1C7A6A">Berjalan</span>
+    <span class="pill" style="background:#E8F5EE;color:#1C4731">Selesai</span>
+    <span class="pill" style="background:#F0F0F0;color:#555">Terkirim</span>
+  </div>
+
+  <div class="divider"></div>
+  <div class="rules">
+    <div class="rule"><div class="rule-label">Platform</div><div class="rule-val">Mobile web — 402px</div></div>
+    <div class="rule"><div class="rule-label">Typography</div><div class="rule-val">Inter 400 / 500</div></div>
+    <div class="rule"><div class="rule-label">Body text</div><div class="rule-val">#1A1A1A — selalu</div></div>
+    <div class="rule"><div class="rule-label">Header bg</div><div class="rule-val">#1C4731 · teks putih</div></div>
+    <div class="rule"><div class="rule-label">CTA kritis</div><div class="rule-val">Amber #E8820C · teks #1A1A1A</div></div>
+    <div class="rule"><div class="rule-label">Tab aktif</div><div class="rule-val">Underline #3DB89A · 2px</div></div>
+    <div class="rule"><div class="rule-label">Aksen vs Customer</div><div class="rule-val">Sage #7EC9A0 → Teal #3DB89A</div></div>
+    <div class="rule"><div class="rule-label">Card radius</div><div class="rule-val">4px universal</div></div>
+    <div class="rule"><div class="rule-label">Mode</div><div class="rule-val">Light only</div></div>
+    <div class="rule"><div class="rule-label">Letter case</div><div class="rule-val">Sentence case — selalu</div></div>
+  </div>
+</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     3. ADMIN DASHBOARD
+═══════════════════════════════════════════════════════ -->
+<div class="section">
+<div class="section-title">3 — Admin Dashboard</div>
+<div class="card">
+  <div class="card-header">
+    <div class="dot" style="background:#1D2226"></div>
+    <div class="card-title">Admin Dashboard</div>
+    <div class="tag" style="background:#E0F7FA;color:#007A8A">Color Admin V3 · ref. seantheme.com</div>
+  </div>
+
+  <!-- 60:30:10 -->
+  <div class="sub-label">Komposisi warna — 60 : 30 : 10</div>
+  <div class="ratio-bar">
+    <div class="ratio-seg" style="width:60%;background:#F0F3F6;color:#555;border-right:.5px solid #D8D8D8">60%</div>
+    <div class="ratio-seg" style="width:30%;background:#1D2226;color:#7EB3CC">30%</div>
+    <div class="ratio-seg" style="width:10%;background:#00ACC1;color:#1A1A1A">10%</div>
+  </div>
+  <div class="ratio-legend">
+    <div class="ratio-item"><div class="ratio-dot" style="background:#F0F3F6;border:.5px solid #ccc"></div>60% Steel Gray + White — content bg, card surfaces, topbar</div>
+    <div class="ratio-item"><div class="ratio-dot" style="background:#1D2226"></div>30% Gunmetal — sidebar nav (fixed, tidak berubah)</div>
+    <div class="ratio-item"><div class="ratio-dot" style="background:#00ACC1"></div>10% Cyan — active border, badge bg saja (BUKAN text on white)</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sub-label">Palet warna</div>
+  <div class="swatch-row">
+    <div class="swatch" style="background:#1D2226">
+      <div class="swatch-hex" style="color:#7EB3CC">#1D2226</div>
+      <div class="swatch-name" style="color:#7EB3CC">Gunmetal</div>
+      <div class="swatch-name" style="color:#7EB3CC">Sidebar</div>
+      <div class="swatch-ratio" style="color:#7EB3CC">White: 16.0:1 ✅</div>
+    </div>
+    <div class="swatch" style="background:#00ACC1">
+      <div class="swatch-hex" style="color:#1A1A1A">#00ACC1</div>
+      <div class="swatch-name" style="color:#1A1A1A">Cyan</div>
+      <div class="swatch-name" style="color:#1A1A1A">Active border · badge bg</div>
+      <div class="swatch-ratio" style="color:#1A1A1A">#1A1A1A text: 6.36:1 ✅</div>
+    </div>
+    <div class="swatch" style="background:#007A8A">
+      <div class="swatch-hex" style="color:#E0F7FA">#007A8A</div>
+      <div class="swatch-name" style="color:#E0F7FA">Cyan Dark</div>
+      <div class="swatch-name" style="color:#E0F7FA">Teks cyan on white</div>
+      <div class="swatch-ratio" style="color:#E0F7FA">White bg: 5.06:1 ✅</div>
+    </div>
+    <div class="swatch" style="background:#F0F3F6;border:.5px solid #D8D8D8">
+      <div class="swatch-hex" style="color:#333">#F0F3F6</div>
+      <div class="swatch-name" style="color:#555">Steel Gray</div>
+      <div class="swatch-name" style="color:#555">Content Background</div>
+      <div class="swatch-ratio" style="color:#555">#333 text: 11.3:1 ✅</div>
+    </div>
+    <div class="swatch" style="background:#FFFFFF;border:.5px solid #ddd">
+      <div class="swatch-hex" style="color:#333">#FFFFFF</div>
+      <div class="swatch-name" style="color:#555">White</div>
+      <div class="swatch-name" style="color:#555">Card + Topbar</div>
+      <div class="swatch-ratio" style="color:#555">#333 text: 12.6:1 ✅</div>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>Aturan Cyan:</strong> <code>#00ACC1</code> (Cyan) memiliki kontras <strong>2.74:1 ❌ di atas putih</strong> — tidak boleh digunakan sebagai teks/link di area putih. Gunakan sebagai: (a) active left-border sidebar 2px, (b) background badge dengan teks <code>#1A1A1A</code>. Untuk teks berwarna cyan di atas putih, gunakan <code>#007A8A</code> (5.06:1 ✅). Tombol Cyan juga harus menggunakan teks <code>#1A1A1A</code>, bukan putih.
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sub-label">Elemen pendukung</div>
+  <div class="swatch-row">
+    <div class="swatch" style="background:#2A7A45">
+      <div class="swatch-hex" style="color:#E8F5EE">#2A7A45</div>
+      <div class="swatch-name" style="color:#A8DDB5">Success</div>
+      <div class="swatch-ratio" style="color:#A8DDB5">White: 5.29:1 ✅</div>
+    </div>
+    <div class="swatch" style="background:#C97A00">
+      <div class="swatch-hex" style="color:#FFF6E8">#C97A00</div>
+      <div class="swatch-name" style="color:#FFD590">Warning</div>
+      <div class="swatch-ratio" style="color:#FFD590">White: 4.73:1 ✅</div>
+    </div>
+    <div class="swatch" style="background:#A83030">
+      <div class="swatch-hex" style="color:#FFEDED">#A83030</div>
+      <div class="swatch-name" style="color:#FFAAAA">Danger</div>
+      <div class="swatch-ratio" style="color:#FFAAAA">White: 5.94:1 ✅</div>
+    </div>
+    <div class="swatch" style="background:#1A4A8A">
+      <div class="swatch-hex" style="color:#E6EEF9">#1A4A8A</div>
+      <div class="swatch-name" style="color:#A0B8D8">Info / Navy</div>
+      <div class="swatch-ratio" style="color:#A0B8D8">White: 8.64:1 ✅</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sub-label">Status pills — konsisten semua portal</div>
+  <div class="pills">
+    <span class="pill" style="background:#FFF6E8;color:#855008">Hold</span>
+    <span class="pill" style="background:#E6EEF9;color:#1A4A8A">Arrival</span>
+    <span class="pill" style="background:#F5F3FF;color:#4B3FA0">Processing</span>
+    <span class="pill" style="background:#FFF8E0;color:#7A5200">Shipped</span>
+    <span class="pill" style="background:#E8F5EE;color:#1C4731">Done</span>
+  </div>
+
+  <div class="divider"></div>
+  <div class="rules">
+    <div class="rule"><div class="rule-label">Platform</div><div class="rule-val">Desktop — 1440 × 900px</div></div>
+    <div class="rule"><div class="rule-label">Sidebar</div><div class="rule-val">#1D2226 · lebar 200px</div></div>
+    <div class="rule"><div class="rule-label">Topbar</div><div class="rule-val">White · tinggi 44px</div></div>
+    <div class="rule"><div class="rule-label">Content bg</div><div class="rule-val">Steel Gray #F0F3F6</div></div>
+    <div class="rule"><div class="rule-label">Card bg</div><div class="rule-val">White · border 0.5px #E8E8E8</div></div>
+    <div class="rule"><div class="rule-label">Body text</div><div class="rule-val">#333333 — di atas card/bg</div></div>
+    <div class="rule"><div class="rule-label">Sidebar active</div><div class="rule-val">Cyan left-border 2px (dekoratif)</div></div>
+    <div class="rule"><div class="rule-label">Button text</div><div class="rule-val">#1A1A1A di atas Cyan — bukan putih</div></div>
+    <div class="rule"><div class="rule-label">Cyan as text</div><div class="rule-val">Gunakan #007A8A — bukan #00ACC1</div></div>
+    <div class="rule"><div class="rule-label">Card radius</div><div class="rule-val">4px universal</div></div>
+    <div class="rule"><div class="rule-label">Mode</div><div class="rule-val">Light only</div></div>
+    <div class="rule"><div class="rule-label">Letter case</div><div class="rule-val">Sentence case — selalu</div></div>
+  </div>
+</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     4. WCAG CONTRAST REFERENCE
+═══════════════════════════════════════════════════════ -->
+<div class="section">
+<div class="section-title">4 — WCAG contrast reference — semua kombinasi kritis</div>
+<div class="card" style="padding:0;overflow:hidden">
+  <table class="contrast-table">
+    <thead>
+      <tr>
+        <th>Pasangan</th>
+        <th>Ratio</th>
+        <th>Level</th>
+        <th>Penggunaan</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td colspan="4" style="background:#F5F5F5;font-size:10px;font-weight:700;letter-spacing:.06em;color:#888;padding:5px 10px">CUSTOMER PORTAL + WAREHOUSE HEADER</td></tr>
+      <tr>
+        <td><span class="swatch-inline" style="background:#FFFFFF;border:.5px solid #ccc"></span>White text on <span class="swatch-inline" style="background:#1C4731"></span>#1C4731</td>
+        <td><strong>10.53</strong></td>
+        <td><span class="badge-aaa">AAA</span></td>
+        <td>Header/nav teks ✅</td>
+      </tr>
+      <tr>
+        <td><span class="swatch-inline" style="background:#FFFFFF;border:.5px solid #ccc"></span>White text on <span class="swatch-inline" style="background:#2A7A45"></span>#2A7A45</td>
+        <td><strong>5.29</strong></td>
+        <td><span class="badge-pass">AA</span></td>
+        <td>CTA button teks ✅</td>
+      </tr>
+      <tr>
+        <td><span class="swatch-inline" style="background:#2A7A45"></span>#2A7A45 text on <span class="swatch-inline" style="background:#FFFFFF;border:.5px solid #ccc"></span>White</td>
+        <td><strong>5.29</strong></td>
+        <td><span class="badge-pass">AA</span></td>
+        <td>Link teks on white ✅</td>
+      </tr>
+      <tr>
+        <td><span class="swatch-inline" style="background:#1A1A1A"></span>#1A1A1A text on <span class="swatch-inline" style="background:#FFFFFF;border:.5px solid #ccc"></span>White</td>
+        <td><strong>17.40</strong></td>
+        <td><span class="badge-aaa">AAA</span></td>
+        <td>Body text utama ✅</td>
+      </tr>
+      <tr>
+        <td><span class="swatch-inline" style="background:#1A1A1A"></span>#1A1A1A text on <span class="swatch-inline" style="background:#E8F5EE"></span>#E8F5EE Mint</td>
+        <td><strong>15.52</strong></td>
+        <td><span class="badge-aaa">AAA</span></td>
+        <td>Body text on card ✅</td>
+      </tr>
+      <tr>
+        <td><span class="swatch-inline" style="background:#7EC9A0"></span>#7EC9A0 Sage on <span class="swatch-inline" style="background:#FFFFFF;border:.5px solid #ccc"></span>White</td>
+        <td><strong>2.46</strong></td>
+        <td><span class="badge-fail">FAIL</span></td>
+        <td>❌ Jangan pakai sebagai teks</td>
+      </tr>
+      <tr><td colspan="4" style="background:#F5F5F5;font-size:10px;font-weight:700;letter-spacing:.06em;color:#888;padding:5px 10px">WAREHOUSE — AMBER</td></tr>
+      <tr>
+        <td><span class="swatch-inline" style="background:#1A1A1A"></span>#1A1A1A text on <span class="swatch-inline" style="background:#E8820C"></span>#E8820C Amber</td>
+        <td><strong>6.32</strong></td>
+        <td><span class="badge-pass">AA</span></td>
+        <td>Amber button teks ✅</td>
+      </tr>
+      <tr>
+        <td><span class="swatch-inline" style="background:#FFFFFF;border:.5px solid #ccc"></span>White text on <span class="swatch-inline" style="background:#E8820C"></span>#E8820C Amber</td>
+        <td><strong>2.75</strong></td>
+        <td><span class="badge-fail">FAIL</span></td>
+        <td>❌ Jangan putih di atas amber</td>
+      </tr>
+      <tr>
+        <td><span class="swatch-inline" style="background:#3DB89A"></span>#3DB89A Teal on <span class="swatch-inline" style="background:#FFFFFF;border:.5px solid #ccc"></span>White</td>
+        <td><strong>2.46</strong></td>
+        <td><span class="badge-fail">FAIL</span></td>
+        <td>❌ Teal hanya dekoratif (underline)</td>
+      </tr>
+      <tr>
+        <td><span class="swatch-inline" style="background:#1A1A1A"></span>#1A1A1A on <span class="swatch-inline" style="background:#E6F7F4"></span>#E6F7F4 Teal Mist</td>
+        <td><strong>15.73</strong></td>
+        <td><span class="badge-aaa">AAA</span></td>
+        <td>Body text on card ✅</td>
+      </tr>
+      <tr><td colspan="4" style="background:#F5F5F5;font-size:10px;font-weight:700;letter-spacing:.06em;color:#888;padding:5px 10px">ADMIN DASHBOARD</td></tr>
+      <tr>
+        <td><span class="swatch-inline" style="background:#FFFFFF;border:.5px solid #ccc"></span>White text on <span class="swatch-inline" style="background:#1D2226"></span>#1D2226 Gunmetal</td>
+        <td><strong>16.04</strong></td>
+        <td><span class="badge-aaa">AAA</span></td>
+        <td>Sidebar nav teks ✅</td>
+      </tr>
+      <tr>
+        <td><span class="swatch-inline" style="background:#00ACC1"></span>#00ACC1 Cyan on <span class="swatch-inline" style="background:#1D2226"></span>#1D2226 Gunmetal</td>
+        <td><strong>5.86</strong></td>
+        <td><span class="badge-pass">AA</span></td>
+        <td>Active item sidebar ✅</td>
+      </tr>
+      <tr>
+        <td><span class="swatch-inline" style="background:#FFFFFF;border:.5px solid #ccc"></span>White text on <span class="swatch-inline" style="background:#00ACC1"></span>#00ACC1 Cyan</td>
+        <td><strong>2.74</strong></td>
+        <td><span class="badge-fail">FAIL</span></td>
+        <td>❌ Jangan putih di atas cyan</td>
+      </tr>
+      <tr>
+        <td><span class="swatch-inline" style="background:#1A1A1A"></span>#1A1A1A text on <span class="swatch-inline" style="background:#00ACC1"></span>#00ACC1 Cyan</td>
+        <td><strong>6.36</strong></td>
+        <td><span class="badge-pass">AA</span></td>
+        <td>Cyan badge / button teks ✅</td>
+      </tr>
+      <tr>
+        <td><span class="swatch-inline" style="background:#00ACC1"></span>#00ACC1 Cyan on <span class="swatch-inline" style="background:#FFFFFF;border:.5px solid #ccc"></span>White card</td>
+        <td><strong>2.74</strong></td>
+        <td><span class="badge-fail">FAIL</span></td>
+        <td>❌ Cyan tidak bisa jadi teks di putih</td>
+      </tr>
+      <tr>
+        <td><span class="swatch-inline" style="background:#007A8A"></span>#007A8A on <span class="swatch-inline" style="background:#FFFFFF;border:.5px solid #ccc"></span>White (Cyan Dark)</td>
+        <td><strong>5.06</strong></td>
+        <td><span class="badge-pass">AA</span></td>
+        <td>Gunakan ini jika perlu cyan teks ✅</td>
+      </tr>
+      <tr>
+        <td><span class="swatch-inline" style="background:#333333"></span>#333 text on <span class="swatch-inline" style="background:#F0F3F6"></span>#F0F3F6 Steel Gray</td>
+        <td><strong>11.34</strong></td>
+        <td><span class="badge-aaa">AAA</span></td>
+        <td>Body text on content bg ✅</td>
+      </tr>
+      <tr><td colspan="4" style="background:#F5F5F5;font-size:10px;font-weight:700;letter-spacing:.06em;color:#888;padding:5px 10px">STATUS PILLS</td></tr>
+      <tr>
+        <td><span class="swatch-inline" style="background:#855008"></span>#855008 on <span class="swatch-inline" style="background:#FFF6E8"></span>#FFF6E8</td>
+        <td><strong>6.23</strong></td>
+        <td><span class="badge-pass">AA</span></td>
+        <td>Hold pill ✅</td>
+      </tr>
+      <tr>
+        <td><span class="swatch-inline" style="background:#1C4731"></span>#1C4731 on <span class="swatch-inline" style="background:#E8F5EE"></span>#E8F5EE</td>
+        <td><strong>9.39</strong></td>
+        <td><span class="badge-aaa">AAA</span></td>
+        <td>Arrival / Done / Healthy pill ✅</td>
+      </tr>
+      <tr>
+        <td><span class="swatch-inline" style="background:#4B3FA0"></span>#4B3FA0 on <span class="swatch-inline" style="background:#F5F3FF"></span>#F5F3FF</td>
+        <td><strong>7.60</strong></td>
+        <td><span class="badge-aaa">AAA</span></td>
+        <td>Processing pill ✅</td>
+      </tr>
+      <tr>
+        <td><span class="swatch-inline" style="background:#7A5200"></span>#7A5200 on <span class="swatch-inline" style="background:#FFF8E0"></span>#FFF8E0</td>
+        <td><strong>6.51</strong></td>
+        <td><span class="badge-pass">AA</span></td>
+        <td>Shipped pill ✅</td>
+      </tr>
+      <tr>
+        <td><span class="swatch-inline" style="background:#A83030"></span>#A83030 on <span class="swatch-inline" style="background:#FFEDED"></span>#FFEDED</td>
+        <td><strong>5.94</strong></td>
+        <td><span class="badge-pass">AA</span></td>
+        <td>Bermasalah / Danger pill ✅</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     5. DO & DON'T
+═══════════════════════════════════════════════════════ -->
+<div class="section">
+<div class="section-title">5 — Do & Don't — aturan kritis</div>
+<div class="card">
+  <div class="do-dont">
+    <div class="do-box">
+      <strong>✅ DO — selalu lakukan ini</strong>
+      <ul>
+        <li>Body text: <code>#1A1A1A</code> atau <code>#333</code> di atas background putih/muda</li>
+        <li>Button Amber (Warehouse): teks <code>#1A1A1A</code></li>
+        <li>Button Cyan (Admin): teks <code>#1A1A1A</code></li>
+        <li>Cyan sebagai teks on white: gunakan <code>#007A8A</code></li>
+        <li>Bermasalah pill: gunakan <code>#A83030</code> (bukan #CC3F3F)</li>
+        <li>Teal & Sage: hanya untuk underline, border, icon</li>
+        <li>Ikuti 60:30:10 — dominasi neutral/putih</li>
+        <li>Sentence case untuk semua teks label & judul</li>
+        <li>Card radius 4px konsisten di semua portal</li>
+      </ul>
+    </div>
+    <div class="dont-box">
+      <strong>❌ DON'T — jangan lakukan ini</strong>
+      <ul>
+        <li>White teks di atas Amber <code>#E8820C</code> (2.75:1 ❌)</li>
+        <li>White teks di atas Cyan <code>#00ACC1</code> (2.74:1 ❌)</li>
+        <li>Teal <code>#3DB89A</code> sebagai teks di atas putih (2.46:1 ❌)</li>
+        <li>Sage <code>#7EC9A0</code> sebagai teks di atas putih (2.46:1 ❌)</li>
+        <li>Cyan <code>#00ACC1</code> sebagai teks/link di atas putih (2.74:1 ❌)</li>
+        <li>Teks <code>#CC3F3F</code> untuk pill Bermasalah (4.27:1 ⚠️)</li>
+        <li>ALL CAPS — hanya section label boleh, bukan heading</li>
+        <li>Horizontal scroll di mobile</li>
+        <li>Dark mode / color mixing antar portal theme</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     6. PERBANDINGAN QUICK REFERENCE
+═══════════════════════════════════════════════════════ -->
+<div class="section">
+<div class="section-title">6 — Quick reference — ketiga portal</div>
+<div class="card" style="padding:0;overflow:hidden">
+  <table class="cmp-table">
+    <thead>
+      <tr>
+        <th>Atribut</th>
+        <th>Customer Portal</th>
+        <th>Warehouse <span class="badge-new">baru</span></th>
+        <th>Admin Dashboard</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="attr">Platform</td>
+        <td>Mobile 402px</td>
+        <td>Mobile 402px</td>
+        <td>Desktop 1440px</td>
+      </tr>
+      <tr>
+        <td class="attr">60% (bg)</td>
+        <td>White + Mint #E8F5EE</td>
+        <td>White + Teal Mist #E6F7F4</td>
+        <td>Steel Gray #F0F3F6 + White</td>
+      </tr>
+      <tr>
+        <td class="attr">30% (nav)</td>
+        <td>Forest Green #1C4731</td>
+        <td>Forest Green #1C4731</td>
+        <td>Gunmetal #1D2226</td>
+      </tr>
+      <tr>
+        <td class="attr">10% (aksen)</td>
+        <td>Leaf Green #2A7A45</td>
+        <td>Amber #E8820C (CTA kritis)</td>
+        <td>Cyan #00ACC1 (dekoratif)</td>
+      </tr>
+      <tr>
+        <td class="attr">Dekoratif</td>
+        <td>Sage #7EC9A0</td>
+        <td>Teal #3DB89A</td>
+        <td>Cyan #00ACC1</td>
+      </tr>
+      <tr>
+        <td class="attr">Body text</td>
+        <td>#1A1A1A</td>
+        <td>#1A1A1A</td>
+        <td>#333333</td>
+      </tr>
+      <tr>
+        <td class="attr">Button text</td>
+        <td>White on #2A7A45</td>
+        <td>#1A1A1A on #E8820C</td>
+        <td>#1A1A1A on #00ACC1</td>
+      </tr>
+      <tr>
+        <td class="attr">Tab/nav aktif</td>
+        <td>Underline #2A7A45 2px</td>
+        <td>Underline #3DB89A 2px</td>
+        <td>Left-border #00ACC1 2px</td>
+      </tr>
+      <tr>
+        <td class="attr">Font</td>
+        <td>Inter 400/500</td>
+        <td>Inter 400/500</td>
+        <td>Inter 400/500</td>
+      </tr>
+      <tr>
+        <td class="attr">Card radius</td>
+        <td>4px</td>
+        <td>4px</td>
+        <td>4px</td>
+      </tr>
+      <tr>
+        <td class="attr">Min contrast</td>
+        <td>4.5:1 (AA) body</td>
+        <td>4.5:1 (AA) body</td>
+        <td>4.5:1 (AA) body</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     7. TIPOGRAFI
+═══════════════════════════════════════════════════════ -->
+<div class="section">
+<div class="section-title">7 — Tipografi & aturan bersama</div>
+<div class="card">
+  <div class="type-row">
+    <div class="type-block">
+      <div class="rule-label" style="margin-bottom:6px">Page heading</div>
+      <div style="font-size:15px;font-weight:500">Judul halaman</div>
+      <div style="font-size:10px;color:var(--text-muted);margin-top:4px">Inter 500 · 14–16px</div>
+    </div>
+    <div class="type-block">
+      <div class="rule-label" style="margin-bottom:6px">Body</div>
+      <div style="font-size:12px;font-weight:400;color:var(--text-secondary)">Teks deskripsi konten</div>
+      <div style="font-size:10px;color:var(--text-muted);margin-top:4px">Inter 400 · 11–12px</div>
+    </div>
+    <div class="type-block">
+      <div class="rule-label" style="margin-bottom:6px">Label / hint</div>
+      <div style="font-size:11px;font-weight:400;color:var(--text-muted)">Teks bantuan kecil</div>
+      <div style="font-size:10px;color:var(--text-muted);margin-top:4px">Inter 400 · 10–11px</div>
+    </div>
+    <div class="type-block">
+      <div class="rule-label" style="margin-bottom:6px">Section label</div>
+      <div style="font-size:10px;font-weight:600;letter-spacing:.1em;color:var(--text-muted);text-transform:uppercase">SECTION LABEL</div>
+      <div style="font-size:10px;color:var(--text-muted);margin-top:4px">Inter 600 · 10px · UPPER (hanya ini)</div>
+    </div>
+  </div>
+  <div class="rules">
+    <div class="rule"><div class="rule-label">Font family</div><div class="rule-val">Inter — semua portal</div></div>
+    <div class="rule"><div class="rule-label">Font weight</div><div class="rule-val">400 (regular) + 500 (medium)</div></div>
+    <div class="rule"><div class="rule-label">Heading case</div><div class="rule-val">Sentence case — wajib</div></div>
+    <div class="rule"><div class="rule-label">ALL CAPS</div><div class="rule-val">Hanya section-label/meta tag (10px)</div></div>
+    <div class="rule"><div class="rule-label">Horizontal scroll</div><div class="rule-val">Tidak diperbolehkan</div></div>
+    <div class="rule"><div class="rule-label">Theme</div><div class="rule-val">Light mode only — semua portal</div></div>
+  </div>
+</div>
+</div>
+
+</body>
+</html>

@@ -1,25 +1,37 @@
-from odoo import models, fields
+from odoo import models, fields, api
 
 
 TAHAPAN_STEPS = [
-    ('01_registrasi', 'Pendaftaran Kargo'),
-    ('02_penjemputan', 'Penjemputan'),
-    ('03_gudang_asal', 'Penerimaan di Gudang Asal'),
-    ('04_cek_dokumen', 'Pemeriksaan Dokumen'),
-    ('05_terminal_asal', 'Terminal Kargo Asal'),
-    ('06_transit', 'Dalam Perjalanan'),
-    ('07_terminal_tujuan', 'Terminal Kargo Tujuan'),
-    ('08_bea_cukai', 'Pemeriksaan Bea Cukai'),
-    ('09_gudang_tujuan', 'Gudang Tujuan'),
-    ('10_pengiriman', 'Dalam Pengiriman'),
-    ('11_tiba', 'Tiba di Alamat'),
-    ('12_selesai', 'Selesai'),
+    ('01_registrasi',       'Pendaftaran Kargo'),
+    ('02_menunggu_bayar',   'Menunggu Pembayaran'),
+    ('03_bayar_verified',   'Pembayaran Terverifikasi'),
+    ('04_penjemputan',      'Penjemputan Tanaman'),
+    ('05_gudang_asal',      'Penerimaan di Gudang Asal'),
+    ('06_terminal_asal',    'Persiapan Pengiriman Internasional'),
+    ('07_transit',          'Dalam Perjalanan ke Negara Tujuan'),
+    ('08_terminal_tujuan',  'Tiba di Negara Tujuan'),
+    ('09_bea_cukai',        'Proses Bea Cukai'),
+    ('10_pengiriman_lokal', 'Diserahkan ke Kurir Lokal'),
+    ('11_tiba',             'Tiba di Alamat Penerima'),
+    ('12_selesai',          'Selesai'),
+]
+
+PREP_SUBSTEPS = [
+    ('pengecekan_awal',  'Pengecekan Awal'),
+    ('pencucian',        'Pencucian'),
+    ('pengemasan',       'Pengemasan'),
+    ('pengecekan_akhir', 'Pengecekan Akhir'),
+]
+
+WAREHOUSE_ALLOWED_STATUS = [
+    '05_gudang_asal',
+    '06_terminal_asal',
 ]
 
 
 class AgfTahapan(models.Model):
     _name = 'agf.tahapan'
-    _description = 'Log Perubahan Status Tahapan Pengiriman'
+    _description = 'Log Tahapan & Aktivitas Pesanan Kargo'
     _order = 'timestamp desc, id desc'
 
     kargo_id = fields.Many2one(
@@ -34,6 +46,20 @@ class AgfTahapan(models.Model):
         selection=TAHAPAN_STEPS,
         string='Tahapan',
         required=True,
+    )
+    
+    prep_substep = fields.Selection(
+        selection=PREP_SUBSTEPS,
+        string='Sub-tahap Persiapan',
+        help='Diisi oleh tim warehouse saat kargo dalam tahap persiapan (05_gudang_asal).',
+    )
+
+    # is_internal=True → hanya terlihat di admin, tidak muncul di customer tracking.
+    # Gunakan untuk log koreksi data, catatan internal, dsb.
+    is_internal = fields.Boolean(
+        string='Internal (Admin Only)',
+        default=False,
+        help='Jika dicentang, log ini tidak akan muncul di halaman tracking customer.',
     )
 
     lokasi = fields.Char(string='Lokasi')
@@ -62,18 +88,20 @@ class AgfTahapan(models.Model):
         readonly=True,
     )
 
-    # Checklist kondisi (untuk halaman Update Status warehouse)
+    # Checklist kondisi tanaman (opsional, diisi tim gudang)
     cek_daun = fields.Boolean(string='Daun OK')
     cek_akar = fields.Boolean(string='Akar OK')
     cek_hama = fields.Boolean(string='Bebas Hama')
 
-    status_baru = fields.Selection(
-        selection=[
-            ('hold', 'Hold'),
-            ('arrival', 'Arrival'),
-            ('processing', 'Processing'),
-            ('shipped', 'Shipped'),
-            ('done', 'Done'),
-        ],
-        string='Status Setelah Tahapan',
-    )
+    @api.model_create_multi
+    def create(self, vals_list):
+        records = super().create(vals_list)
+        step_keys = [s[0] for s in TAHAPAN_STEPS]
+        for rec in records:
+            if not rec.is_internal and rec.tahap:
+                current = rec.kargo_id.status
+                current_idx = step_keys.index(current) if current in step_keys else -1
+                new_idx = step_keys.index(rec.tahap) if rec.tahap in step_keys else -1
+                if new_idx >= current_idx:
+                    rec.kargo_id.sudo().write({'status': rec.tahap})
+        return records

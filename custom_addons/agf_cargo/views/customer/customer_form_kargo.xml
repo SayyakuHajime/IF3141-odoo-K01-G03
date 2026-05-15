@@ -1,0 +1,500 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="customer_form_kargo" name="AGF Cargo — Form Pendaftaran">
+<t t-call="website.layout">
+    <t t-set="no_header" t-value="1"/>
+    <t t-set="no_footer" t-value="1"/>
+    <t t-set="editable" t-value="0"/>
+
+    <div class="agf-portal">
+
+        <!-- TOP NAV TABS -->
+        <div class="agf-portal__tabs">
+            <a 
+                href="/agf/customer/tracking"
+                class="agf-portal__tab">
+                Tracking Pengiriman
+            </a>
+            <a 
+                href="/agf/customer/daftar"
+                class="agf-portal__tab agf-portal__tab--active">
+                Pendaftaran Kargo
+            </a>
+        </div>
+
+        <!-- SUKSES STATE -->
+        <t t-if="success">
+            <div class="agf-form__success">
+                <div class="agf-form__success-icon">
+                    <i data-lucide="check-circle" 
+                    style="width:48px;height:48px;color:#2A7A45"/>
+                </div>
+                <h2 class="agf-form__success-title">
+                    Pendaftaran Berhasil!
+                </h2>
+                <p class="agf-form__success-sub">
+                    Simpan nomor registrasi berikut untuk melacak
+                    pengiriman tanaman Anda.
+                </p>
+
+                <div class="agf-form__nomor-card">
+                    <div class="agf-form__nomor-item">
+                        <span class="agf-form__nomor-label">
+                            Nomor Penitip (Pengirim)
+                        </span>
+                        <span class="agf-form__nomor-value">
+                            <t t-esc="nomor_penitip"/>
+                        </span>
+                    </div>
+                    <div class="agf-form__nomor-divider"/>
+                    <div class="agf-form__nomor-item">
+                        <span class="agf-form__nomor-label">
+                            Nomor Penerima
+                        </span>
+                        <span class="agf-form__nomor-value">
+                            <t t-esc="nomor_penerima"/>
+                        </span>
+                    </div>
+                </div>
+
+                <p class="agf-form__success-hint">
+                    Gunakan nomor di atas untuk tracking di halaman
+                    <a href="/agf/customer/tracking">Tracking Pengiriman</a>
+                </p>
+
+                <a 
+                    href="/agf/customer/daftar"
+                    class="agf-form__btn-new">
+                    Daftar Kargo Baru
+                </a>
+            </div>
+        </t>
+
+        <!-- FORM STATE -->
+        <t t-if="not success">
+
+            <!-- HEADER -->
+            <div class="agf-portal__header">
+                <h2 class="agf-portal__title">
+                    Yuk Kirim Tanamanmu Bersama AGF Cargo
+                </h2>
+                <p class="agf-portal__subtitle">
+                    Isi form ini untuk mendaftar dan menggunakan jasa kargo
+                </p>
+            </div>
+
+            <!-- SYARAT DAN KETENTUAN -->
+            <div class="agf-form__section agf-form__section--info">
+                <div class="agf-form__section-header">
+                    <i data-lucide="info"
+                    style="width:16px;height:16px"/>
+                    <span>Pahami Informasi ini terlebih dahulu!</span>
+                </div>
+                <div class="agf-form__tnc">
+                    <p>1. Tanaman yang akan di ekspor, akan di treatment di AGF. Tanaman harus sampai  H-7 sebelum pengiriman.</p>
+                    <p>2. Segala bentuk keterlambatan yang diakibatkan oleh pengiriman lokal di negara tujuan, diluar tanggung jawab dan kendali kami.</p>
+                    <p>3. Kami tidak memberikan jaminan atas tanaman yang rusak ataupun mati saat tiba di alamat tujuan.</p>
+                    <p>4. Proses pengiriman membutuhkan 2 hari pengiriman dari Indonesia, 1 hari Clearance dan USDA, 2 hari pengiriman lokal. *Dalam keadaan tertentu mungkin waktu akan bertambah.</p>
+                    <p>5. Segala bentuk biaya yang ditimbulkan atas kendala yang terjadi di badan karantina negara setempat yang mengakibatkan tanaman harus dimusnahkan atau re-ekspor menjadi tanggung jawab pengirim.</p>
+                    <p>6. Membaca berarti menyetujui syarat dan ketentuan kiriman ini.</p>
+                    <p>Kirim Ke alamat kami berikut ini dengan nama penerima "Art Garden Admin Dwi":</p>
+                    <p>Kp Jl. Kebon Hui, RT.05/RW.17, Cigugur Girang, Kec. Parongpong, Kabupaten Bandung Barat, Jawa Barat 40559</p>
+                </div>
+            </div>
+
+            <!-- FORM -->
+            <form 
+                action="/agf/customer/daftar/submit"
+                method="POST"
+                id="agf-form-kargo">
+                
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                <!-- FRAME 1: INFORMASI PENGIRIM -->
+                <div class="agf-form__section">
+                    <div class="agf-form__section-header">
+                        <i data-lucide="user"
+                        style="width:16px;height:16px"/>
+                        <span>Informasi Pengirim</span>
+                    </div>
+                    <div class="agf-form__fields">
+
+                        <div class="agf-form__field">
+                            <label class="agf-form__label">
+                                Nama Lengkap
+                                <span class="agf-form__required">*</span>
+                            </label>
+                            <input 
+                                type="text"
+                                name="nama_penitip"
+                                class="agf-form__input"
+                                placeholder="Masukkan nama lengkap"
+                                required="1"/>
+                        </div>
+
+                        <div class="agf-form__field">
+                            <label class="agf-form__label">
+                                Nomor HP
+                                <span class="agf-form__required">*</span>
+                            </label>
+                            <input
+                                type="tel"
+                                name="hp_penitip"
+                                class="agf-form__input"
+                                placeholder="Contoh: 08123456789"
+                                required="1"/>
+                        </div>
+
+                        <div class="agf-form__field">
+                            <label class="agf-form__label">
+                                Email
+                                <span class="agf-form__required">*</span>
+                            </label>
+                            <input 
+                                type="email"
+                                name="email_penitip"
+                                class="agf-form__input"
+                                placeholder="contoh@email.com"
+                                required="1"/>
+                        </div>
+
+                        <div class="agf-form__field">
+                            <label class="agf-form__label">
+                                Alamat Lengkap
+                                <span class="agf-form__required">*</span>
+                            </label>
+                            <textarea
+                                name="alamat_penitip"
+                                class="agf-form__input agf-form__input--textarea"
+                                placeholder="Jl. Contoh No. 1, Bandung"
+                                rows="3"
+                                required="1"/>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- FRAME 2: INFORMASI PENERIMA -->
+                <div class="agf-form__section">
+                    <div class="agf-form__section-header">
+                        <i data-lucide="user-check"
+                        style="width:16px;height:16px"/>
+                        <span>Informasi Penerima</span>
+                    </div>
+                    <div class="agf-form__fields">
+
+                        <div class="agf-form__field">
+                            <label class="agf-form__label">
+                                Nama Lengkap
+                                <span class="agf-form__required">*</span>
+                            </label>
+                            <input 
+                                type="text"
+                                name="nama_penerima"
+                                class="agf-form__input"
+                                placeholder="Masukkan nama lengkap"
+                                required="1"/>
+                        </div>
+
+                        <div class="agf-form__field">
+                            <label class="agf-form__label">
+                                Nomor HP
+                                <span class="agf-form__required">*</span>
+                            </label>
+                            <input 
+                                type="tel"
+                                name="hp_penerima"
+                                class="agf-form__input"
+                                placeholder="Contoh: +1234567890"
+                                required="1"/>
+                        </div>
+
+                        <div class="agf-form__field">
+                            <label class="agf-form__label">
+                                Email
+                                <span class="agf-form__required">*</span>
+                            </label>
+                            <input 
+                                type="email"
+                                name="email_penerima"
+                                class="agf-form__input"
+                                placeholder="contoh@email.com"
+                                required="1"/>
+                        </div>
+
+                        <div class="agf-form__field">
+                            <label class="agf-form__label">
+                                Alamat Lengkap + Kode Pos
+                                <span class="agf-form__required">*</span>
+                            </label>
+                            <textarea 
+                                name="alamat_penerima"
+                                class="agf-form__input agf-form__input--textarea"
+                                placeholder="123 Main St, Los Angeles, CA 90001"
+                                rows="3"
+                                required="1"/>
+                        </div>
+
+                        <div class="agf-form__field">
+                            <label class="agf-form__label">
+                                Kota Tujuan
+                            </label>
+                            <input 
+                                type="text"
+                                name="kota_tujuan"
+                                class="agf-form__input"
+                                placeholder="Contoh: Los Angeles"/>
+                        </div>
+
+                        <div class="agf-form__field">
+                            <label class="agf-form__label">
+                                Negara Tujuan
+                            </label>
+                            <input 
+                                type="text"
+                                name="negara_tujuan"
+                                class="agf-form__input"
+                                placeholder="Contoh: United States"/>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- FRAME 3: DAFTAR TANAMAN -->
+                <div class="agf-form__section">
+                    <div class="agf-form__section-header">
+                        <i data-lucide="sprout"
+                        style="width:16px;height:16px"/>
+                        <span>Daftar Tanaman</span>
+                    </div>
+
+                    <div id="tanaman-list">
+                        <!-- Row tanaman pertama (tidak bisa dihapus) -->
+                        <div class="agf-form__tanaman-row" data-index="0">
+                            <div class="agf-form__tanaman-fields">
+                                <div class="agf-form__field">
+                                    <label class="agf-form__label">
+                                        Nama / Genus Tanaman
+                                        <span class="agf-form__required">*</span>
+                                    </label>
+                                    <input 
+                                        type="text"
+                                        name="tanaman_nama_0"
+                                        class="agf-form__input"
+                                        placeholder="Contoh: Monstera deliciosa"
+                                        required="1"/>
+                                </div>
+                                <div class="agf-form__tanaman-meta">
+                                    <div class="agf-form__field">
+                                        <label class="agf-form__label">
+                                            Jumlah
+                                        </label>
+                                        <input 
+                                            type="number"
+                                            name="tanaman_jumlah_0"
+                                            class="agf-form__input agf-form__input--sm"
+                                            value="1"
+                                            min="1"
+                                            required="1"/>
+                                    </div>
+                                    <div class="agf-form__field">
+                                        <label class="agf-form__label">
+                                            Ukuran
+                                        </label>
+                                        <select name="tanaman_ukuran_0"
+                                                class="agf-form__input agf-form__input--sm">
+                                            <option value="kecil">Kecil</option>
+                                            <option value="sedang"
+                                                    selected="1">Sedang</option>
+                                            <option value="besar">Besar</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tombol tambah tanaman -->
+                    <button type="button"
+                            id="btn-tambah-tanaman"
+                            class="agf-form__btn-add">
+                        <i data-lucide="plus"
+                        style="width:14px;height:14px"/>
+                        Tambah Tanaman
+                    </button>
+
+                    <input 
+                        type="hidden"
+                        id="tanaman-count"
+                        name="tanaman_count"
+                        value="1"/>
+                </div>
+
+                <!-- FRAME 4: PREFERENSI PENGIRIMAN -->
+                <div class="agf-form__section">
+                    <div class="agf-form__section-header">
+                        <i data-lucide="package"
+                        style="width:16px;height:16px"/>
+                        <span>Preferensi Pengiriman</span>
+                    </div>
+                    <div class="agf-form__fields">
+
+                        <div class="agf-form__field">
+                            <label class="agf-form__label">
+                                Layanan Lokal
+                                <span class="agf-form__required">*</span>
+                            </label>
+                            <select name="layanan_lokal"
+                                    class="agf-form__input">
+                                <option value="reguler">
+                                    Reguler 3-5 Hari UPS/USPS
+                                </option>
+                                <option value="next_day">
+                                    Next Day 1-2 Hari UPS/USPS (Biaya Tambahan)
+                                </option>
+                                <option value="southwest">
+                                    SouthWest Cargo - Pickup at Local Airport
+                                    (Biaya Tambahan)
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="agf-form__field">
+                            <label class="agf-form__label">
+                                Additional Packaging
+                            </label>
+                            <select name="additional_packaging"
+                                    class="agf-form__input">
+                                <option value="none">None</option>
+                                <option value="dakron">
+                                    Dakron (Poly Fill)
+                                </option>
+                                <option value="tissue">Tissue</option>
+                            </select>
+                        </div>
+
+                        <div class="agf-form__field">
+                            <label class="agf-form__label">
+                                Winter Packaging
+                            </label>
+                            <select name="winter_packaging"
+                                    class="agf-form__input">
+                                <option value="none">None</option>
+                                <option value="heat_pack">
+                                    Heat Pack (+$8)
+                                </option>
+                                <option value="insulation">
+                                    Insulation (+$8)
+                                </option>
+                                <option value="heat_insulation">
+                                    Heatpack &amp; Insulation (+$8)
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="agf-form__field">
+                            <label class="agf-form__label">Catatan</label>
+                            <textarea 
+                                name="catatan"
+                                class="agf-form__input agf-form__input--textarea"
+                                placeholder="Catatan tambahan (opsional)"
+                                rows="3"/>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- SUBMIT -->
+                <div class="agf-form__submit-wrap">
+                    <button type="submit"
+                            class="agf-form__btn-submit">
+                        <i data-lucide="send"
+                        style="width:16px;height:16px"/>
+                        Daftarkan Kargo
+                    </button>
+                </div>
+
+            </form>
+        </t>
+        <!-- END form state -->
+
+    </div>
+
+    <!-- JavaScript untuk dynamic tanaman rows -->
+    <script>
+        //<![CDATA[
+        (function() {
+            var count = 1;
+
+            document.getElementById('btn-tambah-tanaman')
+                .addEventListener('click', function() {
+                    var idx = count;
+                    var row = document.createElement('div');
+                    row.className = 'agf-form__tanaman-row';
+                    row.dataset.index = idx;
+
+                    var html = '';
+                    html += '<div class="agf-form__tanaman-fields">';
+                    html += '  <div class="agf-form__field">';
+                    html += '    <label class="agf-form__label">';
+                    html += '      Nama / Genus Tanaman';
+                    html += '      <span class="agf-form__required">*</span>';
+                    html += '    </label>';
+                    html += '    <input type="text"';
+                    html += '           name="tanaman_nama_' + idx + '"';
+                    html += '           class="agf-form__input"';
+                    html += '           placeholder="Contoh: Monstera deliciosa"';
+                    html += '           required />';
+                    html += '  </div>';
+                    html += '  <div class="agf-form__tanaman-meta">';
+                    html += '    <div class="agf-form__field">';
+                    html += '      <label class="agf-form__label">Jumlah</label>';
+                    html += '      <input type="number"';
+                    html += '             name="tanaman_jumlah_' + idx + '"';
+                    html += '             class="agf-form__input agf-form__input--sm"';
+                    html += '             value="1" min="1" required />';
+                    html += '    </div>';
+                    html += '    <div class="agf-form__field">';
+                    html += '      <label class="agf-form__label">Ukuran</label>';
+                    html += '      <select name="tanaman_ukuran_' + idx + '"';
+                    html += '              class="agf-form__input agf-form__input--sm">';
+                    html += '        <option value="kecil">Kecil</option>';
+                    html += '        <option value="sedang" selected>Sedang</option>';
+                    html += '        <option value="besar">Besar</option>';
+                    html += '      </select>';
+                    html += '    </div>';
+                    html += '  </div>';
+                    html += '  <button type="button" class="agf-form__btn-remove"';
+                    html += '          id="btn-remove-' + idx + '">';
+                    html += '    Hapus';
+                    html += '  </button>';
+                    html += '</div>';
+
+                    row.innerHTML = html;
+                    document.getElementById('tanaman-list').appendChild(row);
+
+                    // Attach event listener ke tombol hapus
+                    document.getElementById('btn-remove-' + idx)
+                        .addEventListener('click', function() {
+                            row.remove();
+                            document.getElementById('tanaman-count').value =
+                                document.querySelectorAll('.agf-form__tanaman-row').length;
+                            if (window.lucide) { lucide.createIcons(); }
+                        });
+
+                    count++;
+                    document.getElementById('tanaman-count').value =
+                        document.querySelectorAll('.agf-form__tanaman-row').length;
+
+                    if (window.lucide) { lucide.createIcons(); }
+                });
+        })();
+        //]]>
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.462.0/dist/umd/lucide.min.js"/>
+    <script>lucide.createIcons();</script>
+
+</t>
+</template>
+</odoo>

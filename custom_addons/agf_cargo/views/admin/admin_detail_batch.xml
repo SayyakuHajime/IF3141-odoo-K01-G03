@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="admin_detail_batch" name="AGF Admin — Detail Batch">
+        <t t-call="agf_cargo.admin_layout">
+            <t t-set="current_page" t-value="'batch'"/>
+            <t t-set="page_title" t-value="'Detail Batch'"/>
+
+            <!-- Breadcrumb -->
+            <nav class="agf-breadcrumb">
+                <a href="/agf/admin/dashboard">Home</a>
+                <span class="agf-breadcrumb__sep">/</span>
+                <a href="/agf/admin/batch">Riwayat Batch</a>
+                <span class="agf-breadcrumb__sep">/</span>
+                <span class="agf-breadcrumb__active">Detail Batch <t t-esc="batch.name"/></span>
+            </nav>
+
+            <!-- Header -->
+            <div class="agf-page-header">
+                <div>
+                    <h1 class="agf-page-header__title">Detail Batch <t t-esc="batch.name"/></h1>
+                </div>
+                <a href="/agf/admin/batch" class="agf-btn-secondary">
+                    <i data-lucide="arrow-left" style="width:15px;height:15px"/>
+                    Kembali
+                </a>
+            </div>
+
+            <!-- Batch Info Card -->
+            <div class="agf-card agf-batch-info-card">
+                <div class="agf-batch-info-card__row">
+                    <div class="agf-batch-info-card__item">
+                        <div class="agf-batch-info-card__label">Nama Batch</div>
+                        <div class="agf-batch-info-card__value"><t t-esc="batch.name"/></div>
+                    </div>
+                    <div class="agf-batch-info-card__item">
+                        <div class="agf-batch-info-card__label">Status</div>
+                        <div class="agf-batch-info-card__value">
+                            <span t-attf-class="agf-badge-batch status-#{batch.status}">
+                                <t t-esc="dict(aktif='Aktif', selesai='Selesai', terkirim='Terkirim').get(batch.status, batch.status)"/>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="agf-batch-info-card__item">
+                        <div class="agf-batch-info-card__label">Tgl Keberangkatan</div>
+                        <div class="agf-batch-info-card__value"><t t-esc="batch.tanggal_keberangkatan"/></div>
+                    </div>
+                    <div class="agf-batch-info-card__item">
+                        <div class="agf-batch-info-card__label">Tgl Buka Pendaftaran</div>
+                        <div class="agf-batch-info-card__value"><t t-esc="batch.tanggal_mulai"/></div>
+                    </div>
+                    <div class="agf-batch-info-card__item">
+                        <div class="agf-batch-info-card__label">Total Pesanan</div>
+                        <div class="agf-batch-info-card__value agf-batch-info-card__value--num">
+                            <t t-esc="batch.total_pesanan"/>
+                        </div>
+                    </div>
+                    <div class="agf-batch-info-card__item">
+                        <div class="agf-batch-info-card__label">Total Tanaman</div>
+                        <div class="agf-batch-info-card__value agf-batch-info-card__value--num">
+                            <t t-esc="batch.total_tanaman"/>
+                        </div>
+                    </div>
+                </div>
+                <t t-if="batch.catatan">
+                    <div class="agf-batch-info-card__catatan">
+                        <div class="agf-batch-info-card__label">Catatan</div>
+                        <div><t t-esc="batch.catatan"/></div>
+                    </div>
+                </t>
+            </div>
+
+            <!-- Tabel Pesanan -->
+            <div class="agf-card">
+                <div class="agf-card__header">
+                    <div class="agf-card__title">
+                        Daftar Pesanan (<t t-esc="batch.total_pesanan"/>)
+                    </div>
+                </div>
+
+                <t t-if="batch.kargo_ids">
+                    <div class="agf-table-wrap">
+                        <table class="agf-table agf-table--hover">
+                            <thead>
+                                <tr>
+                                    <th>Nomor Pesanan</th>
+                                    <th>Pengirim</th>
+                                    <th>Penerima</th>
+                                    <th>Tujuan</th>
+                                    <th>Status</th>
+                                    <th>Tanaman</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="batch.kargo_ids" t-as="k">
+                                    <tr>
+                                        <td>
+                                            <div class="agf-table__primary"><t t-esc="k.nomor_penitip"/></div>
+                                            <div class="agf-table__sub"><t t-esc="k.nomor_penerima"/></div>
+                                        </td>
+                                        <td>
+                                            <div><t t-esc="k.nama_penitip"/></div>
+                                            <div class="agf-table__sub"><t t-esc="k.hp_penitip"/></div>
+                                        </td>
+                                        <td>
+                                            <div><t t-esc="k.nama_penerima"/></div>
+                                            <div class="agf-table__sub"><t t-esc="k.hp_penerima"/></div>
+                                        </td>
+                                        <td>
+                                            <t t-if="k.kota_tujuan">
+                                                <t t-esc="k.kota_tujuan"/>
+                                                <t t-if="k.negara_tujuan">, <t t-esc="k.negara_tujuan"/></t>
+                                            </t>
+                                            <t t-else="">—</t>
+                                        </td>
+                                        <td>
+                                            <span t-attf-class="agf-badge-status status-#{k.status}">
+                                                <t t-esc="k.status.capitalize()"/>
+                                            </span>
+                                        </td>
+                                        <td><t t-esc="k.total_tanaman"/></td>
+                                        <td>
+                                            <a t-attf-href="/agf/admin/pesanan/#{k.id}" class="agf-btn-sm">
+                                                Lihat Detail
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+                <t t-else="">
+                    <div class="agf-empty-state">
+                        <i data-lucide="package" style="width:40px;height:40px;color:#D1D5DB"/>
+                        <p>Belum ada pesanan dalam batch ini.</p>
+                    </div>
+                </t>
+            </div>
+
+        </t>
+    </template>
+</odoo>

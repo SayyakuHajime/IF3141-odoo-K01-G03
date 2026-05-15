@@ -19,3 +19,8 @@ access_agf_qr_tag_user,agf.qr.tag user,model_agf_qr_tag,base.group_user,1,0,0,0
 access_agf_qr_tag_admin,agf.qr.tag admin,model_agf_qr_tag,agf_cargo.group_agf_admin,1,1,1,1
 access_agf_qr_tag_manajer,agf.qr.tag manajer,model_agf_qr_tag,agf_cargo.group_agf_manajer,1,0,0,0
 access_agf_qr_tag_gudang,agf.qr.tag gudang,model_agf_qr_tag,agf_cargo.group_agf_gudang,1,0,0,0
+access_agf_batch_system,agf.batch system,model_agf_batch,base.group_system,1,1,1,1
+access_agf_kargo_system,agf.kargo system,model_agf_kargo,base.group_system,1,1,1,1
+access_agf_tanaman_item_system,agf.tanaman.item system,model_agf_tanaman_item,base.group_system,1,1,1,1
+access_agf_tahapan_system,agf.tahapan system,model_agf_tahapan,base.group_system,1,1,1,1
+access_agf_qr_tag_system,agf.qr.tag system,model_agf_qr_tag,base.group_system,1,1,1,1

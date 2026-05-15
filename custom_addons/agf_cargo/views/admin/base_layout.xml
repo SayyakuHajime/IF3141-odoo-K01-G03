@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="admin_base_layout" name="AGF Admin Base Layout">
+        <t t-call="web.layout">
+            <t t-set="head">
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+                <link rel="stylesheet" href="/web/assets/web.assets_frontend/web.assets_frontend.min.css"/>
+            </t>
+            <t t-set="body_classname" t-value="'agf-admin'"/>
+            <div class="agf-admin-layout">
+                <div class="agf-admin-sidebar">
+                    <div class="agf-admin-sidebar-brand">
+                        AGF <span>Admin Panel</span>
+                    </div>
+                    <div class="agf-admin-sidebar-section">Overview</div>
+                    <a href="/agf/admin/dashboard" class="agf-admin-sidebar-link">
+                        <i class="fa fa-home"/> Dashboard
+                    </a>
+                    <div class="agf-admin-sidebar-section">Operasional</div>
+                    <a href="/agf/admin/batch-aktif" class="agf-admin-sidebar-link">
+                        <i class="fa fa-box"/> Manajemen Batch Aktif
+                    </a>
+                    <a href="/agf/admin/riwayat-batch" class="agf-admin-sidebar-link">
+                        <i class="fa fa-history"/> Riwayat Batch
+                    </a>
+                    <a href="/agf/admin/qr" class="agf-admin-sidebar-link">
+                        <i class="fa fa-qrcode"/> QR Code
+                    </a>
+                    <div class="agf-admin-sidebar-section">Admin</div>
+                    <a href="/agf/admin/pengguna" class="agf-admin-sidebar-link">
+                        <i class="fa fa-users"/> Pengguna
+                    </a>
+                </div>
+                <div class="agf-admin-main">
+                    <div class="agf-admin-topbar">
+                        <div class="agf-admin-topbar-search">
+                            <input type="text" placeholder="Cari..."/>
+                        </div>
+                        <div class="agf-admin-topbar-user">
+                            <t t-esc="user_initials"/>
+                        </div>
+                    </div>
+                    <div class="agf-admin-content">
+                        <t t-out="0"/>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

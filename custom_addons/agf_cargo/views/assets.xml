@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="agf_cargo_admin_scss" model="ir.asset">
+        <field name="name">AGF Cargo Admin SCSS</field>
+        <field name="bundle">web.assets_frontend</field>
+        <field name="path">agf_cargo/static/src/scss/_variables.scss</field>
+    </record>
+    <record id="agf_cargo_portal_admin_scss" model="ir.asset">
+        <field name="name">AGF Cargo Portal Admin SCSS</field>
+        <field name="bundle">web.assets_frontend</field>
+        <field name="path">agf_cargo/static/src/scss/portal_admin.scss</field>
+    </record>
+</odoo>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="warehouse_landing" name="Warehouse — Landing">
+        <t t-call="website.layout">
+            <t t-set="no_header" t-value="1"/>
+            <t t-set="no_footer" t-value="1"/>
+            <t t-set="editable" t-value="0"/>
+            <div class="agf-wh">
+                <div class="agf-wh-landing">
+                    <div class="agf-wh-landing__icon">
+                        <i data-lucide="leaf" style="width:40px;height:40px;stroke:rgba(255,255,255,0.9)"/>
+                    </div>
+                    <div class="agf-wh-landing__title">AGF Cargo</div>
+                    <div class="agf-wh-landing__sub">Warehouse Operations</div>
+                    <a href="/web/login?redirect=/agf/warehouse/pesanan" class="agf-wh-landing__btn">
+                        <i data-lucide="log-in"/>
+                        Masuk
+                    </a>
+                </div>
+            </div>
+            <script src="https://cdn.jsdelivr.net/npm/lucide@0.462.0/dist/umd/lucide.min.js"/>
+            <script>lucide.createIcons();</script>
+        </t>
+    </template>
+</odoo>
