@@ -280,7 +280,7 @@ AKTIF_KARGO = [
             ('07_transit',        'Paket sedang dalam perjalanan ke negara tujuan.', 'In-flight — Jakarta → Chicago'),
         ],
     },
-    # K6 — siap dicek gudang (untuk demo warehouse update status)
+    # K6 — baru tiba di gudang (untuk demo warehouse Scene 4: Arrival)
     {
         'nama_penitip':    'Fajar Nugroho',
         'hp_penitip':      '+62 877-2222-3333',
@@ -305,6 +305,7 @@ AKTIF_KARGO = [
             ('02_menunggu_bayar', 'Invoice dikirim.', 'Bandung'),
             ('03_bayar_verified', 'Pembayaran terverifikasi.', 'Lembang, Bandung'),
             ('04_penjemputan',    'Tanaman dijemput.', 'Jl. Bougenville No. 8, Bandung'),
+            ('05_gudang_asal',    'Tanaman tiba di gudang. Siap masuk proses pengecekan.', 'Gudang AGF Cargo, Lembang'),
         ],
     },
     # K7 — hold/bermasalah (untuk demo admin dashboard alert)
@@ -545,10 +546,12 @@ def seed_historical_batches(models, uid):
 
 def seed_qr_tags(models, uid, active_batch_id, active_kargo_ids, hist_batch_ids):
     print('\n🏷  Membuat QR Tags...')
+    # K4 (index 3, di gudang → 05_gudang_asal) dan K6 (index 5, baru dijemput)
+    # adalah kargo yang relevan untuk demo warehouse scan QR.
     fixtures = [
-        {'status': 'aktif',  'kargo_id': active_kargo_ids[0], 'batch_id': active_batch_id},
-        {'status': 'aktif',  'kargo_id': active_kargo_ids[1], 'batch_id': active_batch_id},
-        {'status': 'aktif',  'kargo_id': active_kargo_ids[2], 'batch_id': active_batch_id},
+        {'status': 'aktif',  'kargo_id': active_kargo_ids[3], 'batch_id': active_batch_id},  # K4 — di gudang
+        {'status': 'aktif',  'kargo_id': active_kargo_ids[5], 'batch_id': active_batch_id},  # K6 — baru dijemput
+        {'status': 'aktif',  'kargo_id': active_kargo_ids[4], 'batch_id': active_batch_id},  # K5 — dalam perjalanan
         {'status': 'idle',   'kargo_id': False,               'batch_id': active_batch_id},
         {'status': 'idle',   'kargo_id': False,               'batch_id': active_batch_id},
         {'status': 'idle',   'kargo_id': False,               'batch_id': active_batch_id},

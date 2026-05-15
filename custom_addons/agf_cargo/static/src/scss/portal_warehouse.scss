@@ -255,15 +255,18 @@
 .agf-wh-pill {
     font-size: 10px; font-weight: 600;
     padding: 3px 10px; border-radius: 100px; white-space: nowrap;
-    &--hold       { background: $pill-hold-bg;       color: $pill-hold-text; }
-    &--arrival    { background: $pill-arrival-bg;    color: $pill-arrival-text; }
-    &--processing { background: $pill-processing-bg; color: $pill-processing-text; }
-    &--shipped    { background: $pill-shipped-bg;    color: $pill-shipped-text; }
-    &--done       { background: $pill-done-bg;       color: $pill-done-text; }
-    &--sehat      { background: $pill-sehat-bg;      color: $pill-sehat-text; }
-    &--kurang_sehat { background: $pill-kurang-bg;   color: $pill-kurang-text; }
-    &--bermasalah { background: $pill-masalah-bg;    color: $pill-masalah-text; }
-    &--belum_dicek { background: $pill-unchecked-bg; color: $pill-unchecked-text; }
+    &--pill-registrasi  { background: $color-info-bg;       color: $color-info; }
+    &--pill-menunggu    { background: $pill-hold-bg;         color: $pill-hold-text; }
+    &--pill-verified    { background: $color-success-bg;     color: $color-success; }
+    &--pill-penjemputan { background: $pill-hold-bg;         color: $pill-hold-text; }
+    &--pill-gudang      { background: $pill-arrival-bg;      color: $pill-arrival-text; }
+    &--pill-transit     { background: $pill-processing-bg;   color: $pill-processing-text; }
+    &--pill-shipped     { background: $pill-shipped-bg;      color: $pill-shipped-text; }
+    &--pill-done        { background: $pill-done-bg;         color: $pill-done-text; }
+    &--sehat            { background: $pill-sehat-bg;        color: $pill-sehat-text; }
+    &--kurang_sehat     { background: $pill-kurang-bg;       color: $pill-kurang-text; }
+    &--bermasalah       { background: $pill-masalah-bg;      color: $pill-masalah-text; }
+    &--belum_dicek      { background: $pill-unchecked-bg;    color: $pill-unchecked-text; }
 }
 
 // ─────────────────────────────────────────────
