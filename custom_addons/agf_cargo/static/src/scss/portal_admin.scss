@@ -1058,9 +1058,12 @@ body.website_page {
 .agf-modal-backdrop {
     display: none;
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
     background: rgba(0, 0, 0, 0.45);
-    z-index: 500;
+    z-index: 9999;
     align-items: center;
     justify-content: center;
     padding: $spacing-md;
@@ -1069,6 +1072,15 @@ body.website_page {
 }
 
 .agf-modal {
+    // Reset portal_customer.scss which makes .agf-modal a full-screen flex overlay
+    position: static !important;
+    inset: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    padding: 0 !important;
+    z-index: auto !important;
     background: #FFFFFF;
     border-radius: 8px;
     width: 100%;
@@ -1104,8 +1116,11 @@ body.website_page {
 
     &__body {
         padding: $spacing-lg;
-        display: flex;
-        flex-direction: column;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        justify-content: flex-start !important;
+        flex: none !important;
         gap: $spacing-md;
     }
 
